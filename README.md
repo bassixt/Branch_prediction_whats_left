@@ -45,3 +45,7 @@
         * Downloaded from: http://www.musl-libc.org/download.html
      * Ongoing : Modification to Makefile for printf...
       * Trial : simple hello world try to print 
+### Fourth week:
+    *https://github.com/cloudius-systems/osv/wiki/AArch64
+    *Bare-metal dhrystone
+    *Qemu/busybox aarch64 for dhrystone
