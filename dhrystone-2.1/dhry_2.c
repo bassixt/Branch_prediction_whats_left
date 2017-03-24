@@ -17,6 +17,8 @@
 
 #include "dhry.h"
 
+#include <sys/types.h>
+
 #ifndef REG
 #define REG
         /* REG becomes defined as empty */
@@ -26,14 +28,30 @@
 extern  int     Int_Glob;
 extern  char    Ch_1_Glob;
 
+/* start of our string compare*/
+int strCmp(const char* s1, const char* s2)
+{
+    while(*s1 && (*s1 == *s2))
+    {
+        s1++;
+        s2++;
+    }
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+/* finish of our string compare*/
 
-Proc_6 (Enum_Val_Par, Enum_Ref_Par)
+
+
+
 /*********************************/
     /* executed once */
     /* Enum_Val_Par == Ident_3, Enum_Ref_Par becomes Ident_2 */
 
+Proc_6(Enum_Val_Par, Enum_Ref_Par)
+
 Enumeration  Enum_Val_Par;
 Enumeration *Enum_Ref_Par;
+
 {
   *Enum_Ref_Par = Enum_Val_Par;
   if (! Func_3 (Enum_Val_Par))
@@ -161,7 +179,8 @@ Str_30  Str_2_Par_Ref;
     return (true);
   else /* executed */
   {
-    if (strcmp (Str_1_Par_Ref, Str_2_Par_Ref) > 0)
+    //if (strcmp (Str_1_Par_Ref, Str_2_Par_Ref) > 0)
+    if (strCmp (Str_1_Par_Ref, Str_2_Par_Ref) > 0)
       /* then, not executed */
     {
       Int_Loc += 7;

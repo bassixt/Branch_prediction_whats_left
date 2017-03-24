@@ -58,8 +58,8 @@ cc_dry1.o: dhry_1.c dhry.h
 #cc_dry2.o: dhry_2.c dhry.h
 #	aarch64-unknown-linux-gnueabi-gcc -c  dhry_2.c -o cc_dry2.o
 
-#startup64.o: startup64.s
-#	aarch64-unknown-linux-gnueabi-as -c startup64.s -o startup64.o
+startup64.o: startup64.s
+	aarch64-unknown-linux-gnueabi-as -c startup64.s -o startup64.o
 
 #test64.elf: cc_dry1.o cc_dry2.o startup64.o
 #	aarch64-unknown-linux-gnueabi-ld cc_dry1.o cc_dry2.o -o test64.elf
@@ -68,8 +68,8 @@ cc_dry1.o: dhry_1.c dhry.h
 #test64.elf: cc_dry1.o cc_dry2.o startup64.o
 #	aarch64-unknown-linux-gnueabi-ld -T test64.ld cc_dry1.o cc_dry2.o startup64.o -static -L/home/mc/Scrivania/dhrystone-2.1/Newlib/musl/lib  -o test64.elf -static -lc
 
-test64.elf: cc_dry1.o 
-		aarch64-unknown-linux-gnueabi-ld  cc_dry1.o -o  test64.elf -lc --entry main
+test64.elf: cc_dry1.o startup64.o
+		aarch64-unknown-linux-gnueabi-ld -T test64.ld cc_dry1.o startup64.o -static -L/home/mc/Scrivania/dhrystone-2.1/Newlib/musl/lib  -o  test64.elf -static -lc
 
 
 test64.bin: test64.elf
