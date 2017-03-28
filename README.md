@@ -62,7 +62,111 @@
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
+Packet required:
 ```
 sudo apt-get install xinetd tftpd tftp
-
 ```
+Create this file under /etc/xinetd.d/ called tftp (as example with the command)
+```
+sudo vim /etc/xinetd.d/tftp
+```
+cutting and pasting the following lines inside
+```
+service tftp
+{
+protocol        = udp
+port            = 69
+socket_type     = dgram
+wait            = yes
+user            = nobody
+server          = /usr/sbin/in.tftpd
+server_args     = /tftpboot
+disable         = no
+}
+```
+Create the following folder and execute the following commands
+```
+sudo mkdir /tftpboot
+sudo chmod -R 777 /tftpboot
+sudo chown -R nobody /tftpboot
+```
+Now you can restart the service with the following commands:
+```
+sudo /etc/init.d/xinetd stop
+sudo /etc/init.d/xinetd start
+```
+Now to create a suitable network for the emulator create and run the following script:
+(WARNING: change user value with yours in my case was mc and nic with the name of your ethernet interface in my case was enp2s0)
+```
+user=mc
+tap=tap0
+bridge=br0
+nic=enp2s0
+
+echo "---> Creating taps..."
+ip tuntap add dev $tap mode tap user $user
+ip link set dev $tap up
+
+echo "---> Creating bridge..."
+brctl addbr $bridge
+brctl setfd $bridge 0
+brctl addif $bridge $nic
+brctl addif $bridge $tap
+
+echo "---> Bringing interfaces and bridge up..."
+ifconfig $tap 0.0.0.0 promisc up
+ifconfig $nic 0.0.0.0 promisc up
+ifconfig $bridge 192.168.0.1 netmask 255.255.255.0 up
+
+echo "---> Restart DHCP server"
+service isc-dhcp-server restart
+```
+Now if everything went good run the qemu instance:
+(WARNING: this file must be in the root directory in which there are all the other directories with qemu busybox and so on.)
+```
+ramfs_img		=	$(PWD)/busybox.cpio.gz
+kernel_img		=	$(PWD)/linux/arch/arm64/boot/Image
+qemu_root = $(PWD)/qemu
+qemu_src = $(qemu_root)/src
+qemu_build = $(qemu_root)/build
+qemu_dtc =  $(qemu_src)/dtc
+mon_ip		= 192.168.0.25
+tel_ip		= 192.168.0.1
+mon_port	= 2222
+init_mem	= 1024M
+
+run:
+	script /tmp/run -c '\
+		stty intr ^] && \
+		$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
+		-M virt \
+		-m $(init_mem) \
+		-nographic \
+		-cpu cortex-a57 \
+		-kernel $(kernel_img) \
+		-initrd $(ramfs_img) \
+		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
+		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
+		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
+		-serial stdio \
+		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
+		'
+
+# XXX: QEMU monitor - open from a separate terminal
+monitor:
+	telnet $(mon_ip) $(mon_port)
+
+# XXX: QEMU help
+help:
+	$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
+		-M virt \
+		-help
+```
+Now to exchange data with the qemu machine:
+```
+#To download a file
+tftp -g -r <filename> 192.168.0.1
+#To upload a file
+tftp -p -r <filename> 192.168.0.1
+```
+
