@@ -50,9 +50,9 @@
   *Useful material
     *https://github.com/cloudius-systems/osv/wiki/AArch64
   *Bare-metal dhrystone
-        *Makefile modification
-        *Static linking of libc (tried newlib, musl)
-        *Linker script 
-    *Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
-        *Makefile for the entire "framework"
-        *
+    *Makefile modifications
+    *Static linking of libc (tried newlib, musl)
+    *Linker script 
+  *Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
+    *Makefile for the entire "framework"
+    *
