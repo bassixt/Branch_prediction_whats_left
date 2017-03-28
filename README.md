@@ -61,3 +61,8 @@
 
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
+To exchange datas with the emulated system we use tftp.To create a tftp server:
+```
+sudo apt-get install xinetd tftpd tftp
+
+```
