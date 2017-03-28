@@ -45,7 +45,14 @@
         * Downloaded from: http://www.musl-libc.org/download.html
      * Ongoing : Modification to Makefile for printf...
       * Trial : simple hello world try to print 
+
 ### Fourth week:
-    *https://github.com/cloudius-systems/osv/wiki/AArch64
+    *Useful material
+        *https://github.com/cloudius-systems/osv/wiki/AArch64
     *Bare-metal dhrystone
-    *Qemu/busybox aarch64 for dhrystone
+        *Makefile modification
+        *Static linking of libc (tried newlib, musl)
+        *Linker script 
+    *Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
+        *Makefile for the entire "framework"
+        *
