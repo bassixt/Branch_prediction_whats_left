@@ -47,12 +47,17 @@
       * Trial : simple hello world try to print 
 
 ### Fourth week:
-  *Useful material
-    *https://github.com/cloudius-systems/osv/wiki/AArch64
-  *Bare-metal dhrystone
-    *Makefile modifications
-    *Static linking of libc (tried newlib, musl)
-    *Linker script 
-  *Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
-    *Makefile for the entire "framework"
-    *
+  * seful material
+    * https://github.com/cloudius-systems/osv/wiki/AArch64
+  * Bare-metal dhrystone
+    * Makefile modifications
+    * Static linking of libc (tried newlib, musl)
+    * Linker script 
+  * Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
+    * Makefile for the entire "framework"
+    * Makefile to run Qemu with network to upload files:
+        * [Network for Qemu](#NetworkforQemu)
+
+
+
+### <a name="NetworkforQemu"></a>Network for Qemu
