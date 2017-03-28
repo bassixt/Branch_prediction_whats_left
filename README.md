@@ -65,6 +65,8 @@ To exchange datas with the emulated system we use tftp.To create a tftp server:
 Packet required:
 ```
 sudo apt-get install xinetd tftpd tftp
+sudo apt-get install isc-dhcp-server
+sudo apt-get install bridge-utils
 ```
 Create this file under /etc/xinetd.d/ called tftp (as example with the command)
 ```
