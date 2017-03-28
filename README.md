@@ -47,9 +47,9 @@
       * Trial : simple hello world try to print 
 
 ### Fourth week:
-    *Useful material
-        *https://github.com/cloudius-systems/osv/wiki/AArch64
-    *Bare-metal dhrystone
+  *Useful material
+    *https://github.com/cloudius-systems/osv/wiki/AArch64
+  *Bare-metal dhrystone
         *Makefile modification
         *Static linking of libc (tried newlib, musl)
         *Linker script 
