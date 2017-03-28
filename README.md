@@ -156,7 +156,7 @@ run:
 
 # XXX: QEMU monitor - open from a separate terminal
 monitor:
-	telnet $(mon_ip) $(mon_port)
+	telnet $(tel_ip) $(mon_port)
 
 # XXX: QEMU help
 help:
