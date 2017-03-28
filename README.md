@@ -43,7 +43,7 @@
      * Modification to Makefile
      * Find libraries for aarch64
         * Downloaded from: http://www.musl-libc.org/download.html
-     * Ongoing : Modification to Makefile for printf...
+     * Modification to Makefile for printf
       * Trial : simple hello world try to print 
 
 ### Fourth week:
@@ -165,10 +165,12 @@ help:
 		-help
 ```
 Now to exchange data with the qemu machine:
+To download a file (in QEMU)
 ```
-#To download a file
 tftp -g -r <filename> 192.168.0.1
-#To upload a file
+```
+To upload a file (from QEMU to Host)
+```
 tftp -p -r <filename> 192.168.0.1
 ```
 
