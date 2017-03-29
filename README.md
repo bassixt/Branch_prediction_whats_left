@@ -58,7 +58,21 @@
     * Makefile to run Qemu with network to upload files:
         * [Network for Qemu](#NetworkforQemu)
 
-
+### Fift week:
+  * dnsmasq
+  * busybox -> dropbear
+  * instrument qemu to get the information that we need
+     * helper function to output useful information
+        * Jump 
+            * program counter
+            * target address
+        * Branch
+            * taken/not taken  
+            * program counter
+            * target address of the branch if taken
+            * percentage of taken/not taken
+       
+    
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
