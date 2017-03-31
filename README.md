@@ -58,7 +58,7 @@
     * Makefile to run Qemu with network to upload files:
         * [Network for Qemu](#NetworkforQemu)
 
-### Fift week:
+### Fifth week:
   * dnsmasq
   * busybox -> dropbear
   * instrument qemu to get the information that we need
