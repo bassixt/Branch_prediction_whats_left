@@ -85,7 +85,7 @@ qbuild:
 busybox_dir		=	$(PWD)/busybox
 busybox_install	=	$(busybox_dir)/_install
 rcs_path		=	$(busybox_install)/etc/init.d/rcS
-ramfs_img		=	$(PWD)/busybox.cpio.gz
+ramfs_img		=	~/Desktop/linaro_busybox_aarch64/busybox.cpio.gz
 
 define INIT_RCS
 cat <<@ >$(rcs_path)
@@ -131,7 +131,7 @@ initrd:
 #
 ###############################################################################
 kernel_dir		=	$(PWD)/linux
-kernel_img		=	$(PWD)/linux/arch/arm64/boot/Image
+kernel_img		=	~/Desktop/linaro_busybox_aarch64/linux/arch/arm64/boot/Image
 
 kconf:
 	@cd $(kernel_dir) && make distclean
@@ -162,14 +162,15 @@ kbuild:
 ###############################################################################
 
 # mon_ip		= 172.17.0.2
-mon_ip		= localhost
-mon_port	= 2222
-init_mem	= 1024M
+
+#mon_ip		= 172.17.0.1
+#mon_port	= 2222
+#init_mem	= 1024M
 
 run:
 	script /tmp/run -c '\
 		stty intr ^] && \
-		$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
+		~/Desktop/linaro_busybox_aarch64/qemu/build/aarch64-softmmu/qemu-system-aarch64 \
 		-M virt \
 		-m $(init_mem) \
 		-nographic \
@@ -185,7 +186,7 @@ run:
 
 # XXX: QEMU monitor - open from a separate terminal
 monitor:
-	telnet $(mon_ip) $(mon_port)
+	telnet $(tel_ip) $(mon_port)
 
 # XXX: QEMU help
 help:
@@ -200,3 +201,30 @@ help:
 # 	tftp -r hptest3G -g 172.17.0.1 && chmod 755 hptest3G
 ###############################################################################
 
+#ramfs_img       =   $(PWD)/busybox.cpio.gz
+#kernel_img      =   $(PWD)/linux/arch/arm64/boot/Image
+#qemu_root = $(PWD)/qemu
+#qemu_src = $(qemu_root)/src
+#qemu_build = $(qemu_root)/build
+#qemu_dtc =  $(qemu_src)/dtc
+mon_ip      = 192.168.0.25
+tel_ip      = 192.168.0.1
+mon_port    = 2222
+init_mem    = 1024M
+
+mcMake:
+	script /tmp/run -c '\
+		stty intr ^] && \
+		$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
+		-M virt \
+		-m $(init_mem) \
+		-nographic \
+		-cpu cortex-a57 \
+		-kernel $(kernel_img) \
+		-initrd $(ramfs_img) \
+		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
+		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
+		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
+		-serial stdio \
+		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
+		'
