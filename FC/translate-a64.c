@@ -1144,6 +1144,30 @@ static inline AArch64DecodeFn *lookup_disas_fn(const AArch64DecodeTable *table,
  * of the ARM Architecture Reference Manual (DDI0487A_a)
  */
 
+//FC inserted func
+static void gen_set_nzcv(TCGv_i64 tcg_rt)
+
+{
+    TCGv_i32 nzcv = tcg_temp_new_i32();
+
+    /* take NZCV from R[t] */
+    tcg_gen_extrl_i64_i32(nzcv, tcg_rt);
+
+    /* bit 31, N */
+    tcg_gen_andi_i32(cpu_NF, nzcv, (1U << 31));
+    /* bit 30, Z */
+    tcg_gen_andi_i32(cpu_ZF, nzcv, (1 << 30));
+    tcg_gen_setcondi_i32(TCG_COND_EQ, cpu_ZF, cpu_ZF, 0);
+    /* bit 29, C */
+    tcg_gen_andi_i32(cpu_CF, nzcv, (1 << 29));
+    tcg_gen_shri_i32(cpu_CF, cpu_CF, 29);
+    /* bit 28, V */
+    tcg_gen_andi_i32(cpu_VF, nzcv, (1 << 28));
+    tcg_gen_shli_i32(cpu_VF, cpu_VF, 3);
+    tcg_temp_free_i32(nzcv);
+}
+
+
 /* C3.2.7 Unconditional branch (immediate)
  *   31  30       26 25                                  0
  * +----+-----------+-------------------------------------+
@@ -1153,6 +1177,29 @@ static inline AArch64DecodeFn *lookup_disas_fn(const AArch64DecodeTable *table,
 static void disas_uncond_b_imm(DisasContext *s, uint32_t insn)
 {
     uint64_t addr = s->pc + sextract32(insn, 0, 26) * 4 - 4;
+
+//FC
+	 TCGv_i64 tcg_rn, tcg_rm; //tcg_rd,
+//    tcg_rd = cpu_reg(s, extract32(insn, 0, 5));
+    tcg_rn = (TCGv_i64)s->pc;
+    tcg_rm = (TCGv_i64)addr;
+
+    TCGv_i64 tcg_flags = tcg_temp_new_i64();
+
+
+/*    rm = extract32(insn, 16, 5);
+    opcode = extract32(insn, 10, 6);
+    rn = extract32(insn, 5, 5);
+    rd = extract32(insn, 0, 5);
+*/
+
+//	gen_helper_hello_world(tcg_rd, tcg_rn, tcg_rm);
+	gen_helper_hello_world(tcg_flags, tcg_rn, tcg_rm);
+
+    tcg_temp_free_i64(tcg_flags);	
+	
+//FC
+
 
     if (insn & (1U << 31)) {
         /* C5.6.26 BL Branch with link */
@@ -1372,27 +1419,7 @@ static void gen_get_nzcv(TCGv_i64 tcg_rt)
     tcg_temp_free_i32(tmp);
 }
 
-static void gen_set_nzcv(TCGv_i64 tcg_rt)
-
-{
-    TCGv_i32 nzcv = tcg_temp_new_i32();
-
-    /* take NZCV from R[t] */
-    tcg_gen_extrl_i64_i32(nzcv, tcg_rt);
-
-    /* bit 31, N */
-    tcg_gen_andi_i32(cpu_NF, nzcv, (1U << 31));
-    /* bit 30, Z */
-    tcg_gen_andi_i32(cpu_ZF, nzcv, (1 << 30));
-    tcg_gen_setcondi_i32(TCG_COND_EQ, cpu_ZF, cpu_ZF, 0);
-    /* bit 29, C */
-    tcg_gen_andi_i32(cpu_CF, nzcv, (1 << 29));
-    tcg_gen_shri_i32(cpu_CF, cpu_CF, 29);
-    /* bit 28, V */
-    tcg_gen_andi_i32(cpu_VF, nzcv, (1 << 28));
-    tcg_gen_shli_i32(cpu_VF, cpu_VF, 3);
-    tcg_temp_free_i32(nzcv);
-}
+//FC removed from here gen_set_nzcv
 
 /* C5.6.129 MRS - move from system register
  * C5.6.131 MSR (register) - move to system register
@@ -11129,13 +11156,6 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
     int num_insns;
     int max_insns;
 
-//FC
-	 
-	 TCGv_i64 tcg_rd, tcg_rn;
-    tcg_rd = cpu_reg(dc, 1);
-    tcg_rn = cpu_reg(dc, 1);
-//FC
-
 
     pc_start = tb->pc;
 
@@ -11262,9 +11282,6 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
                     dc->pc);
         }
 
-//FC
-	gen_helper_hello_world(tcg_rd, tcg_rn);
-//FC
 
         /* Translation stops when a conditional branch is encountered.
          * Otherwise the subsequent code could get translated several times.
@@ -11278,9 +11295,9 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
              dc->pc < next_page_start &&
              num_insns < max_insns);
 
-//FC
-	printf("We've done translated target->tcg code\n");
-//FC
+//.FC
+//	printf("We've done translated target->tcg code\n");
+//.FC
 
     if (tb->cflags & CF_LAST_IO) {
         gen_io_end();

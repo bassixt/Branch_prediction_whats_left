@@ -18,7 +18,7 @@
  */
 
 //FC
-DEF_HELPER_FLAGS_1(hello_world, TCG_CALL_NO_RWG_SE, i64, i64)
+DEF_HELPER_2(hello_world, i64, i64, i64)
 
 //FC
 

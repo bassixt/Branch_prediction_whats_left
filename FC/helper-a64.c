@@ -31,9 +31,9 @@
 
 //FC
 
-uint64_t HELPER(hello_world)(uint64_t x)
+uint64_t HELPER(hello_world)(uint64_t pc, uint64_t addr)
 {
-	printf("Hello World\n");
+	printf("Uncond branch:\tpc:%"PRIu64"\taddr:%"PRIu64"\n", pc, addr);
 	
     return 1;
 }
