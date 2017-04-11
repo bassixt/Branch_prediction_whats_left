@@ -76,6 +76,7 @@
        * https://fulcronz27.wordpress.com/2014/06/09/qemu-call-a-custom-function-from-tcg/   (how to create helper functions)
        * http://git.qemu-project.org/?p=qemu.git;a=tree
        * http://git.qemu-project.org/?p=qemu.git;a=blob;f=target-arm/translate-a64.c;h=9f964dfd5de5860e23ba66ba3560b44bf9b67ab1;hb=2ef6175aa76adea2ab8ce1540904a05d6f8e8eed
+      
 ### Sixth week:
   * Unconditional branch helper function
 	* Solved compilation warnings
