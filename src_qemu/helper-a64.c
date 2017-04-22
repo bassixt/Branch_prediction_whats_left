@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#define BUFFER_SIZE 6000
+#define BUFFER_SIZE 126
 
 //OUR BEGINNING IMPLEMENTATION
 uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
@@ -57,13 +57,15 @@ uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
 	//BUFFERED WRITE
 	// THE IDEA IS TO MAKE FEW FILE WRITE USING A BUFFER
 
-	char buf[BUFFER_SIZE];															//Big buffer 
-	static int added_length=0;														//Length of buffer 
- 	char intermediate[60];															//Intermediate buffer
+	//char buf[BUFFER_SIZE];
+	static uint64_t buff[BUFFER_SIZE]={0};													//Big buffer 
+	static int added_length = 0;	
+	static int cicle = 0;													//Length of buffer 
+ 	//char intermediate[60];														//Intermediate buffer
 	FILE *fp;																	
-   	fp = fopen("test.txt", "a");
-   	sprintf(intermediate, "pc:%" PRIu64 " addr:%" PRIu64 "\n",pc,addr);
-   	if(strlen(intermediate)+added_length<=BUFFER_SIZE)								//control if adding the intermediate value you will have an overflow
+   	
+   	//sprintf(intermediate, "pc:%" PRIu64 " addr:%" PRIu64 "\n",pc,addr);
+   	/*if(strlen(intermediate)+added_length<=BUFFER_SIZE)							//control if adding the intermediate value you will have an overflow
 	 	{
 			added_length += sprintf(buf+added_length, "%s", intermediate);			//"concatenate" the intermediate value
 	 	}
@@ -72,8 +74,34 @@ uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
 			fwrite(buf , BUFFER_SIZE , sizeof(char) , fp );							//write on file
 	 		added_length=0;															//reset the counter for the buffer
 	 		added_length += sprintf(buf+added_length, "%s", intermediate);			//add the last row that you did't put before
- 		}
-    fclose(fp);
+ 		}*/
+   	if(cicle<1000)
+	   	{
+		   	if(added_length < BUFFER_SIZE-3)
+		   	{
+		   		buff[added_length] = pc;
+		   		buff[added_length+1] = addr;
+		   		buff[added_length+2] = 0;
+		   		added_length = added_length + 3;
+		   	}
+		   	else
+		   	{
+		   		buff[added_length] = pc;
+		   		buff[added_length+1] = addr;
+		   		buff[added_length+2] = 0;
+		   		if((fp = fopen("test.txt", "a")) == NULL)
+		   		{
+		   			printf("ERROR OPENING FILE\n");
+		   			return -1;
+		   		}
+		   		fwrite(buff , sizeof(uint64_t) , BUFFER_SIZE  , fp );	
+		   		fclose(fp);						//write on file
+			 	added_length=0;
+
+			 	cicle = cicle + 1;
+		   	}		   	
+		}
+   
     return 0;
 }
 
