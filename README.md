@@ -84,6 +84,11 @@
         * Improved performances with system call
         * Improved performances with buffered fwrite
 
+### Seventh week:
+  * Further material: 
+    * https://github.com/BLin409/Branch-Prediction-Simulator/blob/master/predictors.cpp
+    * https://github.com/sjdesai16/tage
+
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
 Packet required:
