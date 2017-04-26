@@ -1,3 +1,15 @@
+### IMPORTANT : current qemu version => stable-2.7
+* Modified file can be found on src_qemu/
+* First branch predictor can be located on src_qemu/Reader_prog
+    * Some assumptions : 
+        * Bimodal
+        * No tag only mod(n) for addressing
+        * If wrong decision => replace the entry
+        * If wrong decision => replace address   
+        
+
+
+
 # THIS IS THE PLACE WHERE TO SHARE INFOS AND TO TAKE IN MIND PROGRESSES
 
 ## SEMESTER PROJECT BRANCH PREDICTION WHAT'S LEFT
