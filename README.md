@@ -104,6 +104,7 @@
 ### Eighth week:
   * Branch prediction improvements:
     * Tagging the branch predictor using an hash-table
+        * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/ 
   * Understand the the code in order to find out wether the branch is taken or not
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
