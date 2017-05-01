@@ -101,6 +101,11 @@
     * https://github.com/BLin409/Branch-Prediction-Simulator/blob/master/predictors.cpp
     * https://github.com/sjdesai16/tage
 
+### Eighth week:
+  * Branch prediction improvements:
+    * Tagging the branch predictor using an hash-table
+  * Understand the the code in order to find out wether the branch is taken or not
+
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
 Packet required:
