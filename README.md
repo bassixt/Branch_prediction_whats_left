@@ -107,6 +107,11 @@
         * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/ 
   * Understand the the code in order to find out wether the branch is taken or not
 
+COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
+from mod -> 99.150002 hash -> 98.790474.
+Even if it could seems worse, it's an improvement since this mean that we are replacing less time the same location in the branch predictor (and so since we are using bimodal BP, we reach the right prediction "always taken" later) because the index brings
+to different location. This lead to decrement in a slower way the counter of each taken leading to an higher missprediction rate.
+
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
 Packet required:
