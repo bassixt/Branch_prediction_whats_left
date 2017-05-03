@@ -106,6 +106,7 @@
     * Tagging the branch predictor using an hash-table
         * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/ 
   * Understand the the code in order to find out wether the branch is taken or not
+    * http://stackoverflow.com/questions/26748224/how-qemu-knows-the-branch-direction-of-a-tb-which-had-been-executed 
 
 COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
 from mod -> 99.150002 hash -> 98.790474.
