@@ -17,10 +17,9 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-//FC
-DEF_HELPER_2(hello_world, i64, i64, i64)
 
-//FC
+DEF_HELPER_2(printer, i64, i64, i64)
+
 
 DEF_HELPER_FLAGS_2(udiv64, TCG_CALL_NO_RWG_SE, i64, i64, i64)
 DEF_HELPER_FLAGS_2(sdiv64, TCG_CALL_NO_RWG_SE, s64, s64, s64)

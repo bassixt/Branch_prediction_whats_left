@@ -1144,30 +1144,6 @@ static inline AArch64DecodeFn *lookup_disas_fn(const AArch64DecodeTable *table,
  * of the ARM Architecture Reference Manual (DDI0487A_a)
  */
 
-//FC inserted func
-static void gen_set_nzcv(TCGv_i64 tcg_rt)
-
-{
-    TCGv_i32 nzcv = tcg_temp_new_i32();
-
-    /* take NZCV from R[t] */
-    tcg_gen_extrl_i64_i32(nzcv, tcg_rt);
-
-    /* bit 31, N */
-    tcg_gen_andi_i32(cpu_NF, nzcv, (1U << 31));
-    /* bit 30, Z */
-    tcg_gen_andi_i32(cpu_ZF, nzcv, (1 << 30));
-    tcg_gen_setcondi_i32(TCG_COND_EQ, cpu_ZF, cpu_ZF, 0);
-    /* bit 29, C */
-    tcg_gen_andi_i32(cpu_CF, nzcv, (1 << 29));
-    tcg_gen_shri_i32(cpu_CF, cpu_CF, 29);
-    /* bit 28, V */
-    tcg_gen_andi_i32(cpu_VF, nzcv, (1 << 28));
-    tcg_gen_shli_i32(cpu_VF, cpu_VF, 3);
-    tcg_temp_free_i32(nzcv);
-}
-
-
 /* C3.2.7 Unconditional branch (immediate)
  *   31  30       26 25                                  0
  * +----+-----------+-------------------------------------+
@@ -1178,29 +1154,18 @@ static void disas_uncond_b_imm(DisasContext *s, uint32_t insn)
 {
     uint64_t addr = s->pc + sextract32(insn, 0, 26) * 4 - 4;
 
-//FC
-	 TCGv_i64 tcg_rn, tcg_rm; //tcg_rd,
-//    tcg_rd = cpu_reg(s, extract32(insn, 0, 5));
-    tcg_rn = (TCGv_i64)s->pc;
-    tcg_rm = (TCGv_i64)addr;
-
-    TCGv_i64 tcg_flags = tcg_temp_new_i64();
+/*/our
+	TCGv_i64 tcg_retr = tcg_temp_new_i64();        //to be passed to our function
+    TCGv_i64 tcg_pc, tcg_addr;
+    tcg_pc = tcg_const_i64(s->pc);
 
 
-/*    rm = extract32(insn, 16, 5);
-    opcode = extract32(insn, 10, 6);
-    rn = extract32(insn, 5, 5);
-    rd = extract32(insn, 0, 5);
-*/
-
-//	gen_helper_hello_world(tcg_rd, tcg_rn, tcg_rm);
-	gen_helper_hello_world(tcg_flags, tcg_rn, tcg_rm);
-
-    tcg_temp_free_i64(tcg_flags);	
-	
-//FC
-
-
+	tcg_addr = tcg_const_i64(addr);					  //create a variable of type tcg_addr containing addr
+    gen_helper_printer(tcg_retr,tcg_pc,tcg_addr);     //call to our function
+    tcg_temp_free_i64(tcg_retr);					  //free the temporary values 
+    tcg_temp_free_i64(tcg_pc);
+    tcg_temp_free_i64(tcg_addr);
+//our*/
     if (insn & (1U << 31)) {
         /* C5.6.26 BL Branch with link */
         tcg_gen_movi_i64(cpu_reg(s, 30), s->pc);
@@ -1222,21 +1187,54 @@ static void disas_comp_b_imm(DisasContext *s, uint32_t insn)
     uint64_t addr;
     TCGLabel *label_match;
     TCGv_i64 tcg_cmp;
-
+	uint64_t pc[8];
+	
     sf = extract32(insn, 31, 1);
     op = extract32(insn, 24, 1); /* 0: CBZ; 1: CBNZ */
     rt = extract32(insn, 0, 5);
     addr = s->pc + sextract32(insn, 5, 19) * 4 - 4;
+	pc[0] = s->pc; //fc
 
     tcg_cmp = read_cpu_reg(s, rt, sf);
+	pc[1] = s->pc; //fc
     label_match = gen_new_label();
+	pc[2] = s->pc; //fc
 
     tcg_gen_brcondi_i64(op ? TCG_COND_NE : TCG_COND_EQ,
                         tcg_cmp, 0, label_match);
+	pc[3] = s->pc; //fc
+
+/*/our
+printf("# Cmp&Br: pc= %"PRIx64", addr= %"PRIx64", op= %u, reg=%"PRIu64"\ninsn= ", s->pc, addr, op, tcg_cmp);
+
+uint32_t n= insn;
+int i=0;
+for(; i<32; n&0x80000000 ? printf("1") : printf("0"), i++, n<<=1);
+printf("\n");
+//our*/
 
     gen_goto_tb(s, 0, s->pc);
+	pc[4] = s->pc; //fc
     gen_set_label(label_match);
+	pc[5] = s->pc; //fc
     gen_goto_tb(s, 1, addr);
+	pc[6] = s->pc; //fc
+	
+	
+	pc[7] = s->pc; //fc
+	
+//our
+int i=1, flag = 0;
+for(; i<8; i++){
+	if (pc[i] != pc[0]){
+	flag = 1;
+	printf("pc%d= %"PRIx64"; ", i, pc[i]);
+	}
+}
+if (flag){
+	printf("pc0= %"PRIx64"; ", pc[0]);
+	printf("\n");}
+//our*/
 }
 
 /* C3.2.5 Test & branch (immediate)
@@ -1419,7 +1417,27 @@ static void gen_get_nzcv(TCGv_i64 tcg_rt)
     tcg_temp_free_i32(tmp);
 }
 
-//FC removed from here gen_set_nzcv
+static void gen_set_nzcv(TCGv_i64 tcg_rt)
+
+{
+    TCGv_i32 nzcv = tcg_temp_new_i32();
+
+    /* take NZCV from R[t] */
+    tcg_gen_extrl_i64_i32(nzcv, tcg_rt);
+
+    /* bit 31, N */
+    tcg_gen_andi_i32(cpu_NF, nzcv, (1U << 31));
+    /* bit 30, Z */
+    tcg_gen_andi_i32(cpu_ZF, nzcv, (1 << 30));
+    tcg_gen_setcondi_i32(TCG_COND_EQ, cpu_ZF, cpu_ZF, 0);
+    /* bit 29, C */
+    tcg_gen_andi_i32(cpu_CF, nzcv, (1 << 29));
+    tcg_gen_shri_i32(cpu_CF, cpu_CF, 29);
+    /* bit 28, V */
+    tcg_gen_andi_i32(cpu_VF, nzcv, (1 << 28));
+    tcg_gen_shli_i32(cpu_VF, cpu_VF, 3);
+    tcg_temp_free_i32(nzcv);
+}
 
 /* C5.6.129 MRS - move from system register
  * C5.6.131 MSR (register) - move to system register
@@ -1749,15 +1767,20 @@ static void disas_uncond_b_reg(DisasContext *s, uint32_t insn)
 }
 
 /* C3.2 Branches, exception generating and system instructions */
-static void disas_b_exc_sys(DisasContext *s, uint32_t insn)
+static void disas_b_exc_sys(DisasContext *s, uint32_t insn, int *bandiera)//fc
 {
+uint64_t pc[2]; //fc
+pc[0] = s->pc;//fc
+
     switch (extract32(insn, 25, 7)) {
     case 0x0a: case 0x0b:
     case 0x4a: case 0x4b: /* Unconditional branch (immediate) */
         disas_uncond_b_imm(s, insn);
         break;
     case 0x1a: case 0x5a: /* Compare & branch (immediate) */
-        disas_comp_b_imm(s, insn);
+        disas_comp_b_imm(s, insn); // here s->pc is always pc1= 562da33a2360
+pc[1] = s->pc; //fc
+*bandiera = 1;
         break;
     case 0x1b: case 0x5b: /* Test & branch (immediate) */
         disas_test_b_imm(s, insn);
@@ -1779,6 +1802,18 @@ static void disas_b_exc_sys(DisasContext *s, uint32_t insn)
         unallocated_encoding(s);
         break;
     }
+/*/our -always change
+int i=1, flag = 0;
+for(; i<2; i++){
+	if (pc[i] != pc[0]){
+	flag = 1;
+	printf("pc%d= %"PRIx64"; ", i, pc[i]);
+	}
+}
+if (flag){
+	printf("pc0= %"PRIx64"; ", pc[0]);
+	printf("\n");}
+//our*/
 }
 
 /*
@@ -11103,14 +11138,17 @@ static void disas_data_proc_simd_fp(DisasContext *s, uint32_t insn)
 }
 
 /* C3.1 A64 instruction index by encoding */
-static void disas_a64_insn(CPUARMState *env, DisasContext *s)
+static void disas_a64_insn(CPUARMState *env, DisasContext *s, int *flg)//fc
 {
     uint32_t insn;
+uint64_t pc[4];//fc
+int bandiera =0;//fc
 
-    insn = arm_ldl_code(env, s->pc, s->sctlr_b);
+    insn = arm_ldl_code(env, s->pc, s->sctlr_b); //here pc no change
     s->insn = insn;
     s->pc += 4;
 
+pc[0] = s->pc;//fc
     s->fp_access_checked = false;
 
     switch (extract32(insn, 25, 4)) {
@@ -11121,7 +11159,9 @@ static void disas_a64_insn(CPUARMState *env, DisasContext *s)
         disas_data_proc_imm(s, insn);
         break;
     case 0xa: case 0xb: /* Branch, exception generation and system insns */
-        disas_b_exc_sys(s, insn);
+pc[1] = s->pc;//fc
+        disas_b_exc_sys(s, insn, &bandiera);//fc
+pc[2] = s->pc;//fc
         break;
     case 0x4:
     case 0x6:
@@ -11144,6 +11184,24 @@ static void disas_a64_insn(CPUARMState *env, DisasContext *s)
 
     /* if we allocated any temporaries, free them here */
     free_tmp_a64(s);
+
+pc[3] = s->pc;//fc
+//our
+if (bandiera){
+	*flg = 1;
+	//printf("in\n");
+	int i=1, flag = 0;
+	for(; i<4; i++){
+		if (pc[i] != pc[0]){
+			flag = 1;
+			printf("..pc%d= %"PRIx64"; ", i, pc[i]);
+			}
+	}
+	if (flag){
+		printf("pc0= %"PRIx64"; ", pc[0]);
+		printf("\n");}
+}
+//our*/
 }
 
 void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
@@ -11155,7 +11213,6 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
     target_ulong next_page_start;
     int num_insns;
     int max_insns;
-
 
     pc_start = tb->pc;
 
@@ -11224,10 +11281,20 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
 
     tcg_clear_temp_count();
 
+uint64_t pc[7]; //fc
+int bandiera, cnt=0, count=0;//fc
+
     do {
+bandiera =0;
+if (!count) printf("\n\n\nstart");
+printf(" %d ", count);
+count++;
+
+pc[0] = dc->pc; //fc
         dc->insn_start_idx = tcg_op_buf_count();
         tcg_gen_insn_start(dc->pc, 0, 0);
         num_insns++;
+pc[1] = dc->pc; //fc
 
         if (unlikely(!QTAILQ_EMPTY(&cs->breakpoints))) {
             CPUBreakpoint *bp;
@@ -11252,10 +11319,12 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
                 }
             }
         }
+pc[2] = dc->pc; //fc
 
         if (num_insns == max_insns && (tb->cflags & CF_LAST_IO)) {
             gen_io_start();
         }
+pc[3] = dc->pc; //fc
 
         if (dc->ss_active && !dc->pstate_ss) {
             /* Singlestep state is Active-pending.
@@ -11274,30 +11343,46 @@ void gen_intermediate_code_a64(ARMCPU *cpu, TranslationBlock *tb)
             dc->is_jmp = DISAS_EXC;
             break;
         }
+pc[4] = dc->pc; //fc
 
-        disas_a64_insn(env, dc);
+        disas_a64_insn(env, dc, &bandiera);//fc
+pc[5] = dc->pc -4; //fc -4 because inside prev. func. pc is always incremented
 
         if (tcg_check_temp_count()) {
             fprintf(stderr, "TCG temporary leak before "TARGET_FMT_lx"\n",
                     dc->pc);
         }
-
+pc[6] = dc->pc -4; //fc
 
         /* Translation stops when a conditional branch is encountered.
          * Otherwise the subsequent code could get translated several times.
          * Also stop translation when a page boundary is reached.  This
          * ensures prefetch aborts occur at the right place.
-         */
+         */     
+//our
+if (bandiera){
+	cnt ++;
+	//*flg = 1;
+	//printf("in\n");
+	int i=1, flag = 0;
+	for(; i<7; i++){
+		if (pc[i] != pc[0]){
+			flag = 1;
+			printf("pc%d= %"PRIx64"; ", i, pc[i]);
+			}
+	}
+	if (flag){
+		printf("pc0= %"PRIx64"; cnt= %d", pc[0], cnt);
+		printf("\n");}
+}
+//our*/
+
     } while (!dc->is_jmp && !tcg_op_buf_full() &&
              !cs->singlestep_enabled &&
              !singlestep &&
              !dc->ss_active &&
              dc->pc < next_page_start &&
              num_insns < max_insns);
-
-//.FC
-//	printf("We've done translated target->tcg code\n");
-//.FC
 
     if (tb->cflags & CF_LAST_IO) {
         gen_io_end();
