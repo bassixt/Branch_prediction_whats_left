@@ -35,7 +35,7 @@
 #define BUFFER_SIZE 126
 
 //OUR BEGINNING IMPLEMENTATION
-uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
+void HELPER(printer)(uint64_t pc, uint64_t addr, uint64_t T_NT)
 {	
    	//FILE *fp;
    	//fp = fopen("test.txt", "a");
@@ -75,24 +75,24 @@ uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
 	 		added_length=0;															//reset the counter for the buffer
 	 		added_length += sprintf(buf+added_length, "%s", intermediate);			//add the last row that you did't put before
  		}*/
-   	if(cicle<1000)
+   	if(cicle>=0) //for testing purpose at the beginning was cicle < 1000 now 0 >= infinite
 	   	{
 		   	if(added_length < BUFFER_SIZE-3)
 		   	{
 		   		buff[added_length] = pc;
 		   		buff[added_length+1] = addr;
-		   		buff[added_length+2] = 0;
+		   		buff[added_length+2] = T_NT;
 		   		added_length = added_length + 3;
 		   	}
 		   	else
 		   	{
 		   		buff[added_length] = pc;
 		   		buff[added_length+1] = addr;
-		   		buff[added_length+2] = 0;
+		   		buff[added_length+2] = T_NT;
 		   		if((fp = fopen("test.txt", "a")) == NULL)
 		   		{
 		   			printf("ERROR OPENING FILE\n");
-		   			return -1;
+		   			//return -1;
 		   		}
 		   		fwrite(buff , sizeof(uint64_t) , BUFFER_SIZE  , fp );	
 		   		fclose(fp);						//write on file
@@ -102,7 +102,7 @@ uint64_t HELPER(printer)(uint64_t pc, uint64_t addr)
 		   	}		   	
 		}
    
-    return 0;
+    //return 0;
 }
 
 /* C2.4.7 Multiply and divide */

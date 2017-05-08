@@ -18,7 +18,7 @@
  */
 
 
-DEF_HELPER_2(printer, i64, i64, i64)
+DEF_HELPER_3(printer, dh_retvar_decl0_void, i64, i64, i64)
 
 
 DEF_HELPER_FLAGS_2(udiv64, TCG_CALL_NO_RWG_SE, i64, i64, i64)
