@@ -45,7 +45,7 @@ qemu_build = $(qemu_root)/build
 qemu_dtc =  $(qemu_src)/dtc
 
 # XXX: latest is stable-2.7 AFAIK, you can try
-qemu_ver = stable-2.7
+qemu_ver = stable-2.8
 
 qclone:
 	mkdir -p $(qemu_build)
@@ -85,7 +85,6 @@ qbuild:
 busybox_dir		=	$(PWD)/busybox
 busybox_install	=	$(busybox_dir)/_install
 rcs_path		=	$(busybox_install)/etc/init.d/rcS
-#ramfs_img		=	~/Desktop/linaro_busybox_aarch64/busybox.cpio.gz
 ramfs_img		=	$(PWD)/busybox.cpio.gz
 
 define INIT_RCS
@@ -202,6 +201,10 @@ help:
 ###############################################################################
 
 exec:
-	make qconfigure
+#	make qconfigure
 	make qbuild
 	make run
+	
+backup:
+	mkdir -p $(PWD)/backups/$(bkDir)/
+	cp -L $(PWD)/backups/*-a64* $(PWD)/backups/$(bkDir)/
