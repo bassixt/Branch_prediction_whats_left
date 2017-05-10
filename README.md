@@ -107,11 +107,23 @@
         * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/ 
   * Understand the the code in order to find out wether the branch is taken or not
     * http://stackoverflow.com/questions/26748224/how-qemu-knows-the-branch-direction-of-a-tb-which-had-been-executed 
-
-COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
+        * COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
 from mod -> 99.150002 hash -> 98.790474.
 Even if it could seems worse, it's an improvement since this mean that we are replacing less time the same location in the branch predictor (and so since we are using bimodal BP, we reach the right prediction "always taken" later) because the index brings
 to different location. This lead to decrement in a slower way the counter of each taken leading to an higher missprediction rate.
+
+
+### Ninth week:
+  * Found a way to print all the branches (Hope so) code can be found under Files/src_qemu
+     * QEMU is a dynamic recompiler. The code runs once, and it generates recompiled code that potentially runs multiple times. The generated code contains a jump at the point of the gen_goto_tb.
+  * Start to implement LTage or other BP.
+     * Usefull websites:
+       * http://home.deib.polimi.it/silvano/FilePDF/ARC-MULTIMEDIA/Lesson_2_Branch_Prediction.pdf
+       * https://github.com/ssc3/Perceptron-BranchPredictor
+       * https://github.com/sjdesai16/tage
+
+
+
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
 To exchange datas with the emulated system we use tftp.To create a tftp server:
