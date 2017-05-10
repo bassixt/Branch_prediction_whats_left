@@ -121,7 +121,9 @@ to different location. This lead to decrement in a slower way the counter of eac
        * http://home.deib.polimi.it/silvano/FilePDF/ARC-MULTIMEDIA/Lesson_2_Branch_Prediction.pdf
        * https://github.com/ssc3/Perceptron-BranchPredictor
        * https://github.com/sjdesai16/tage
-
+  * Some usefull link for statistics on branch prediction and branch predictor
+     * http://bwrcs.eecs.berkeley.edu/Classes/CS252/Projects/Reports/terry_chen.pdf
+     * https://www.slideshare.net/rinnocente/computer-architecture-branch-prediction
 
 
 
