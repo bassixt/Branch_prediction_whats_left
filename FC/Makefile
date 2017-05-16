@@ -176,8 +176,10 @@ run:
 		-kernel $(kernel_img) \
 		-initrd $(ramfs_img) \
 		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
-		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
-		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
+		#-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
+		-device e1000,netdev=tap0,mac=52:55:00:d1:55:01 \		
+		-append "ip=dhcp rd.shell=1 console=ttys0"
+		#-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
 		-serial stdio \
 		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
 		'

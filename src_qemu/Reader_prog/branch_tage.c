@@ -30,7 +30,11 @@ struct predictor{
 	uint32_t historyLength;
 	uint32_t num_pht_bimodal_entries;
 	uint32_t bimodalLog;
-	//to be continued
+	componet * components[NUMTAGTABLES];
+	uint32_t number_tag_entries;
+	uint32_t tagPredLog;
+	uint32_t geometric[NUMTAGTABLES];
+		
 
 
 }
