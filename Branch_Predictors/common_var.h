@@ -50,9 +50,9 @@ struct predictor{
 	uint64_t pht; //pattern history table (local)
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
 	uint32_t historyLength;
-	uint32_t num_pht_bimodal_entries = (1 << BIMODALLOG);
+	uint32_t num_pht_bimodal_entries;
 	struct component * components[NUMTAGTABLES];
-	uint32_t number_tag_entries = (1 << TAGPREDLOG);// Next to initiating the taggedPredictors
+	uint32_t number_tag_entries;// Next to initiating the taggedPredictors
 	uint32_t geometric[NUMTAGTABLES];
 		
 

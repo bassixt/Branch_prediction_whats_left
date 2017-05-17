@@ -2,15 +2,18 @@
 #define _PREDICTOR_H_
 
 #include "common_var.h"
-#include <cstdlib>
+#include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 void main_predictor(void){
 	struct predictor pred_str;//predictor structure declaration
 //(int *)malloc(sizeof(int));
-	for(uint32_t ii=0; ii < num_pht_bimodal_entries; ii++)
+	pred_str.num_pht_bimodal_entries = (1 << BIMODALLOG);
+	pred_str.number_tag_entries = (1 << TAGPREDLOG);
+	for(uint32_t ii=0; ii < pred_str.num_pht_bimodal_entries; ii++)
 	{
-	  pred_str->bimodal[ii]=BIMODAL_CTR_INIT;
+	  pred_str.bimodal[ii]=BIMODAL_CTR_INIT;
 	}
 	 for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++)
     {
