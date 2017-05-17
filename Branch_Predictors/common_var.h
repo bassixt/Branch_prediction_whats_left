@@ -49,8 +49,21 @@ struct predictor{
 	uint64_t pht; //pattern history table (local)
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
 	uint32_t historyLength;
-	uint32_t num_pht_bimodal_entries;
+	uint32_t numBimodalEntries;
+	uint32_t bimodalLog;
 	struct component * tagPred[NUMTAGTABLES];
-	uint32_t number_tag_entries;// Next to initiating the taggedPredictors
+	uint32_t numberTagEntries;// Next to initiating the taggedPredictors
+	uint32_t tagPredLog;
 	uint32_t geometric[NUMTAGTABLES];
+	CompressedHist indexComp[NUMTAGTABLES];
+	CompressedHist tagComp[2][NUMTAGTABLES];
+	uint64_t primePred;
+	uint64_t altPred;
+	uint64_t primeBank;
+	uint64_t altBank;
+	uint32_t indexTagPred[NUMTAGTABLES];
+	uint32_t tag[NUMTAGTABLES];
+	uint32_t clock;
+	uint64_t clock_flip;
+	uint32_t altBetterCount;
 };

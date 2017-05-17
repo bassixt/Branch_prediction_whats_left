@@ -1,7 +1,8 @@
 #ifndef _UPDATE_PREDICTOR_H_
 #define _UPDATE_PREDICTOR_H_
 
-#include"common_var.h" 
+#include "common_var.h"
+ 
 
 //used to increment or decrement usefulbits
 
@@ -25,7 +26,7 @@ uint64_t SatDecrement(uint64_t usefulBits){
 
 
 
-void update_predictor(uint64_t PC, uint64_t resolveDir, uint64_t predDir, uint64_t branchTarget, predictor * /*dobbiamo passargli la struct*/ ){
+void update_predictor(uint64_t PC, uint64_t resolveDir, uint64_t predDir, uint64_t branchTarget, struct predictor * predict /*dobbiamo passargli la struct*/ ){
 
 	uint64_t strong_old_present = 0;
 	uint64_t new_entry = 0;
@@ -36,19 +37,19 @@ void update_predictor(uint64_t PC, uint64_t resolveDir, uint64_t predDir, uint64
 		//update useful counter
 		if(predDir != altPred){
 			if(predDir == resolveDir){
-				predictor.tagPred[primeBank][indexTagPred[primeBank]].usefulBits = SatIncrement(tagPred[primeBank][indexTagPred[primeBank]].usefulBits, BIMODAL_CTR_MAX);
+				predict.tagPred[primeBank][indexTagPred[primeBank]].usefulBits = SatIncrement(tagPred[primeBank][indexTagPred[primeBank]].usefulBits, BIMODAL_CTR_MAX);
 			}
 			else{
-				predictor.tagPred[primeBank][indexTagPred[primeBank]].usefulBits = SatDecrement(tagPred[primeBank][indexTagPred[primeBank]].usefulBits);
+				predict.tagPred[primeBank][indexTagPred[primeBank]].usefulBits = SatDecrement(tagPred[primeBank][indexTagPred[primeBank]].usefulBits);
 
 			}
 		}
 		//update the predictor that provided the prediction
 		if(resolveDir){
-			predictor.tagPred[primeBank][indexTagPred[primeBank]].ctr = SatIncrement(tagPred[primeBank][indexTagPred[primeBank]].ctr, TAGPRED_CTR_MAX);
+			predict.tagPred[primeBank][indexTagPred[primeBank]].pred = SatIncrement(tagPred[primeBank][indexTagPred[primeBank]].pred, TAGPRED_CTR_MAX);
 		}
 		else{
-			predictor.tagPred[primeBank][indexTagPred[primeBank]].ctr = SatDecrement(tagPred[primeBank][indexTagPred[primeBank]].ctr);		
+			predict.tagPred[primeBank][indexTagPred[primeBank]].pred = SatDecrement(tagPred[primeBank][indexTagPred[primeBank]].pred);		
 		}
 	}
 	//da commentare per capire cosa stiamo aggiornando nel caso in cui prime >= NUMTAGTABLES e cosa sono questi sconosciuti....
