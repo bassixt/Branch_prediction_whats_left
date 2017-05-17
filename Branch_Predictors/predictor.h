@@ -51,8 +51,67 @@ void main_predictor(void){
     geometric[1] = 80;
     geometric[2] = 20;
     geometric[3] = 5;*/
+
+    // Initializing Compressed Buffers.
+    // first for index of the the tagged tables
+    for(int i = 0; i < NUMTAGTABLES; i++)
+    {
+        pred_str.indexComp[i].compHist = 0;
+        pred_str.indexComp[i].geomLength = pred_str.geometric[i]; 
+        pred_str.indexComp[i].targetLength = TAGPREDLOG;
+    }
     
-	
+    // next for the tag themselves
+    
+        // The tables have different tag lengths
+        // T2 and T3 have tag length -> 8
+        // T0 and T1 have tag length -> 9
+        // second index indicates the Bank no.
+        // Reason for using two -> PPM paper... single 
+  // CSR is sensitive to periodic patterns in global history which is a common case
+    for(int j = 0; j < 2 ; j++)
+    {
+        for(int i=0; i < NUMTAGTABLES; i++)
+        {
+            pred_str.tagComp[j][i].compHist = 0;
+            pred_str.tagComp[j][i].geomLength = pred_str.geometric[i];
+            if(j == 0)
+            {
+                if(i < 2)
+                pred_str.tagComp[j][i].targetLength = 9 ;
+                else
+                pred_str.tagComp[j][i].targetLength = 9 ;    
+            }
+            else
+            {
+                if(i < 2)
+                pred_str.tagComp[j][i].targetLength = 8 ;
+                else
+                pred_str.tagComp[j][i].targetLength = 8 ;
+            }
+        }   
+    }    
+       // Preditions banks and prediction values 
+       pred_str.primePred = -1;
+       pred_str.altPred = -1;
+       pred_str.primeBank = NUMTAGTABLES;
+       pred_str.altBank = NUMTAGTABLES;
+       
+       for(int i=0; i < NUMTAGTABLES; i++)
+       {    
+            pred_str.indexTagPred[i] = 0;
+       }
+       for(int i=0; i < NUMTAGTABLES; i++)
+       {    
+            pred_str.tag[i] = 0;
+       }
+       pred_str.clock = 0;
+       pred_str.clock_flip = 1;
+       pred_str.phr = 0;
+       pred_str.ghr.reset();
+       pred_str.altBetterCount = 8;
+}      
+
 }
 #endif
 

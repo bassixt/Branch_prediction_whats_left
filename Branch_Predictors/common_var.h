@@ -46,7 +46,7 @@ struct CompressedHist{
 
 struct predictor{
 	uint64_t ghr; //global history table
-	uint64_t pht; //pattern history table (local)
+	uint64_t phr; //pattern history table (local)
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
 	uint32_t historyLength;
 	uint32_t numBimodalEntries;
