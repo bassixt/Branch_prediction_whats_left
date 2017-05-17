@@ -45,7 +45,6 @@ struct CompressedHist{
 
 
 struct predictor{
-
 	uint64_t ghr; //global history table
 	uint64_t pht; //pattern history table (local)
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
@@ -54,7 +53,4 @@ struct predictor{
 	struct component * tagPred[NUMTAGTABLES];
 	uint32_t number_tag_entries;// Next to initiating the taggedPredictors
 	uint32_t geometric[NUMTAGTABLES];
-		
-
-
 };
