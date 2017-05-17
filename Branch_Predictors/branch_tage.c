@@ -13,6 +13,7 @@
 #define INITIAL_ADDRESS 0
 #define INPUT_FILE "test.txt"
 #define OUTPUT_FILE "results.txt"
+#define NUMTAGTABLES 4
 
 struct component{
 	int32_t pred;  //prediction
@@ -30,16 +31,17 @@ struct predictor{
 	uint32_t historyLength;
 	uint32_t num_pht_bimodal_entries;
 	uint32_t bimodalLog;
-	componet * components[NUMTAGTABLES];
+	struct component * components[NUMTAGTABLES];
 	uint32_t number_tag_entries;
 	uint32_t tagPredLog;
 	uint32_t geometric[NUMTAGTABLES];
 		
 
 
-}
+};
 
 uint64_t compute_history(uint64_t ghr,uint64_t * geometricLength,uint64_t targetLength){ //History to pass to the hash fucntion
+uint64_t h=0;//temporaneo
 
 //TODO CALCOLARE L'HISTORY 
 
