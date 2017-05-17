@@ -18,20 +18,20 @@ void main_predictor(void){
 	struct predictor pred_str;//predictor structure declaration
 	/// First initiating Bimodal Table
    // Its a simple 2 bit counter table
-	pred_str.num_pht_bimodal_entries = (1 << BIMODALLOG);
-	pred_str.number_tag_entries = (1 << TAGPREDLOG);
-	for(uint32_t ii=0; ii < pred_str.num_pht_bimodal_entries; ii++)
+	pred_str.numBimodalEntries = (1 << BIMODALLOG);
+	pred_str.numberTagEntries = (1 << TAGPREDLOG);
+	for(uint32_t ii=0; ii < pred_str.numBimodalEntries; ii++)
 	{
 	  pred_str.bimodal[ii]=BIMODAL_CTR_INIT;
 	}
 	 for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++)
     {
-       pred_str.tagPred[ii] = (struct component *)malloc(sizeof(struct component) * pred_str.number_tag_entries);
+       pred_str.tagPred[ii] = (struct component *)malloc(sizeof(struct component) * pred_str.numberTagEntries);
     }//funziona?? 
     //da continuare
     for(uint32_t ii = 0; ii < NUMTAGTABLES; ii++)
     {
-        for(uint32_t j =0; j < pred_str.number_tag_entries; j++)
+        for(uint32_t j =0; j < pred_str.numberTagEntries; j++)
         {
             pred_str.tagPred[ii][j].pred = 0;
             pred_str.tagPred[ii][j].tag = 0;
@@ -108,10 +108,8 @@ void main_predictor(void){
        pred_str.clock = 0;
        pred_str.clock_flip = 1;
        pred_str.phr = 0;
-       pred_str.ghr.reset();
+    //   pred_str.ghr.reset();
        pred_str.altBetterCount = 8;
-}      
-
 }
 #endif
 
