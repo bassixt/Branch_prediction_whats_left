@@ -15,6 +15,15 @@
 #define OUTPUT_FILE "results.txt"
 #define NUMTAGTABLES 4
 
+//defines in cc file
+#define BIMODAL_CTR_MAX  3
+#define BIMODAL_CTR_INIT 2
+#define TAGPRED_CTR_MAX  7
+#define TAGPRED_CTR_INIT 0
+#define BIMODALLOG   14
+#define NUMTAGTABLES 4
+#define TAGPREDLOG 12
+
 //see figure 1 of a 256Kbits L-Tage branch predictor
 
 struct component{
