@@ -51,7 +51,7 @@ struct predictor{
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
 	uint32_t historyLength;
 	uint32_t num_pht_bimodal_entries;
-	struct component * components[NUMTAGTABLES];
+	struct component * tagPred[NUMTAGTABLES];
 	uint32_t number_tag_entries;// Next to initiating the taggedPredictors
 	uint32_t geometric[NUMTAGTABLES];
 		
