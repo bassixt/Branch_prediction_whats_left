@@ -108,8 +108,12 @@ void main_predictor(void){
        pred_str.clock = 0;
        pred_str.clock_flip = 1;
        pred_str.phr = 0;
-    //   pred_str.ghr.reset();
        pred_str.altBetterCount = 8;
+       
+    //   pred_str.ghr.reset(); bisogna fare il free dei ptr
+    	 for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++){
+       free(pred_str.tagPred);
+    }
 }
 #endif
 
