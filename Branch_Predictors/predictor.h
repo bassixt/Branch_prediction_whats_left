@@ -17,20 +17,26 @@ void main_predictor(void){
 	}
 	 for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++)
     {
-       components[ii] = (struct component *)malloc(sizeof(struct component) * number_tag_entries);
+       pred_str.components[ii] = (struct component *)malloc(sizeof(struct component) * pred_str.number_tag_entries);
     }//funziona?? 
     //da continuare
     for(uint32_t ii = 0; ii < NUMTAGTABLES; ii++)
     {
-        for(UINT32 j =0; j < numTagPredEntries; j++)
+        for(uint32_t j =0; j < pred_str.number_tag_entries; j++)
         {
-            tagPred[ii][j].ctr = 0;
-            tagPred[ii][j].tag = 0;
-            tagPred[ii][j].usefulBits = 0;
+            pred_str.components[ii][j].pred = 0;
+            pred_str.components[ii][j].tag = 0;
+            pred_str.components[ii][j].u = 0;
         }
       
     }
-
+	
+	pred_str.geometric[0] = 130;
+	pred_str.geometric[1] = 44;
+	pred_str.geometric[2] = 15;
+	pred_str.geometric[3] = 5;
+	
+	
 }
 #endif
 
