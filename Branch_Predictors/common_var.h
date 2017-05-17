@@ -55,8 +55,8 @@ struct predictor{
 	uint32_t numberTagEntries;// Next to initiating the taggedPredictors
 	uint32_t tagPredLog;
 	uint32_t geometric[NUMTAGTABLES];
-	CompressedHist indexComp[NUMTAGTABLES];
-	CompressedHist tagComp[2][NUMTAGTABLES];
+	struct CompressedHist indexComp[NUMTAGTABLES];
+	struct CompressedHist tagComp[2][NUMTAGTABLES];
 	uint64_t primePred;
 	uint64_t altPred;
 	uint64_t primeBank;
