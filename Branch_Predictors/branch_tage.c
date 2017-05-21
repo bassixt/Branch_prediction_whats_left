@@ -40,12 +40,29 @@ struct predictor{
 
 };
 
-uint64_t compute_history(uint64_t ghr,uint64_t * geometricLength,uint64_t targetLength){ //History to pass to the hash fucntion
-uint64_t h=0;//temporaneo
+void compute_history(struct predictor * predict,uint64_t row,uint64_t col){ //History to pass to the hash fucntion
+	if(col<0){
+		//indexComp
+		int mask = (1 << predict->indexComp[row].targetLength)-1;
+		int mask1 =  predict->ghr[predict->indexComp[row].geometricLength] << (predict->indexComp[row].geometricLength % predict->indexComp[row].targetLength);
+		int mask2 = (1 << predict->indexComp[row].targetLength);
+		predict->indexComp[row].compHist = (predict->indexComp[row].compHist << 1) + ghr[0];
+		predict->indexComp[row].compHist ^= ((predict->indexComp[row].compHist & mask2) >> predict->indexComp[row].targetLength);
+		predict->indexComp[row].compHist ^=mask1;
+		predict->indexComp[row].compHist &= mask;
+	}
+	else{
+		//tagComp
+		int mask = (1 << predict->tagComp[row][col].targetLength)-1;
+		int mask1 =  predict->ghr[predict->tagComp[row][col].geometricLength] << (predict->tagComp[row][col].geometricLength % predict->tagComp[row][col].targetLength);
+		int mask2 = (1 << predict->tagComp[row][col].targetLength);
+		predict->tagComp[row][col].compHist = (predict->tagComp[row][col].compHist << 1) + ghr[0];
+		predict->tagComp[row][col].compHist ^= ((predict->tagComp[row][col].compHist & mask2) >> predict->tagComp[row][col].targetLength);
+		predict->tagComp[row][col].compHist ^=mask1;
+		predict->tagComp[row][col].compHist &= mask;
+	}
 
-//TODO CALCOLARE L'HISTORY 
-
-return h; //return history to be hash with pc
+return ;
 }
 
 

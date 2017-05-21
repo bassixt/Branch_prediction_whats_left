@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
 
 #define BUFFER_SIZE 126
@@ -23,7 +24,7 @@
 #define BIMODALLOG   14
 #define NUMTAGTABLES 4
 #define TAGPREDLOG 12
-
+#define GHRLNGTH 131
 //see figure 1 of a 256Kbits L-Tage branch predictor
 
 struct component{
@@ -43,9 +44,8 @@ struct CompressedHist{
 	uint64_t compHist;
 };
 
-
 struct predictor{
-	uint8_t ghr; //global history register
+	uint8_t ghr[GHRLNGTH]; //global history register
 	uint64_t phr; //pattern history register (local)
 	uint32_t bimodal[1 << BIMODALLOG]; //num pht bimodalentries
 	uint32_t historyLength;
@@ -67,3 +67,32 @@ struct predictor{
 	uint64_t clock_flip;
 	uint32_t altBetterCount;
 };
+
+//HISTORY COMPUTATION FOR DIFFERENT CASES WITH DIFFERENT LENGTH
+void compute_history(struct predictor * predict,uint64_t row,uint64_t col){ //History to pass to the hash fucntion
+	if(col<0){
+		//indexComp
+		int mask = (1 << predict->indexComp[row].targetLength)-1;
+		int mask1 =  predict->ghr[predict->indexComp[row].geomLength] << (predict->indexComp[row].geomLength % predict->indexComp[row].targetLength);
+		int mask2 = (1 << predict->indexComp[row].targetLength);
+		predict->indexComp[row].compHist = (predict->indexComp[row].compHist << 1) + predict->ghr[0];
+		predict->indexComp[row].compHist ^= ((predict->indexComp[row].compHist & mask2) >> predict->indexComp[row].targetLength);
+		predict->indexComp[row].compHist ^=mask1;
+		predict->indexComp[row].compHist &= mask;
+	}
+	else{
+		//tagComp
+		int mask = (1 << predict->tagComp[row][col].targetLength)-1;
+		int mask1 =  predict->ghr[predict->tagComp[row][col].geomLength] << (predict->tagComp[row][col].geomLength % predict->tagComp[row][col].targetLength);
+		int mask2 = (1 << predict->tagComp[row][col].targetLength);
+		predict->tagComp[row][col].compHist = (predict->tagComp[row][col].compHist << 1) + predict->ghr[0];
+		predict->tagComp[row][col].compHist ^= ((predict->tagComp[row][col].compHist & mask2) >> predict->tagComp[row][col].targetLength);
+		predict->tagComp[row][col].compHist ^=mask1;
+		predict->tagComp[row][col].compHist &= mask;
+	}
+
+return ;
+}
+
+
+
