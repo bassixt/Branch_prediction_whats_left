@@ -97,12 +97,10 @@ void main_predictor(void){
        pred_str.primeBank = NUMTAGTABLES;
        pred_str.altBank = NUMTAGTABLES;
        
-       for(int i=0; i < NUMTAGTABLES; i++)
-       {    
+       for(int i=0; i < NUMTAGTABLES; i++){    
             pred_str.indexTagPred[i] = 0;
        }
-       for(int i=0; i < NUMTAGTABLES; i++)
-       {    
+       for(int i=0; i < NUMTAGTABLES; i++){    
             pred_str.tag[i] = 0;
        }
        pred_str.clock = 0;
@@ -112,8 +110,8 @@ void main_predictor(void){
        
     //   pred_str.ghr.reset(); bisogna fare il free dei ptr
     	 for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++){
-       free(pred_str.tagPred);
-    }
+		    free(pred_str.tagPred);
+		 }
 }
 #endif
 
