@@ -1,3 +1,6 @@
+#ifndef _COMMON_VAR_H_
+#define _COMMON_VAR_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -102,6 +105,6 @@ int acquire(FILE *fp, uint64_t * buffer){
       	else
        		return 0;  
 }
-
+#endif
 
 

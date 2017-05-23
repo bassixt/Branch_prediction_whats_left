@@ -2,7 +2,7 @@
 #define _GET_PREDICTION_H_
 
 
-#include "predictor.h"
+#include "common_var.h"
 
 
 uint64_t get_prediction(uint64_t PC, struct predictor * tage) //dobbiamo passare la classe predictor e il PC

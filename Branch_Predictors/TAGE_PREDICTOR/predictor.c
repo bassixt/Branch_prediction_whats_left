@@ -20,8 +20,8 @@ int main(void){
 	FILE *scr;
 	fp = fopen(INPUT_FILE,"r");
 	scr = fopen(OUTPUT_FILE,"w");
-	int  iCount = 0; 		// counter for total instructions
-	int  tage_pred = 0;	// accumulator for total good predictions
+	double  iCount = 0; 		// counter for total instructions
+	double  tage_pred = 0;	// accumulator for total good predictions
 	uint64_t tmp_tage_pred;		// temporary variable to be added to accumulator		
 	
 	//predictor structure declaration
@@ -113,12 +113,11 @@ int main(void){
 	for(int kk=0; kk<GHRLNGTH; kk++){
 		pred_str.ghr[kk]=0;
 	}
-
+	printf("METTILA PRIMA DEL WHILE\n");
 	// Performing predicitons reading from file
 	while(acquire(fp,buffer_read) != -1){
-	
-		tmp_tage_pred = get_prediction(buffer_read[0], pred_str);
-		update_predictor(buffer_read[0], buffer_read[1], tmp_tage_pred, buffer_read[2], pred_str);
+		tmp_tage_pred = get_prediction(buffer_read[0], &pred_str);
+		update_predictor(buffer_read[0], buffer_read[1], tmp_tage_pred, buffer_read[2], &pred_str);
 		if(tmp_tage_pred == buffer_read[1]){
 			tage_pred += 1;		
 		}
@@ -126,10 +125,11 @@ int main(void){
 	}
 	
 	fclose(fp);
-	float MPKBr =((1-(float)tage_pred/iCount)*1000);
-  	float accurateTage = ((float)tage_pred * 100 / iCount);
+	printf("PRIMA DELLA FLOAT\n");
+	double MPKBr =((1-tage_pred/iCount)*1000);
+  	double accurateTage = (tage_pred * 100 / iCount);
     	fprintf(scr,"%f\n",accurateTage);
-	printf("Results with Tage Predictor and TOT#INSTR: %d\n", iCount);
+	printf("Results with Tage Predictor and TOT#INSTR: %f\n", iCount);
     	printf("Accuracy : %f\n", accurateTage );
     	printf("MPKBr_1K : %f\n", MPKBr);
     	fclose(scr);
@@ -137,7 +137,7 @@ int main(void){
 	
 	// Deallocate all allocated items
 	for(uint32_t ii = 0; ii < NUMTAGTABLES ; ii++){
-		free(pred_str.tagPred);
+		free(pred_str.tagPred[ii]);
 	}
 	return 0;
 }
