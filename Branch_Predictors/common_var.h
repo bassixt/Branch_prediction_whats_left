@@ -95,4 +95,13 @@ return ;
 }
 
 
+// For reading the file
+int acquire(FILE *fp, uint64_t * buffer){     
+	if(fread(buffer, sizeof(uint64_t), SIZE, fp) != SIZE)
+        	return -1;
+      	else
+       		return 0;  
+}
+
+
 
