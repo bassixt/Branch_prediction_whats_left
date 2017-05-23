@@ -5,7 +5,7 @@
 #include "predictor.h"
 
 
-bool get_prediction(uint64_t PC, struct predictor * tage) //dobbiamo passare la classe predictor e il PC
+uint64_t get_prediction(uint64_t PC, struct predictor * tage) //dobbiamo passare la classe predictor e il PC
 {
 //simple bimodal first prediction based on a counter
 bool basePrediction;
