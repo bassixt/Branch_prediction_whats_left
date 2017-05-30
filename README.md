@@ -125,6 +125,18 @@ to different location. This lead to decrement in a slower way the counter of eac
      * http://bwrcs.eecs.berkeley.edu/Classes/CS252/Projects/Reports/terry_chen.pdf
      * https://www.slideshare.net/rinnocente/computer-architecture-branch-prediction
 
+### Tenth week
+  * Our implementation in C of L-Tage
+  * Testing of L-tage
+  * Debugging of L-tage
+
+### Eleventh week
+  * Gathering statistics using Dhrystone (whit qemu) instructions
+  * Modified the Championship Branch Prediction (CBP-5) infrastructure to create new files for our c implementations
+    *  Gathering statistics using extracted LONG_MOBILE-1 traces of CBP-5
+  * Try to compile and use another benchmark for Qemu
+  * Try to implement a TCP-IP link between qemu and branch predictors simulators
+
 
 
 ### <a name="NetworkforQemu"></a>Network for Qemu
@@ -240,4 +252,39 @@ To upload a file (from QEMU to Host)
 ```
 tftp -p -r <filename> 192.168.0.1
 ```
+### <a name="How to run branch predictors"></a>How to run branch predictors
 
+Go into the branch_predictors folder
+```
+cd Branch_Predictors
+```
+Depending on the BP you want to run chose either:
+```
+ cd BIMODAL_PREDICTOR 
+```
+or
+```
+cd TAGE_PREDICTOR 
+```
+Depending on the chosen predictor you need to change few parameters:
+```
+//#define INPUT_FILE "/path/to/test.txt"
+#define INPUT_FILE "/path/to/tracex.txt"
+```
+firstly uncomment the right test file you want to run:
+test --> QEMU results
+tracex --> CBP-5 results
+
+Then make the file by writing
+```
+make
+```
+and then depending on the branch predictor you want
+```
+./name_file_compiled #of_instruction
+```
+where as example you can put:
+```
+./predictor 1000000
+```
+To run the Tage predictor over 1M istructions.
