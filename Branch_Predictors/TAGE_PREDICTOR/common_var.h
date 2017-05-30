@@ -15,7 +15,8 @@
 #define SIZE 3
 #define INITIAL_VALUE 3
 #define INITIAL_ADDRESS 0
-#define INPUT_FILE "test.txt"
+#define INPUT_FILE "/media/mc/Data/Test_Files/cbp2016.eval/scripts/tracex.txt"
+//#define INPUT_FILE "/media/mc/Data/Test_Files/test.txt"
 #define OUTPUT_FILE "results.txt"
 #define NUMTAGTABLES 4
 
@@ -73,7 +74,7 @@ struct predictor{
 
 //HISTORY COMPUTATION FOR DIFFERENT CASES WITH DIFFERENT LENGTH
 void compute_history(struct predictor * predict,uint64_t row,uint64_t col){ //History to pass to the hash fucntion
-	if(col<0){
+	if(col == NUMTAGTABLES+1){
 		//indexComp
 		int mask = (1 << predict->indexComp[row].targetLength)-1;
 		int mask1 =  predict->ghr[predict->indexComp[row].geomLength] << (predict->indexComp[row].geomLength % predict->indexComp[row].targetLength);

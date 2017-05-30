@@ -11,8 +11,8 @@
 #define SIZE 3
 #define INITIAL_VALUE 3
 #define INITIAL_ADDRESS 0
-
-
+//#define FILE_IN "/media/mc/Data/Test_Files/cbp2016.eval/scripts/tracex.txt"
+#define FILE_IN "/media/mc/Data/Test_Files/test.txt"
 struct node
 {
   uint64_t PC, target_addr;
@@ -89,20 +89,22 @@ bool bimodal_implementation(link * table, uint64_t PC, uint64_t taken, uint64_t 
                             break;
                         case 2:
                             table[APHash(PC)%1024]->state++;
-                            if(table[APHash(PC)%1024]->target_addr == target_addr)
+                            /*if(table[APHash(PC)%1024]->target_addr == target_addr)
                               {
                                   correct=1;                   
-                              }
+                              }*/
+                              correct=1;
                             /*else
                               {
                                 table.targetAddr[index]=target_addr;
                               } */                               
                              break;
                         case 3:
-                            if(table[APHash(PC)%1024]->target_addr == target_addr)
+                            /*if(table[APHash(PC)%1024]->target_addr == target_addr)
                               {
                                 correct = 1;                   
-                              }
+                              }*/
+                              correct = 1;
                             /*else
                               {
                                 table.targetAddr[index]=target_addr;
@@ -141,12 +143,12 @@ bool bimodal_implementation(link * table, uint64_t PC, uint64_t taken, uint64_t 
 }
 
 
-int main (void)
+int main (int argc, char **argv)
 {
 	uint64_t buffer_read[SIZE];
 	FILE *fp;
 	FILE *scr;
-	fp = fopen("test.txt","r");
+	fp = fopen(FILE_IN,"r");
 	scr = fopen("results.txt","w");
 	int iCount = 0;
 	int  bimodal2bit1024 = 0;
@@ -175,8 +177,8 @@ int main (void)
         }*/
   
 
-  	while(acquire(fp,buffer_read) != -1)
-    {
+ while(acquire(fp,buffer_read) != -1 && iCount < atoi(argv[1])){
+    
         //buffer_read0->PC; buffer_read1->Target_Address; buffer_read2->Decision; 
         bimod_tmp1024 = bimodal_implementation(table1024, buffer_read[0], buffer_read[2], buffer_read[1]);
        
@@ -196,10 +198,10 @@ int main (void)
    	fclose(fp);
   
     
-    float MPKBr_1K_1024bit =((1-(float)bimodal2bit1024/iCount)*1000);
-    float accurate2bit1024 = ((float)bimodal2bit1024 * 100 / iCount);
-    fprintf(scr,"%f\n",accurate2bit1024);
-    printf("%f\n",accurate2bit1024 );
+    float MPKBr_1K_1024bit =((1.0-(float)bimodal2bit1024/iCount)*1000.0);
+    float accurate2bit1024 = ((float)bimodal2bit1024 * 100.0 / iCount);
+    printf("Results with Bimodal Predictor and TOT#INSTR: %d\n", iCount);
+    printf("Accuracy : %f\n", accurate2bit1024 );
     printf("MPKBr_1K : %f\n", MPKBr_1K_1024bit);
     fclose(scr);
     

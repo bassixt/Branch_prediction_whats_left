@@ -1,6 +1,6 @@
 all: pred
 
 pred:
-	gcc -Wall predictor.c -o predictor
+	gcc -ggdb3 -Wall predictor.c -o predictor
 
 

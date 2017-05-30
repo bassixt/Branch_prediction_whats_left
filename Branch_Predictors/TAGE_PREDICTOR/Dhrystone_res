@@ -1,0 +1,50 @@
+Results with Tage Predictor and TOT#INSTR: 42000.000000
+Accuracy : 98.533333
+MPKBr_1K : 14.666667
+
+Results with Tage Predictor and TOT#INSTR: 420000.000000
+Accuracy : 97.866905
+MPKBr_1K : 21.330952
+
+Results with Tage Predictor and TOT#INSTR: 4200000.000000
+Accuracy : 99.741286
+MPKBr_1K : 2.587143
+
+Results with Tage Predictor and TOT#INSTR: 42000000.000000
+Accuracy : 89.400910
+MPKBr_1K : 105.990905
+
+Results with Tage Predictor and TOT#INSTR: 420000000.000000
+Accuracy : 92.990685
+MPKBr_1K : 70.093145
+
+$$ NEW SOURCECODE WITH IMPROVEMENTS
+
+Results with Tage Predictor and TOT#INSTR: 1554364896.000000
+Accuracy : 93.392232
+MPKBr_1K : 66.077675
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Results with Bimodal Predictor and TOT#INSTR: 42000
+Accuracy : 97.340477
+MPKBr_1K : 26.595234
+
+Results with Bimodal Predictor and TOT#INSTR: 420000
+Accuracy : 97.593811
+MPKBr_1K : 24.061918
+
+Results with Bimodal Predictor and TOT#INSTR: 4200000
+Accuracy : 99.711807
+MPKBr_1K : 2.881885
+
+Results with Bimodal Predictor and TOT#INSTR: 42000000
+Accuracy : 83.610817
+MPKBr_1K : 163.891785
+
+$$ NEW SOURCECODE WITH IMPROVEMENTS
+
+Results with Bimodal Predictor and TOT#INSTR: 420000000
+Accuracy : 91.512314
+MPKBr_1K : 84.876892

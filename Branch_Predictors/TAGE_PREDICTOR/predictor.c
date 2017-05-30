@@ -13,7 +13,7 @@
 // Total Size = PHT size + GHR size
 /////////////////////////////////////////////////////////////
 
-int main(void){
+int main(int argc, char **argv){
 		
 	uint64_t buffer_read[SIZE];
 	FILE *fp;
@@ -21,7 +21,7 @@ int main(void){
 	fp = fopen(INPUT_FILE,"r");
 	scr = fopen(OUTPUT_FILE,"w");
 	double  iCount = 0; 		// counter for total instructions
-	double  tage_pred = 0;	// accumulator for total good predictions
+	double  tage_pred = 0;		// accumulator for total good predictions
 	uint64_t tmp_tage_pred;		// temporary variable to be added to accumulator		
 	
 	//predictor structure declaration
@@ -113,21 +113,19 @@ int main(void){
 	for(int kk=0; kk<GHRLNGTH; kk++){
 		pred_str.ghr[kk]=0;
 	}
-	printf("METTILA PRIMA DEL WHILE\n");
 	// Performing predicitons reading from file
-	while(acquire(fp,buffer_read) != -1){
+	while(acquire(fp,buffer_read) != -1 && iCount < atoi(argv[1])){
 		tmp_tage_pred = get_prediction(buffer_read[0], &pred_str);
-		update_predictor(buffer_read[0], buffer_read[1], tmp_tage_pred, buffer_read[2], &pred_str);
-		if(tmp_tage_pred == buffer_read[1]){
+		update_predictor(buffer_read[0], buffer_read[2], tmp_tage_pred, buffer_read[1], &pred_str);
+		if(tmp_tage_pred == buffer_read[2]){
 			tage_pred += 1;		
 		}
 		iCount ++;
 	}
 	
 	fclose(fp);
-	printf("PRIMA DELLA FLOAT\n");
-	double MPKBr =((1-tage_pred/iCount)*1000);
-  	double accurateTage = (tage_pred * 100 / iCount);
+	double MPKBr =((1.0-tage_pred/iCount)*1000.0);
+  	double accurateTage = (tage_pred * 100.0 / iCount);
     	fprintf(scr,"%f\n",accurateTage);
 	printf("Results with Tage Predictor and TOT#INSTR: %f\n", iCount);
     	printf("Accuracy : %f\n", accurateTage );

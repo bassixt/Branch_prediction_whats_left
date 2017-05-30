@@ -183,8 +183,8 @@ void update_predictor(uint64_t PC, uint64_t resolveDir, uint64_t predDir, uint64
   	if(resolveDir == 1 ){// 1=TAKEN
     		predict->ghr[0]=1; 
   	}
-	for (int i = 0; i < NUMTAGTABLES; i++){                
-        	compute_history(predict,i,-1); //if 3d parameter is <0 uses indexComp instead of tagComp
+	for (uint64_t i = 0; i < NUMTAGTABLES; i++){                
+        	compute_history(predict,i,NUMTAGTABLES+1); //if 3d parameter is <0 uses indexComp instead of tagComp
 		compute_history(predict,0,i);
 		compute_history(predict,1,i);            	
 		//indexComp[i].updateCompHist(predictor->ghr);		
