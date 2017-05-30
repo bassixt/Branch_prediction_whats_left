@@ -274,6 +274,9 @@ Depending on the chosen predictor you need to change few parameters:
 firstly uncomment the right test file you want to run:
 test --> QEMU results
 tracex --> CBP-5 results
+This changes must be done to the file:
+  * branch.c in the bimodal
+  * common_var.h in the L_TAGE
 
 Then make the file by writing
 ```
