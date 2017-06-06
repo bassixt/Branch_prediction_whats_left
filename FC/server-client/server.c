@@ -56,42 +56,38 @@ int main()
 	shmPtr->status = 0;//initialisations
 	shmPtr->nextToRead = 0;
 	shmPtr->nextToWrite = 0;
-	if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, O_CREAT | O_EXCL, 0660, 1)) == SEM_FAILED){//open sem with initial value 1
-		if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, 0, 0, 0)) == SEM_FAILED){//open sem with initial value 1
+	
+	if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, O_CREAT | O_EXCL, 0660, 1)) == SEM_FAILED){//open sem with initial value 1 and if it exists an error is reported
+		//to avoid to forget to change the semaphores files' name the following if can be removed asserting the corresponding error
+		perror("statusMutex_sem already exist... Change the sem name...");
+		if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, 0, 0, 0)) == SEM_FAILED){//if the semaphore already exist but the corresponding file is not opened
 			perror("sem_open 1 failed");
 			exit(0);
-		} else{
+		} else{ //set the initial value
 		if (sem_init(statusMutex_sem, 0, 1) != 0){
-			perror("sem_open 1 failed");
+			perror("sem_init 1 failed");
 			exit(0);
 	}}}
 	if ((clientWrote_sem = sem_open (SEM_CLIENT_WROTE, O_CREAT | O_EXCL, 0660, 0)) == SEM_FAILED){
-		if ((clientWrote_sem = sem_open (SEM_CLIENT_WROTE, 0, 0, 0)) == SEM_FAILED){//open sem with initial value 1
-			perror("sem_open 1 failed");
+		perror("clientWrote_sem already exist... Change the sem name...");
+		if ((clientWrote_sem = sem_open (SEM_CLIENT_WROTE, 0, 0, 0)) == SEM_FAILED){
+			perror("sem_open 2 failed");
 			exit(0);
 		} else{
 		if (sem_init(clientWrote_sem, 0, 0) != 0){
-			perror("sem_open 1 failed");
+			perror("sem_init 2 failed");
 			exit(0);
 	}}}
 	if ((serverRead_sem = sem_open (SEM_SERVER_READ, O_CREAT | O_EXCL, 0660, 1)) == SEM_FAILED){
-		if ((serverRead_sem = sem_open (SEM_SERVER_READ, 0, 0, 0)) == SEM_FAILED){//open sem with initial value 1
-			perror("sem_open 1 failed");
+		perror("serverRead_sem already exist... Change the sem name...");
+		if ((serverRead_sem = sem_open (SEM_SERVER_READ, 0, 0, 0)) == SEM_FAILED){
+			perror("sem_open 3 failed");
 			exit(0);
 		} else{
 		if (sem_init(serverRead_sem, 0, 1) != 0){
-			perror("sem_open 1 failed");
+			perror("sem_init 3 failed");
 			exit(0);
 	}}}
-	
-/*/...to print sem content..../
-sem_getvalue(clientWrote_sem, &serverRead_sem_value);//read actual value
-printf("client %d\n", serverRead_sem_value);
-sem_getvalue(serverRead_sem, &serverRead_sem_value);
-printf("server %d\n", serverRead_sem_value);
-sem_getvalue(statusMutex_sem, &serverRead_sem_value);
-printf("mutex %d\n", serverRead_sem_value);
-//....................*/
 
 	while(1){
 		sem_wait(statusMutex_sem);//decrement sem if > 0; access critical section: status; returned value can be cheked
@@ -144,4 +140,15 @@ printf("mutex %d\n", serverRead_sem_value);
 	return 0;
 }
 //....shared mem & sem...*/
+
 //printf("0\n");
+
+	/*/...to print sem content for debugging..../
+	int serverRead_sem_value;
+	sem_getvalue(clientWrote_sem, &serverRead_sem_value);//read actual value
+	printf("client %d\n", serverRead_sem_value);
+	sem_getvalue(serverRead_sem, &serverRead_sem_value);
+	printf("server %d\n", serverRead_sem_value);
+	sem_getvalue(statusMutex_sem, &serverRead_sem_value);
+	printf("mutex %d\n", serverRead_sem_value);
+	//....................*/
