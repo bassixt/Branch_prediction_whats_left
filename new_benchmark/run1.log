@@ -1,0 +1,17 @@
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 14776
+Total time (secs): 14.776000
+Iterations/Sec   : 2030.319437
+Iterations       : 30000
+Compiler version : GCC6.3.1 20170109
+Compiler flags   : -O2 -DPERFORMANCE_RUN=1  -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib
+Memory location  : Please put data memory location here
+			(e.g. code in flash, data on heap etc)
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x5275
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 2030.319437 / GCC6.3.1 20170109 -O2 -DPERFORMANCE_RUN=1  -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib / Heap

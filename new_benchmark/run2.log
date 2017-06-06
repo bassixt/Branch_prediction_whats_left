@@ -1,0 +1,16 @@
+2K validation run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 14512
+Total time (secs): 14.512000
+Iterations/Sec   : 2067.254686
+Iterations       : 30000
+Compiler version : GCC6.3.1 20170109
+Compiler flags   : -O2 -DPERFORMANCE_RUN=1  -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib
+Memory location  : Please put data memory location here
+			(e.g. code in flash, data on heap etc)
+seedcrc          : 0x18f2
+[0]crclist       : 0xe3c1
+[0]crcmatrix     : 0x0747
+[0]crcstate      : 0x8d84
+[0]crcfinal      : 0xff48
+Correct operation validated. See readme.txt for run and reporting rules.

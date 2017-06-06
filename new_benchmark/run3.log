@@ -1,0 +1,16 @@
+Profile generation run parameters for coremark.
+CoreMark Size    : 400
+Total ticks      : 17135
+Total time (secs): 17.135000
+Iterations/Sec   : 6419.608987
+Iterations       : 110000
+Compiler version : GCC6.3.1 20170109
+Compiler flags   : -O2 -DPERFORMANCE_RUN=1  -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib
+Memory location  : Please put data memory location here
+			(e.g. code in flash, data on heap etc)
+seedcrc          : 0x4eaf
+[0]crclist       : 0x6a79
+[0]crcmatrix     : 0x5608
+[0]crcstate      : 0xe5a4
+[0]crcfinal      : 0xbbb6
+Correct operation validated. See readme.txt for run and reporting rules.

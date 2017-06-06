@@ -1,0 +1,4 @@
+./coremark.exe  0x0 0x0 0x66 0 7 1 2000 > ./run1.log
+./coremark.exe  0x3415 0x3415 0x66 0 7 1 2000  > ./run2.log
+./coremark.exe  8 8 8 0 7 1 1200 > ./run3.log
+
