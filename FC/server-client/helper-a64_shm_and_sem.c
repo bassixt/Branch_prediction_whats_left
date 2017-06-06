@@ -90,7 +90,7 @@ void HELPER(printer)(uint64_t pc, uint64_t tAddr, uint64_t t_nt)
 				(shm_sector + cnt)->t_nt = t_nt;
 				cnt ++;
 			}
-			else{//last data
+			else{//last saction data
 				(shm_sector + cnt)->pc = pc;
 				(shm_sector + cnt)->tAddr = tAddr;
 				(shm_sector + cnt)->t_nt = t_nt;
@@ -124,7 +124,7 @@ void HELPER(printer)(uint64_t pc, uint64_t tAddr, uint64_t t_nt)
 	}
 	else{//first time, wait that server create shm
 		firstTime = 0;
-		if ((serverRead_sem = sem_open (SEM_SERVER_READ, O_CREAT, 0, 0)) == SEM_FAILED){
+		if ((serverRead_sem = sem_open (SEM_SERVER_READ, 0, 0, 0)) == SEM_FAILED){
 			perror("sem_open 1 failed");
 			exit(0);
 		}
@@ -141,11 +141,11 @@ void HELPER(printer)(uint64_t pc, uint64_t tAddr, uint64_t t_nt)
 			exit(0);
 		}
 		close(shm_fd);// Remove the link to the memory
-		if ((clientWrote_sem = sem_open (SEM_CLIENT_WROTE, O_CREAT, 0, 0)) == SEM_FAILED){
+		if ((clientWrote_sem = sem_open (SEM_CLIENT_WROTE, 0, 0, 0)) == SEM_FAILED){
 			perror("sem_open 2 failed");
 			exit(0);
 		}
-		if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, O_CREAT, 0, 0)) == SEM_FAILED){
+		if ((statusMutex_sem = sem_open (SEM_STATUS_MUTEX, 0, 0, 0)) == SEM_FAILED){
 			perror("sem_open 3 failed");
 			exit(0);
 		}
