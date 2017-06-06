@@ -1,4 +1,4 @@
-#Client-server exchanging data by shared memory
+# Client-server exchanging data by shared memory
 Since the data about addresses produced while running a benchmark application produces a lot of jumps and branches in the code, storing those ammount of data in a file to be analysed later results in slow process and fills the hard disk, so the best option is to let our branch predictor analysing on the fly those data and store only the useful results. To exchange lots of data between applications on the fly, the best optimised way is to use shared memory (SHM), since reduce the mumber of writings and readings from the volatile memory without accessing the HD.  
 Since in this case the pids of both app are not known, to sincronise the processes were chosen named semafores which will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semafores before the end, the previous name for those semafores need to be changed as it is indicated in the files. In our case the end of the branch instructions is not known so the client cannot destroy them and server are badly terminated and thus the name must be changed every time we run it.  
 For optimisation reason the shared memory is subdivided in two pieces such that the client can fill one while the server can read the other previously written by the client.  
@@ -10,7 +10,12 @@ Solutions can be:
 * using a new flag in the `shMemory` but the client should understand when it has finished (not easy in our case)...
 * use SHM sections smaller such that the last lost data are few.
 * use sections with only one cell lenght (no data are lost, but overhead due to synchronisation).  
+
 To solve the semaphores' name problem and so to finalise the server computations detecting the end of the benchmark, different solutions exists:  
 * add a timeout to the server if no more data arrives.
 * fork the server to enter manually a terminating character.
-* detect in the helper function some address that corresponds to the lasts branches.
+* detect in the helper function some address that corresponds to the lasts branches.  
+
+**For further information on server and client applications, using shared memory and semaphores** those link can be useful:  
+https://www.softprayog.in/programming/interprocess-communication-using-posix-shared-memory-in-linux  
+http://www.csc.villanova.edu/~mdamian/threads/posixsem.html  
