@@ -1,12 +1,46 @@
+# SEMESTER PROJECT
+## Branch prediction - what's left
+## Authors:
+* Fabio CARACCI
+* Marco COLETTA
+* Francesco CONDEMI
+
+## Supervisor:
+* Professor Renaud PACALET
+
+---
+
+# Project description
+The goal of the project is to analyze already existing branch predictors and
+evaluate performances of some implementations.  
+In particular, using an high level CPU model like QEMU to emulate an AARCH64
+architecture, different benchmark such as Dhrystone and Coremark have been run.  
+After having properly instructed QEMU, in which a Linux kernel has been installed,
+Program Counter, target address and actual decision on branches have been extracted.  
+After this first part of configuration, two models have been considered and implemented  
+using C language.  
+The fist one is a modification of the simple bimodal predictor while the secon is a version  
+of a state of art implementation of TAGE predictor.  
+Using these two models, instructions extracted from QEMU, have been used to retrieve statistics
+on performances.  
+To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
+
+# Phase 1 Studio preliminare
+# Phase 2 Qemu settings and modifications
+# Phase 3 BP implementations
+# Phase 4 data Gathering
+# Results
+# Conclutions Commenti sui risultati
+ 
 ### IMPORTANT : current qemu version => stable-2.7
 * Modified file can be found on src_qemu/
 * First branch predictor can be located on src_qemu/Reader_prog
-    * Some assumptions : 
+    * Some assumptions :
         * Bimodal
         * No tag only mod(n) for addressing
         * If wrong decision => replace the entry
         * If wrong decision => replace address   
-        
+
 
 
 
@@ -56,7 +90,7 @@
      * Find libraries for aarch64
         * Downloaded from: http://www.musl-libc.org/download.html
      * Modification to Makefile for printf
-      * Trial : simple hello world try to print 
+      * Trial : simple hello world try to print
 
 ### Fourth week:
   * seful material
@@ -64,7 +98,7 @@
   * Bare-metal dhrystone
     * Makefile modifications
     * Static linking of libc (tried newlib, musl)
-    * Linker script 
+    * Linker script
   * Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
     * Makefile for the entire "framework"
     * Makefile to run Qemu with network to upload files:
@@ -75,7 +109,7 @@
   * busybox -> dropbear
   * instrument qemu to get the information that we need
      * helper function to output useful information
-        * Jump 
+        * Jump
             * program counter
             * target address
         * Branch
@@ -88,25 +122,25 @@
        * https://fulcronz27.wordpress.com/2014/06/09/qemu-call-a-custom-function-from-tcg/   (how to create helper functions)
        * http://git.qemu-project.org/?p=qemu.git;a=tree
        * http://git.qemu-project.org/?p=qemu.git;a=blob;f=target-arm/translate-a64.c;h=9f964dfd5de5860e23ba66ba3560b44bf9b67ab1;hb=2ef6175aa76adea2ab8ce1540904a05d6f8e8eed
-      
+
 ### Sixth week:
   * Unconditional branch helper function
 	* Solved compilation warnings
-	* Solved translation issues 
+	* Solved translation issues
         * Improved performances with system call
         * Improved performances with buffered fwrite
 
 ### Seventh week:
-  * Further material: 
+  * Further material:
     * https://github.com/BLin409/Branch-Prediction-Simulator/blob/master/predictors.cpp
     * https://github.com/sjdesai16/tage
 
 ### Eighth week:
   * Branch prediction improvements:
     * Tagging the branch predictor using an hash-table
-        * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/ 
+        * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/
   * Understand the the code in order to find out wether the branch is taken or not
-    * http://stackoverflow.com/questions/26748224/how-qemu-knows-the-branch-direction-of-a-tb-which-had-been-executed 
+    * http://stackoverflow.com/questions/26748224/how-qemu-knows-the-branch-direction-of-a-tb-which-had-been-executed
         * COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
 from mod -> 99.150002 hash -> 98.790474.
 Even if it could seems worse, it's an improvement since this mean that we are replacing less time the same location in the branch predictor (and so since we are using bimodal BP, we reach the right prediction "always taken" later) because the index brings
@@ -260,11 +294,11 @@ cd Branch_Predictors
 ```
 Depending on the BP you want to run chose either:
 ```
- cd BIMODAL_PREDICTOR 
+ cd BIMODAL_PREDICTOR
 ```
 or
 ```
-cd TAGE_PREDICTOR 
+cd TAGE_PREDICTOR
 ```
 Depending on the chosen predictor you need to change few parameters:
 ```
