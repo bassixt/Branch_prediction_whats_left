@@ -24,7 +24,6 @@ typedef struct shm_cell_type{
 	uint64_t t_nt;//taken - not taken
 }shmCell;
 ```
-
 2. If needed, modify the semaphores' names (read [Named semaphores](#Named_semaphores)) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
 
