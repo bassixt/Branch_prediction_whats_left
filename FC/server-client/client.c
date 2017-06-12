@@ -34,27 +34,20 @@ int nextToWrite;//by the client
 //....shared mem & sem.../
 int main(){	
 while(1){//here to emulate my helper-a64.c branch prediction prj
-//printf("-----0\n");
 	static sem_t *clientWrote_sem, *serverRead_sem, *statusMutex_sem;//semaphores used with mutual exclusion
 	static int firstTime=1, cnt = 0, round=0;
 	static shMemory *shmPtr;
 	shmCell *shm_sector;//where to work
 	int shm_fd, currStatus, clientWrote_sem_value;
-	static uint64_t tmp=0;
+	static uint64_t tmp=0;//tmp to send the current istr num
 	
 	if (!firstTime){
-//printf("01\n");
 		sem_wait(statusMutex_sem);//decrement sem if > 0; access critical section: status; returned value can be cheked
-//printf("011\n");
 		currStatus = shmPtr->status;
-//printf("02\n");
 		sem_post(statusMutex_sem);//increment sem; release shm status access; returned value can be cheked
-//printf("03\n");
 		sem_getvalue(clientWrote_sem, &clientWrote_sem_value);//read actual value
 		
-//printf("04\n");
 		if(currStatus != 3){// && clientWrote_sem_value < 2shm not full or already written twice
-//printf("012\n");
 			shm_sector = (shmPtr->nextToWrite == 0) ? shmPtr->shm_s0 : shmPtr->shm_s1;//s to write
 //.....code below here...................../
 			if (cnt != NDATA-1){//data producer
@@ -62,12 +55,10 @@ while(1){//here to emulate my helper-a64.c branch prediction prj
 				(shm_sector + cnt)->tAddr = tmp;
 				(shm_sector + cnt)->t_nt = 0xf0f0f0f0;
 				cnt ++;
-printf("%"PRIx64"\n", tmp);
-tmp ++;
+				tmp ++;
 			}
 			else{
-printf("------------------%"PRIx64"\n", tmp);
-tmp ++;
+				tmp ++;
 				(shm_sector + cnt)->pc = cnt;//last data
 				(shm_sector + cnt)->tAddr = tmp;
 				(shm_sector + cnt)->t_nt = 0xf0f0f0f0;
@@ -93,20 +84,12 @@ tmp ++;
 				shmPtr->nextToWrite ^= 1;
 				sem_post(clientWrote_sem);//tell that client has written
 				sem_post(statusMutex_sem);
-round ++;
-printf("round:%d\n", round);
+					round ++;
+					printf("round:%d\n", round);
 			}
 		}
 		else{//shm full
-printf("00\n");
-sem_getvalue(clientWrote_sem, &clientWrote_sem_value);
-printf("client %d\n", clientWrote_sem_value);
-sem_getvalue(serverRead_sem, &clientWrote_sem_value);
-printf("server %d\n", clientWrote_sem_value);
-sem_getvalue(statusMutex_sem, &clientWrote_sem_value);
-printf("mutex %d\n", clientWrote_sem_value);
 			sem_wait(serverRead_sem);
-printf("11\n");
 		}
 	}
 	else{//first time, wait that server create shm
@@ -115,12 +98,10 @@ printf("11\n");
 			perror("sem_open 1 failed");
 			exit(0);
 		}
-printf("5\n");
 		if (sem_wait(serverRead_sem) == -1){//decrement sem if > 0; wait that server created the shm
 			perror("sem_wait failed while shm creation");
 			exit(0);
 		}
-printf("6\n");
 		if ((shm_fd = shm_open(SHM_NAME, O_RDWR, 0)) < 0){//Get shared memory
 		 	perror("shm_open failed");
 			exit(0);
@@ -138,14 +119,8 @@ printf("6\n");
 			perror("sem_open 3 failed");
 			exit(0);
 		}
-printf("3\n");
 	}
 }
-/*if (munmap (shmPtr, sizeof(shMemory)) == -1){// Detach the shared memory segment.
-	perror("munmap");
-	exit(0);
-}*/
 return 0;
 }
 //....shared mem & sem...*/
-//printf("0\n");

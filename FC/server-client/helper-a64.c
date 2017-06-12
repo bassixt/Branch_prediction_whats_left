@@ -70,7 +70,6 @@ int nextToWrite;//by the client
 void HELPER(printer)(uint64_t pc, uint64_t tAddr, uint64_t t_nt)
 {
 //....shared mem & sem.../
-//printf("-----0\n");
 	static sem_t *clientWrote_sem, *serverRead_sem, *statusMutex_sem;//semaphores used with mutual exclusion
 	static int firstTime=1, cnt = 0;
 	static shMemory *shmPtr;
