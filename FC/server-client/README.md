@@ -24,6 +24,7 @@ It is really simple:
 		uint64_t t_nt;//taken - not taken
 	}shmCell;
 	```
+	
 2. If needed, modify the semaphores' names (read [Named semaphores](#Named_semaphores)) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
 
@@ -40,6 +41,7 @@ It is really simple:
 				}
 	//.....code above here.....................*/
 	```
+	
 	The variable `shm_sector` is a pointer to the first cell of the SHM's partition were the server is working.  
 	Between those comments you can simply call a function to your own Branch predictor (or whatever).  
 	In this case we initialised our BP at the beginning, here we use and update the predictor and at the end of the previous `while` we extract the useful information to be printed in a file.
