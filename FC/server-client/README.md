@@ -60,12 +60,14 @@ Solutions can be:
 * using a new flag in the `shMemory` but the client should understand when it has finished (not easy in our case)...
 * use SHM sections smaller such that the last lost data are few.
 * use sections with only one cell length (no data are lost, but overhead due to synchronisation).  
+
 ### Semaphores
 To solve the semaphores' name problem and so to finalise the server computations detecting the end of the benchmark, different solutions exists:  
 * instruct Qemu to receive a sigkill that stops the current processes.
 * detect in the helper function some address that corresponds to the lasts branches.
 * add a timeout to the server if no more data arrives.
 * fork the server to enter manually a terminating character.  
+
 ## Useful links
 **For further information on server and client applications, using shared memory and semaphores** those link can be useful:  
 https://www.softprayog.in/programming/interprocess-communication-using-posix-shared-memory-in-linux  
