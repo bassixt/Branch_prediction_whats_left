@@ -14,8 +14,7 @@ In fact only the `struct shm_cell_type`, that is renamed `shmCell`, need to be m
 Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th data sent by the client, so both data exchange and order are preserved.  
 ## How to use it
 It is really simple:
-1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation. Currently the `shmCell` is defined as following:
-
+1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation. Currently the `shmCell` is defined as following:  
 ```c
 typedef struct shm_cell_type{
 	uint64_t pc;//program cnt
