@@ -52,6 +52,7 @@ It is really simple:
 	$ ./server 100000
 	```
 	will compile "server.c" and break the `while` after 100000 instructions have been analysed.
+	
 ## Bugs and improvements
 ### Lasts instructions
 Assuming that we want to analyse all the branches encountered, in this implementation of the SHM a bug is present: the last written data by the client are not read from the server if the memory section is not completely full. It means that if we have SHM sections of 1024 cells and at the end we write only 500 data, the client will not inform the server to read them.  
