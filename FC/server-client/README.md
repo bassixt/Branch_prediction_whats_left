@@ -16,6 +16,7 @@ Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th da
 It is really simple:
 1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation.  
 Currently the `shmCell` is defined as following:
+
 ```c
 typedef struct shm_cell_type{
 	uint64_t pc;//program cnt
@@ -23,8 +24,10 @@ typedef struct shm_cell_type{
 	uint64_t t_nt;//taken - not taken
 }shmCell;
 ```
+
 2. If needed, modify the semaphores' names (read [Named semaphores](#Named_semaphores)) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
+
 ```c
 //.....code below here...................../
 			for(i = 0; i < NDATA && iCount < desiredIstr; i++){
@@ -38,14 +41,17 @@ typedef struct shm_cell_type{
 			}
 //.....code above here.....................*/
 ```
+
 The variable `shm_sector` is a pointer to the first cell of the SHM's partition were the server is working.  
 Between those comments you can simply call a function to your own Branch predictor (or whatever).  
 In this case we initialised our BP at the beginning, here we use and update the predictor and at the end of the previous `while` we extract the useful information to be printed in a file.
 4. Compile the code and launch it passing as parameter the number of instructions you want to analyse, for instance:
-```sh
+
+```bash
 $ gcc -Wall -o server server.c -lrt -lpthread
 $ ./server 100000
 ```
+
 will compile "server.c" and break the `while` after 100000 instructions have been analysed.
 ## Bugs and improvements
 ### Lasts instructions
