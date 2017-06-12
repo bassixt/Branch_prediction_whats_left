@@ -43,22 +43,22 @@
 #include <semaphore.h>
 #include <sys/stat.h>
 
-typedef struct shm_structure_type{
+typedef struct shm_cell_type{
 uint64_t pc;//program cnt
 uint64_t tAddr;//target address
 uint64_t t_nt;//taken - not taken
-}shmStr;
+}shmCell;
 
 #define NDATA					0x80000//data per block
 #define SHM_NAME 				"/shm-serverClient"
 //since program is badly closed, changing name for those files is needed
-#define SEM_CLIENT_WROTE	"/sem-clientWrote-x6"
-#define SEM_SERVER_READ		 "/sem-serverRead-x6"
-#define SEM_STATUS_MUTEX	"/sem-statusMutex-x6"
+#define SEM_CLIENT_WROTE	"/sem-clientWrote-x0"
+#define SEM_SERVER_READ		 "/sem-serverRead-x0"
+#define SEM_STATUS_MUTEX	"/sem-statusMutex-x0"
 
 typedef struct sharedMemory{
-shmStr shm_s0[NDATA];//sector 1
-shmStr shm_s1[NDATA];
+shmCell shm_s0[NDATA];//sector 1
+shmCell shm_s1[NDATA];
 int status;//0=empty; 1= only s0 full; 2= only s1 full; 3= full
 int nextToRead;//by the server: 0 for s0
 int nextToWrite;//by the client
@@ -74,7 +74,7 @@ void HELPER(printer)(uint64_t pc, uint64_t tAddr, uint64_t t_nt)
 	static sem_t *clientWrote_sem, *serverRead_sem, *statusMutex_sem;//semaphores used with mutual exclusion
 	static int firstTime=1, cnt = 0;
 	static shMemory *shmPtr;
-	shmStr *shm_sector;//where to work
+	shmCell *shm_sector;//where to work
 	int shm_fd, currStatus;
 	
 	if (!firstTime){

@@ -1,5 +1,5 @@
 //....shared mem & sem.../
-// this program create a shared memory between client and server. This shm is partitioned in 2, such that both C and S can work concurrently. Semaphores (stored in files) are used to synchronise both running apps.
+// this program create a shared memory between client and server. This shm is partitioned in 2 blocks, such that both C and S can work concurrently. Semaphores (stored in files) are used to synchronise both running apps.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h> // shared mem
@@ -8,23 +8,25 @@
 #include <inttypes.h> // print uint64
 #include <semaphore.h>
 #include <sys/stat.h>
+#include "tage_predictor.h"
+#include "common_var.h"
 
-typedef struct shm_structure_type{
+typedef struct shm_cell_type{
 uint64_t pc;//program cnt
 uint64_t tAddr;//target address
 uint64_t t_nt;//taken - not taken
-}shmStr;
+}shmCell;
 
 #define NDATA					0x80000//data per block
 #define SHM_NAME 				"/shm-serverClient"
 //since program is badly closed, changing name for those files is needed
-#define SEM_CLIENT_WROTE	"/sem-clientWrote-x6"
-#define SEM_SERVER_READ		 "/sem-serverRead-x6"
-#define SEM_STATUS_MUTEX	"/sem-statusMutex-x6"
+#define SEM_CLIENT_WROTE	"/sem-clientWrote-x1"
+#define SEM_SERVER_READ		 "/sem-serverRead-x1"
+#define SEM_STATUS_MUTEX	"/sem-statusMutex-x1"
 
 typedef struct sharedMemory{
-shmStr shm_s0[NDATA];//sector 1
-shmStr shm_s1[NDATA];
+shmCell shm_s0[NDATA];//sector 1
+shmCell shm_s1[NDATA];
 int status;//0=empty; 1= only s0 full; 2= only s1 full; 3= full
 int nextToRead;//by the server: 0 for s0
 int nextToWrite;//by the client
@@ -32,14 +34,28 @@ int nextToWrite;//by the client
 //....shared mem & sem...*/
 
 //....shared mem & sem.../
-int main()
+int main(int argc, char **argv)
 {
+//...BP var declaration.../
+	double  iCount = 0; 		// counter for total instructions
+	double  tage_pred = 0;		// accumulator for total good predictions
+	uint64_t tmp_tage_pred;		// temporary variable to be added to accumulator
+	struct predictor pred_str; //predictor structure declaration
+	
+	if (argc != 2){
+		perror("missing parameters");
+		exit(1);
+	}
+	int desiredIstr = atoi(argv[1]); 
+	initTagePredictor(&pred_str); //initialise the tage
+//...BP var declaration...*/
+
 	//semaphores used with mutual exclusion
 	sem_t *clientWrote_sem, *serverRead_sem, *statusMutex_sem;
 	int shm_fd, i, currStatus;//, serverRead_sem_value;
-	uint64_t cnt=0;
 	shMemory *shmPtr;
-	shmStr *shm_sector;//where to work
+	shmCell *shm_sector;//where to work
+	
 	if ((shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0660)) < 0){//Get shared memory
 		perror("shm_open failed");
 		exit(0);
@@ -89,7 +105,7 @@ int main()
 			exit(0);
 	}}}
 
-	while(1){
+	while(iCount < desiredIstr){
 		sem_wait(statusMutex_sem);//decrement sem if > 0; access critical section: status; returned value can be cheked
 		currStatus = shmPtr->status;
 		sem_post(statusMutex_sem);//increment sem; release shm status access; returned value can be cheked
@@ -103,14 +119,16 @@ int main()
 			else
 					shm_sector = shmPtr->shm_s1;
 //.....code below here...................../
-			for(i = 0; i < NDATA; i++){
-				printf("PC=0x%" PRIx64" ", (shm_sector + i)->pc);
-				printf("tAddr=0x%" PRIx64 " ", (shm_sector + i)->tAddr);
-				printf("t_nt=%" PRIx64 "\n", (shm_sector + i)->t_nt);
+			for(i = 0; i < NDATA && iCount < desiredIstr; i++){
+				// Performing predicitons
+				tmp_tage_pred = get_prediction((shm_sector + i)->pc, &pred_str);
+				update_predictor((shm_sector + i)->pc, (shm_sector + i)->t_nt, tmp_tage_pred, (shm_sector + i)->tAddr, &pred_str);
+				if(tmp_tage_pred == (shm_sector + i)->t_nt){
+					tage_pred += 1;		
+				}
+				iCount ++;
 			}
-			 cnt ++;
-			 printf("round %"PRId64"\n", cnt);
-//.....code above here...................../
+//.....code above here.....................*/
 			sem_wait(statusMutex_sem);
 			switch (shmPtr->status){
 				case 1:
@@ -132,7 +150,12 @@ int main()
 			sem_post(serverRead_sem);//tell that server has read
 			sem_post(statusMutex_sem);
 		}
-	}//end while (1)
+	}//end while
+
+//...BP end.../	
+	endTagePredictor(&iCount, &tage_pred, &pred_str); //prints the useful informations in a file
+//...BP end...*/
+	
 	if (munmap (shmPtr, sizeof(shMemory)) == -1){// Detach the shared memory segment.
 		perror("munmap");
 		exit(0);
@@ -140,15 +163,3 @@ int main()
 	return 0;
 }
 //....shared mem & sem...*/
-
-//printf("0\n");
-
-	/*/...to print sem content for debugging..../
-	int serverRead_sem_value;
-	sem_getvalue(clientWrote_sem, &serverRead_sem_value);//read actual value
-	printf("client %d\n", serverRead_sem_value);
-	sem_getvalue(serverRead_sem, &serverRead_sem_value);
-	printf("server %d\n", serverRead_sem_value);
-	sem_getvalue(statusMutex_sem, &serverRead_sem_value);
-	printf("mutex %d\n", serverRead_sem_value);
-	//....................*/
