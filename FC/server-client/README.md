@@ -16,29 +16,30 @@ Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th da
 It is really simple:
 1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation.  
 	Currently the `shmCell` is defined as following:
-		```c
-		typedef struct shm_cell_type{
-			uint64_t pc;//program cnt
-			uint64_t tAddr;//target address
-			uint64_t t_nt;//taken - not taken
-		}shmCell;
-		```
+	
+	```c
+	typedef struct shm_cell_type{
+		uint64_t pc;//program cnt
+		uint64_t tAddr;//target address
+		uint64_t t_nt;//taken - not taken
+	}shmCell;
+	```
 2. If needed, modify the semaphores' names (read [Named semaphores](#Named_semaphores)) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
 
-```c
-//.....code below here...................../
-			for(i = 0; i < NDATA && iCount < desiredIstr; i++){
-				// Performing predicitons
-				tmp_tage_pred = get_prediction((shm_sector + i)->pc, &pred_str);
-				update_predictor((shm_sector + i)->pc, (shm_sector + i)->t_nt, tmp_tage_pred, (shm_sector + i)->tAddr, &pred_str);
-				if(tmp_tage_pred == (shm_sector + i)->t_nt){
-					tage_pred += 1;		
+	```c
+	//.....code below here...................../
+				for(i = 0; i < NDATA && iCount < desiredIstr; i++){
+					// Performing predicitons
+					tmp_tage_pred = get_prediction((shm_sector + i)->pc, &pred_str);
+					update_predictor((shm_sector + i)->pc, (shm_sector + i)->t_nt, tmp_tage_pred, (shm_sector + i)->tAddr, &pred_str);
+					if(tmp_tage_pred == (shm_sector + i)->t_nt){
+						tage_pred += 1;		
+					}
+					iCount ++;
 				}
-				iCount ++;
-			}
-//.....code above here.....................*/
-```
+	//.....code above here.....................*/
+	```
 
   The variable `shm_sector` is a pointer to the first cell of the SHM's partition were the server is working.  
   Between those comments you can simply call a function to your own Branch predictor (or whatever).  
