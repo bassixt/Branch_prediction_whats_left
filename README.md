@@ -33,10 +33,10 @@ To get more exhaustive results, data from Championship Branch Prediction (CBP-5)
 
 # Phase 2 Qemu settings and modifications
 
-In this phase, since we need an high-level model of an AARCH64 architecture on which running our benchmark and retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" href="http://google.com.au/" >](href="http://www.qemu.org/").  
+In this phase, since we need an high-level model of an AARCH64 architecture on which running our benchmark and retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" >](href="http://www.qemu.org/").  
 Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
-In order to run our benchmark on a specified architecture, we have used also a linux kernel, and busybox that provides several stripped-down unix tools in a single executable file.  
-Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain. We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.
+In order to run our benchmark on a specified architecture, we have used also a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](href="https://www.kernel.org/"), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](href="https://busybox.net/")  that provides several stripped-down unix tools in a single executable file.  
+Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](href="https://www.linaro.org/"). We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.
 
 # Phase 3 BP implementations
 # Phase 4 data Gathering
