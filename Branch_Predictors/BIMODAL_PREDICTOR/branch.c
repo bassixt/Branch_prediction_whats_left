@@ -12,7 +12,8 @@
 #define INITIAL_VALUE 3
 #define INITIAL_ADDRESS 0
 //#define FILE_IN "/media/mc/Data/Test_Files/cbp2016.eval/scripts/tracex.txt"
-#define FILE_IN "/media/mc/Data/Test_Files/test.txt"
+//#define FILE_IN "/media/mc/Data/Test_Files/test.txt"
+#define FILE_IN "/media/mc/Data/Test_Files/Branch_Predictors/duplicated.txt"
 struct node
 {
   uint64_t PC, target_addr;
@@ -56,6 +57,22 @@ link add_node(uint64_t PC,uint64_t target_addr,uint64_t decision)
   return local_link;
 }
 
+int size_counter(link * table, uint64_t index){
+   
+    
+    if(table[index]==NULL){
+        return 1;
+    }
+    else{ 
+        link temp_node = table[index];
+    	int counter_size = 1;
+        while(temp_node->next != NULL){
+            temp_node = temp_node -> next;
+            counter_size = counter_size + 1;
+        }
+        return counter_size;
+    }
+} 
 
 bool bimodal_implementation(link * table, uint64_t PC, uint64_t taken, uint64_t target_addr) 
 {
@@ -204,7 +221,18 @@ int main (int argc, char **argv)
     printf("Accuracy : %f\n", accurate2bit1024 );
     printf("MPKBr_1K : %f\n", MPKBr_1K_1024bit);
     fclose(scr);
-    
+    //size of table
+    int result_size_table;
+    int tot_res_siz = 0;
+    for(uint64_t i=0; i<1024; i++){
+        result_size_table = size_counter(table1024, i);
+        tot_res_siz += result_size_table;
+
+	//printf("table #:%" PRIu64 " size: %d \n",i,result_size_table);
+    }
+    printf("table length %d\n",tot_res_siz);          
+
+
     //free(table1024);
     
     //free(btb1024);

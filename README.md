@@ -41,7 +41,40 @@ To get more exhaustive results, data from Championship Branch Prediction (CBP-5)
 In this phase, since we need an high-level model of an AARCH64 architecture on which running our benchmark and retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" >](http://www.qemu.org/).  
 Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
 In order to run our benchmark on a specified architecture, we have used also a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](https://www.kernel.org/), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](https://busybox.net/)  that provides several stripped-down unix tools in a single executable file.  
-Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.
+Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.  
+To reproduce all of this first step to follow is to clone this repository:    
+open a new terminal and run the following command  
+```
+git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
+```
+After having cloned the whole repository enter in the folder:
+```
+cd Branch_prediction_whats_left/
+```
+This folder have the following structure:
+
+../Branch_prediction_whats_left  
+├── aarch64baremetal  
+├── Branch_Predictors  
+├── CoreMark  
+├── Dhrystone  
+├── dhrystone-2.1  
+├── exec  
+├── FC  
+├── images  
+├── Makefile  
+├── new_benchmark  
+├── README.md  
+├── Results  
+├── script  
+├── src_qemu  
+└── src_qemu_puliti  
+First of all, if not already done, (if already done a little modification in
+the makefile is needed in order to find the source files) it is required to donwload the linux kernel
+from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  
+In order to perform what explained at the beginning of this phase,
+it is needed to run the makefile following  this order:
+
 
 # Phase 3 BP implementations
 # Phase 4 data Gathering

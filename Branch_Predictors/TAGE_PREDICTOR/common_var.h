@@ -15,8 +15,9 @@
 #define SIZE 3
 #define INITIAL_VALUE 3
 #define INITIAL_ADDRESS 0
-#define INPUT_FILE "/media/mc/Data/Test_Files/cbp2016.eval/scripts/tracex.txt"
+//#define INPUT_FILE "/media/mc/Data/Test_Files/cbp2016.eval/scripts/tracex.txt"
 //#define INPUT_FILE "/media/mc/Data/Test_Files/test.txt"
+#define INPUT_FILE "/media/mc/Data/Test_Files/Branch_Predictors/duplicated.txt"
 #define OUTPUT_FILE "results.txt"
 #define NUMTAGTABLES 4
 
