@@ -26,12 +26,16 @@ on performances.
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
 # Phase 1 Studio preliminare
+
+[LTAGE]:/home/mc/Branch_prediction_whats_left/images/ltage_block_diagram.png
+
+
 # Phase 2 Qemu settings and modifications
 # Phase 3 BP implementations
 # Phase 4 data Gathering
 # Results
 # Conclutions Commenti sui risultati
- 
+
 ### IMPORTANT : current qemu version => stable-2.7
 * Modified file can be found on src_qemu/
 * First branch predictor can be located on src_qemu/Reader_prog
