@@ -25,10 +25,47 @@ Using these two models, instructions extracted from QEMU, have been used to retr
 on performances.  
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
-# Phase 1 Preliminary study:
+# Phase 1 Preliminary studies
+
+Before starting coding and implementing, the first thing we've done was to investigate and study branch predictors from the silpest ones to the state of art. In particular, we focused on the bimodal branch predictior and on the TAGE predictor.
+
+## Bimodal Branch Predictior
+
+This implementation in based on Dynamic prediction, that is it utlizes hardware-based mechanisms that use the run time behavior of branches to make more accurate prediction w.r.t static ones.
+In others words, the prediction can change during the execution of the program.  
+
+It is based on a 2 bit counter and a finite state machine with four states corrisponding to the output of the counter and to the outcomes of the prediction:
+
+- 00 Strongly not taken
+- 01 Weakly not taken
+- 10 Weakly taken
+- 11 Strongly taken
+
+When a branch is evaluated, the state in the FSM is update. Not taken branches will decrement the counter till the zero value (Strongly not taken) and the taken ones will increment the counter towards the value 3 (Strongly taken).
+
+The FSM is rappresented in figure:
 
 
-![LTAGE](images/ltage_block_diagram.png)
+
+![bimodal](images/bimodal.png)
+
+## Tage Branch Predictor
+Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history lenght because this allow to exploit correlation between recent branch outcomes and old ones.
+The figure below shows one realization of this predictor.
+
+![TAGE](images/ltage_block_diagram.png)
+
+T0 is a base predictor (can be a bimodal predictor) in charge of providing a simple prediction, instead the other components consist in a signed counter _ctr_ wich sign provides the prediction , a _tag_ and usefull counter _u_.
+
+In general case, the overall prediction is provided by the hitting tagged predictor component that uses the longest history and its _ctr_ is update, or in the case of no matching occurs, the T0 prediction is used.
+The _provider component_ is the matching component with longest history whereas the _altpred_ is the prediction that would have occured if there had been a miss on the provider component.
+
+The useful counter _u_ of the provider component is update when the alternate prediction _altpred_ is different from the final prediction _pred_.
+
+On misprediction one entry is allocated. If the provider component Ti is not the one with the longest history we allocate an entry on the predictor compoent Tk with i< k <= M , being M the index of the component with logest history length.
+
+An allocated entry is initialized with the prediction counter _ctr_ set to weak correct and the useful counter _u_ is se to 0, that is strongly not useful.
+
 
 
 # Phase 2 Qemu settings and modifications
