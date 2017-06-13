@@ -27,7 +27,7 @@ To get more exhaustive results, data from Championship Branch Prediction (CBP-5)
 
 # Phase 1 Studio preliminare
 
-[LTAGE]:images/ltage_block_diagram.png
+![LTAGE](/home/mc/Branch_prediction_whats_left/images/ltage_block_diagram.png)
 
 
 # Phase 2 Qemu settings and modifications
