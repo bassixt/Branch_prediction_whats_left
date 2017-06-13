@@ -25,12 +25,19 @@ Using these two models, instructions extracted from QEMU, have been used to retr
 on performances.  
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
-# Phase 1 Studio preliminare
+# Phase 1 Preliminary study:
 
-![LTAGE](/home/mc/Branch_prediction_whats_left/images/ltage_block_diagram.png)
+
+![LTAGE](images/ltage_block_diagram.png)
 
 
 # Phase 2 Qemu settings and modifications
+
+In this phase, since we need an high-level model of an AARCH64 architecture on which running our benchmark and retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" href="http://google.com.au/" >](href="http://www.qemu.org/").  
+Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
+In order to run our benchmark on a specified architecture, we have used also a linux kernel, and busybox that provides several stripped-down unix tools in a single executable file.  
+Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain. We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.
+
 # Phase 3 BP implementations
 # Phase 4 data Gathering
 # Results
