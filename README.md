@@ -27,11 +27,12 @@ To get more exhaustive results, data from Championship Branch Prediction (CBP-5)
 
 # Phase 1 Preliminary studies
 
-Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art. In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding its improvements.
+Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
+In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
 
 ## Bimodal Branch Predictor
 
-This implementation in based on Dynamic prediction, that is it utilises hardware-based mechanisms that use the run time behaviour of branches to make more accurate prediction w.r.t static ones.
+This implementation is based on Dynamic prediction, that is it utilises hardware-based mechanisms that use the run time behaviour of branches to make more accurate prediction w.r.t static ones.
 In others words, the prediction can change during the execution of the program.  
 
 It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter and to the outcomes of the prediction:
