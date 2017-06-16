@@ -206,7 +206,7 @@ exec:
 	make qbuild
 	make run
 
-# the idea was to simplify the backup creation
+# the idea was to simplify a files backup creation
 backup:
 	mkdir -p $(PWD)/backups/$(bkDir)/
 	cp -L $(PWD)/backups/*-a64* $(PWD)/backups/$(bkDir)/
