@@ -122,7 +122,7 @@ it is needed to run the makefile following  this order:
 
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QUEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 All the information about this technique and how to use the program can be found in [last_src_files/README.md]
-where all the last working files are stored.  
+where all the last working files are saved.  
 Basically we set our Helper function to store in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
 
 # Phase 4 data Gathering
