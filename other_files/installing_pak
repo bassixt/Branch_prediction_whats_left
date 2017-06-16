@@ -1,0 +1,16 @@
+these packages need to be installed in your PC to let linaro & busibox install and work properly
+
+
+sudo apt-get install zlib1g-dev
+sudo apt-get install libglib2.0
+sudo apt-get install autoconf
+sudo apt-get install libtool
+sudo apt-get install libsdl-console
+sudo apt-get install libsdl-console-dev
+sudo apt-get install libncurses5-dev
+
+--------------------------------------------------
+You will probably need to make your busybox binary
+setuid root to ensure all configured applets will
+work properly.
+--------------------------------------------------

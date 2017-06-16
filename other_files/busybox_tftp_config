@@ -1,0 +1,8 @@
+# you can write these commands in busybox to launch dhrystone
+
+tftp -gr cc_dry2 192.168.0.1
+chmod a+rwx cc_dry2
+./cc_dry2
+
+# num of min runs = 10000000
+
