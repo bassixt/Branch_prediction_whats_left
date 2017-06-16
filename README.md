@@ -118,7 +118,7 @@ it is needed to run the makefile following  this order:
 
 # BP and QEMU interaction
 
-[last_src_files/README.md]: last_src_files/README.md
+[last_src_files/README.md]: /last_src_files/README.md
 
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QUEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 All the information about this technique and how to use the program can be found in [last_src_files/README.md]
