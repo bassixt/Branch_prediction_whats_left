@@ -63,7 +63,7 @@ The _provider component_ is the matching component with longest history whereas 
 
 The useful counter _u_ of the provider component is update when the alternate prediction _altpred_ is different from the final prediction _pred_.
 
-On misprediction one entry is allocated. If the provider component Ti is not the one with the longest history we allocate an entry on the predictor component Tk with i< k <= M , being M the index of the component with logest history length.
+On misprediction one entry is allocated. If the provider component Ti is not the one with the longest history we allocate an entry on the predictor component Tk with *i < k <= M* , being M the index of the component with logest history length.
 
 An allocated entry is initialized with the prediction counter _ctr_ set to weak correct and the useful counter _u_ is se to 0, that is strongly not useful.
 
@@ -115,6 +115,13 @@ it is needed to run the makefile following  this order:
 
 
 # Phase 3 BP implementations
+
+# BP and QEMU interaction
+
+In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QUEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
+All the information about this technique and how to use the program can be found in the `README.md` in the directory "last_src_files" [here]: last_src_files/README.md where all the last working files are stored.  
+Basically we set our Helper function to store in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
+
 # Phase 4 data Gathering
 # Results
 # Conclutions Commenti sui risultati
