@@ -300,7 +300,7 @@ Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinho
 
 ## How to run Dhrystone <a name="How_to_run_Dhrystone"></a>
 Dhrystone is a public software which source files can be downloaded from internet and then compiled.  
-Its source files are in [Dhrystone](Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
+Its source files are in [Dhrystone/](Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
 To Run Dhrystone these are the steps:
 1. Copy the Dhrystone executable in your /tftpboot/ folder.
 1. Run the `tftp_script` if not already done.
