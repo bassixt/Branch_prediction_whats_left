@@ -9,8 +9,32 @@
 * Professor Renaud PACALET
 
 ---
+# Table of contents:
+* [Project description](#Project_description)
+* [Phase 1 Preliminary studies](#Phase_1)
+	* [Bimodal Branch Predictor](#Bimodal)
+	* [Tage Branch Predictor](#Tage)
+* [Phase 2 Qemu settings and modifications](#Phase_2)
+* [Phase 3 BP implementations](#Phase_3)
+* [Client-server (QEMU-BP) exchanging data by shared memory](#SHM)
+	* [Why shared memory technique](#SHM_why)
+	* [Named semaphores](#SHM_semaphores)
+	* [SHM partitioning](#SHM_partitioning)
+	* [SHM organisation](#SHM_organisation)
+	* [How to use it](#SHM_how)
+	* [Bugs and improvements](#SHM_bug)
+		* [Last instructions](#SHM_bug_instr)
+		* [Semaphores](#SHM_bug_sem)
+	* [Useful links](#SHM_link)
+* [Phase 4 data gathering](#Phase_4_data_gathering)
+	* [How to set the connection up](#How_to_set_the_connection_up)
+	* [About Dhrystone](#About_Dhrystone)
+	* [How to run Dhrystone](#How_to_run_Dhrystone)
+* [](#)
+	* [](#)
+---
 
-# Project description
+# Project description <a name="Project_description"></a>
 The goal of the project is to analyze already existing Branch Predictors (BP) and
 evaluate performances of some implementations to exploit new possible improvements.  
 In particular, using an high level CPU model like QEMU to emulate an AARCH64
@@ -25,13 +49,11 @@ Using these two models of BP, instructions extracted from QEMU, have been used t
 on performances.  
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
-# Phase 1 Preliminary studies
-
+# Phase 1 Preliminary studies <a name="Phase_1"></a>
 Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
 In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
 
-## Bimodal Branch Predictor
-
+## Bimodal Branch Predictor <a name="Bimodal"></a>
 This implementation is based on Dynamic prediction, that is it utilises hardware-based mechanisms that use the run time behaviour of branches to make more accurate prediction w.r.t static ones.
 In others words, the prediction can change during the execution of the program.  
 
@@ -50,7 +72,7 @@ The FSM is represented in figure:
 
 ![bimodal](images/bimodal.png)
 
-## Tage Branch Predictor
+## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
 
@@ -69,7 +91,7 @@ An allocated entry is initialized with the prediction counter _ctr_ set to weak 
 
 
 
-# Phase 2 Qemu settings and modifications
+# Phase 2 Qemu settings and modifications <a name="Phase_2"></a>
 
 [![alt text][2 width="200"]][1]
 
@@ -113,36 +135,35 @@ from their websites. (HINT: clicking on TUX, the Linux penguin in the descriptio
 In order to perform what explained at the beginning of this phase,
 it is needed to run the makefile following  this order:
 
-
-# Phase 3 BP implementations
+---
+# Phase 3 BP implementations <a name="Phase_3"></a>
 
 
 ---
-
-# Client-server (QEMU-BP) exchanging data by shared memory
+# Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 Basically we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
 All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [last_src_files/].
 
-## Why shared memory (SHM) technique
+## Why shared memory technique <a name="SHM_why"></a>
 Running a benchmark application, produces a lot of jumps and branches in the instructions, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analysing on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
 To exchange lots of data between applications on the fly the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/].  
 Also a TCP socket could have been exploited with the advantage to let different machines working concurrently or from different places, however while applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/].
 
-## <a name="Named_semaphores"></a>Named semaphores
+## Named semaphores <a name="SHM_semaphores"></a>
 Since in this case the pids of both app are not known, to synchronise the two processes, named semaphores were chosen which will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semaphores before the end, the previous name for those semaphores need to be changed in order to run again the apps (it is also indicated in the files). In our case the end of the branch instructions is not detected from the client and so will use those semaphores, thus no one can destroy them, so the name must be changed every time we run those programs.  
 
-## SHM partitioning
+## SHM partitioning <a name="SHM_partitioning"></a>
 For optimisation reason the shared memory is subdivided in two pieces such that the client can fill one while the server can read the other previously written by the client.  
 The status flag of the SHM (completely full, half full ...) is stored in the `status` variable of `shMemory` structure and to read it the `statusMutex_sem` semaphore is used for synchronisation between client and server (only one at time should read or modify this variable).  
 When the client has filled the first section of the SHM, he will inform the server `sem_post(clientWrote_sem)` that was waiting on that semaphore `sem_wait(clientWrote_sem)`, so the client starts to store data in the second section while the server begins its computations with the data already stored in the first section. If, for example, the client fills the memory faster than the server reads and uses them, the client will wait that at least one section is free `sem_wait(serverRead_sem)`.  
 
-## SHM organisation
+## SHM organisation <a name="SHM_organisation"></a>
 As can be seen from *server.c* the shared data are stored in structures such that any modification for future new purposes will be easy to be managed.  
 In fact only the `struct shm_cell_type`, that is renamed `shmCell`, need to be modified depending on the data you want to exchange. Thus each partition of our SHM is composed by a vector of cells which are composed by that structure.  
 Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th data sent by the client, so both data exchange and order are preserved.  
 
-## How to use it
+## How to use it <a name="SHM_how"></a>
 It is really simple:
 1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation.  
 	Currently the `shmCell` is defined as following:
@@ -155,7 +176,7 @@ It is really simple:
 	}shmCell;
 	```
 	
-2. If needed, modify the semaphores' names (read [Named semaphores](#Named_semaphores) section) and the SHM partitions' length changing the define `NDATA` value.
+2. If needed, modify the semaphores' names (read [Named semaphores](#SHM_semaphores) section) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
 
 	```c
@@ -183,22 +204,22 @@ It is really simple:
 	```
 	will compile "server.c" and break the `while` after 100000 instructions have been analysed.
 
-## Bugs and improvements
-### Last instructions
+## Bugs and improvements <a name="SHM_bug"></a>
+### Last instructions <a name="SHM_bug_instr"></a>
 Assuming that we want to analyse all the branches encountered, in this implementation of the SHM a bug is present: the last written data by the client are not read from the server if the memory section is not completely full. It means that if we have SHM sections of 1024 cells and at the end we write only 500 data, the client will not inform the server to read them.  
 Solutions can be:  
 * using a new flag in the `shMemory` but the client should understand when it has finished (not easy in our case)...
 * use SHM sections smaller such that the last lost data are few.
 * use sections with only one cell length (no data are lost, but overhead due to synchronisation).  
 
-### Semaphores
+### Semaphores <a name="SHM_bug_sem"></a>
 To solve the semaphores' name problem and so to finalise the server computations detecting the end of the benchmark, different solutions exists:  
 * instruct Qemu to receive a sigkill that stops the current processes.
 * detect in the helper function some address that corresponds to the lasts branches.
 * add a timeout to the server if no more data arrives.
 * fork the server to enter manually a terminating character.  
 
-## Useful links
+## Useful links <a name="SHM_link"></a>
 **For further information on server and client applications, using shared memory and semaphores** those link can be useful:  
 https://www.softprayog.in/programming/interprocess-communication-using-posix-shared-memory-in-linux  
 http://www.csc.villanova.edu/~mdamian/threads/posixsem.html  
@@ -206,11 +227,11 @@ http://www.csc.villanova.edu/~mdamian/threads/posixsem.html
 
 ------
 
-# <a name="Phase_4_data_gathering"></a>Phase 4 data gathering 
+# Phase 4 data gathering <a name="Phase_4_data_gathering"></a>
 In order to gather data different Benchmark applications were run over the emulated Busybox system.  
 To run programs over the emulated system, a connection between the host OS and the emulated one is needed to exchange the executable files because, obviously, they are not already embedded in Busybox.  
 
-## <a name="How_to_set_the_connection_up"></a>How to set the connection up
+## How to set the connection up <a name="How_to_set_the_connection_up"></a>
 To exchange data with the emulated system we used a tftp connection.  
 To create a tftp server the following packages are required:
 
@@ -263,10 +284,10 @@ N.B.
 	sudo ./tftp_script
 	```
 
-## <a name="About_Dhrystone"></a>About Dhrystone
+## About Dhrystone <a name="About_Dhrystone"></a>
 Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterized these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
 
-## <a name="How_to_run_Dhrystone"></a>How to run Dhrystone
+## How to run Dhrystone <a name="How_to_run_Dhrystone"></a>
 Dhrystone is a public software which source files can be downloaded from internet and then compiled.  
 Its source files are in [Dhrystone](/Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
 To Run Dhrystone these are the steps:
