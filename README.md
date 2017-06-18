@@ -30,8 +30,8 @@
 	* [How to set the connection up](#How_to_set_the_connection_up)
 	* [About Dhrystone](#About_Dhrystone)
 	* [How to run Dhrystone](#How_to_run_Dhrystone)
-* [](#)
-	* [](#)
+* [Results](#Results)
+* [Conclusions](#Conclusions)
 
 
 ---------
@@ -94,7 +94,6 @@ An allocated entry is initialized with the prediction counter _ctr_ set to weak 
 
 ------------
 # Phase 2 Qemu settings and modifications <a name="Phase_2"></a>
-
 [![alt text][2 width="200"]][1]
 
   [1]: http://www.qemu.org/
@@ -104,6 +103,17 @@ In this phase, since we need an high-level model of an AARCH64 architecture on w
 Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
 In order to run our benchmark on a specified architecture, we have used also a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](https://www.kernel.org/), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](https://busybox.net/)  that provides several stripped-down unix tools in a single executable file.  
 Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.  
+The root working directory at the end should have that structure:  
+
+../my_working_directory/  
+	├── qemu/  
+	├── busybox/  
+	├── linux/  
+	├── server_and_predictors/  
+	├── busybox.cpio.gz  
+	├── Makefile  
+	└── tftp_script  
+
 To reproduce all of this first step to follow is to clone this repository:    
 open a new terminal and run the following command  
 ```
@@ -290,7 +300,7 @@ Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinho
 
 ## How to run Dhrystone <a name="How_to_run_Dhrystone"></a>
 Dhrystone is a public software which source files can be downloaded from internet and then compiled.  
-Its source files are in [Dhrystone](/Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
+Its source files are in [Dhrystone](Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
 To Run Dhrystone these are the steps:
 1. Copy the Dhrystone executable in your /tftpboot/ folder.
 1. Run the `tftp_script` if not already done.
@@ -308,6 +318,8 @@ To Run Dhrystone these are the steps:
 	chmod a+rwx cc_dry2
 	./cc_dry2
 	```
+	N.B.  
+	You have to do this step evry time you poweroff the emulated system. Otherwise you should find a way to embed this executable in Busybox.
 1. You will be later asked to type the number of runs: 10000000 was the minimum for us.
 
 At the end you will see the results.
@@ -315,15 +327,15 @@ At the end you will see the results.
 
 ------
 # Results <a name="Results"></a>
-# Conclutions <a name="Conclutions"></a>
+# Conclusions <a name="Conclusions"></a>
 Commenti sui risultati
 
 
 
 
-[last_src_files/]: /last_src_files/
-[other_files/client-server_socket/]: /other_files/client-server_socket/
-[other_files/client-server_SHM/]: /other_files/client-server_SHM/
+[last_src_files/]: last_src_files/
+[other_files/client-server_socket/]: other_files/client-server_socket/
+[other_files/client-server_SHM/]: other_files/client-server_SHM/
 
 ------
 
