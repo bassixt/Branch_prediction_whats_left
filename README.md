@@ -32,8 +32,9 @@
 	* [How to run Dhrystone](#How_to_run_Dhrystone)
 * [](#)
 	* [](#)
----
 
+
+---------
 # Project description <a name="Project_description"></a>
 The goal of the project is to analyze already existing Branch Predictors (BP) and
 evaluate performances of some implementations to exploit new possible improvements.  
@@ -49,6 +50,7 @@ Using these two models of BP, instructions extracted from QEMU, have been used t
 on performances.  
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
+---------------
 # Phase 1 Preliminary studies <a name="Phase_1"></a>
 Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
 In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
@@ -90,7 +92,7 @@ On misprediction one entry is allocated. If the provider component Ti is not the
 An allocated entry is initialized with the prediction counter _ctr_ set to weak correct and the useful counter _u_ is se to 0, that is strongly not useful.
 
 
-
+------------
 # Phase 2 Qemu settings and modifications <a name="Phase_2"></a>
 
 [![alt text][2 width="200"]][1]
@@ -135,11 +137,11 @@ from their websites. (HINT: clicking on TUX, the Linux penguin in the descriptio
 In order to perform what explained at the beginning of this phase,
 it is needed to run the makefile following  this order:
 
----
+-----
 # Phase 3 BP implementations <a name="Phase_3"></a>
 
 
----
+------
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 Basically we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
@@ -226,7 +228,6 @@ http://www.csc.villanova.edu/~mdamian/threads/posixsem.html
 
 
 ------
-
 # Phase 4 data gathering <a name="Phase_4_data_gathering"></a>
 In order to gather data different Benchmark applications were run over the emulated Busybox system.  
 To run programs over the emulated system, a connection between the host OS and the emulated one is needed to exchange the executable files because, obviously, they are not already embedded in Busybox.  
@@ -313,10 +314,9 @@ At the end you will see the results.
 
 
 ------
-
-# Results
-# Conclutions Commenti sui risultati
-
+# Results <a name="Results"></a>
+# Conclutions <a name="Conclutions"></a>
+Commenti sui risultati
 
 
 
