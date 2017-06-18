@@ -116,16 +116,20 @@ it is needed to run the makefile following  this order:
 
 # Phase 3 BP implementations
 
+
 ---
+
 # Client-server (QEMU-BP) exchanging data by shared memory
-[other_files/client-server_socket]: /other_files/client-server_socket/
+[last_src_files/]: /last_src_files/
+[other_files/client-server_socket/]: /other_files/client-server_socket/
 
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 Basically we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
+All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [last_src_files/].
 ## Why shared memory (SHM) technique
 Running a benchmark application, produces a lot of jumps and branches in the instructions, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analysing on the fly those data and store only the useful results.  
 To exchange lots of data between applications on the fly the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD.  
-Also a TCP socket could have been exploited with the advantage to let different machines working concurrently or from different places, however while applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to fix these behaviours you find 3 different implementations in the folder [other_files/client-server_socket].
+Also a TCP socket could have been exploited with the advantage to let different machines working concurrently or from different places, however while applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to fix these behaviours you find 3 different implementations in the folder [other_files/client-server_socket/].
 ## <a name="Named_semaphores"></a>Named semaphores
 Since in this case the pids of both app are not known, to synchronise the two processes, named semaphores were chosen which will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semaphores before the end, the previous name for those semaphores need to be changed in order to run again the apps (it is also indicated in the files). In our case the end of the branch instructions is not detected from the client and so will use those semaphores, thus no one can destroy them, so the name must be changed every time we run those programs.  
 ## SHM partitioning
@@ -176,7 +180,6 @@ It is really simple:
 	$ ./server 100000
 	```
 	will compile "server.c" and break the `while` after 100000 instructions have been analysed.
-	
 ## Bugs and improvements
 ### Lasts instructions
 Assuming that we want to analyse all the branches encountered, in this implementation of the SHM a bug is present: the last written data by the client are not read from the server if the memory section is not completely full. It means that if we have SHM sections of 1024 cells and at the end we write only 500 data, the client will not inform the server to read them.  
@@ -184,21 +187,19 @@ Solutions can be:
 * using a new flag in the `shMemory` but the client should understand when it has finished (not easy in our case)...
 * use SHM sections smaller such that the last lost data are few.
 * use sections with only one cell length (no data are lost, but overhead due to synchronisation).  
-
 ### Semaphores
 To solve the semaphores' name problem and so to finalise the server computations detecting the end of the benchmark, different solutions exists:  
 * instruct Qemu to receive a sigkill that stops the current processes.
 * detect in the helper function some address that corresponds to the lasts branches.
 * add a timeout to the server if no more data arrives.
 * fork the server to enter manually a terminating character.  
-
 ## Useful links
 **For further information on server and client applications, using shared memory and semaphores** those link can be useful:  
 https://www.softprayog.in/programming/interprocess-communication-using-posix-shared-memory-in-linux  
 http://www.csc.villanova.edu/~mdamian/threads/posixsem.html  
 
-------
 
+------
 
 # Phase 4 data Gathering
 # Results
