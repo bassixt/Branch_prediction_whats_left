@@ -51,7 +51,7 @@ on performances.
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
 ---------------
-# Phase 1 Preliminary studies <a name="Phase_1"></a>
+# Preliminary studies <a name="Phase_1"></a>
 Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
 In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
 
@@ -93,7 +93,7 @@ An allocated entry is initialized with the prediction counter _ctr_ set to weak 
 
 
 ------------
-# Phase 2 Qemu settings and modifications <a name="Phase_2"></a>
+# Qemu settings and modifications <a name="Phase_2"></a>
 [![alt text][2 width="200"]][1]
 
   [1]: http://www.qemu.org/
@@ -146,7 +146,108 @@ the makefile is needed in order to find the source files) it is required to down
 from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  
 In order to perform what explained at the beginning of this phase,
 it is needed to run the makefile following  this order:
+```
+make qclone
+```
+That will clone the latest version stable-2.8 of QEMU on the qemu folder. Successively it is needed to run the following commands:
+```
+make qconfigure
+```
+and  
+```
+make qbuild
+```
+These two previous command should be run every time qemu source files are modified as when we want to gather information to be used for our tests on branch predictors.  
+It is now needed to clone, configure and install busybox running:
+```
+make initrd
+```
+After having correctly installed busybox, Linux kernel must be downloaded, as explained at the beginning, and located in a subfolder called /linux otherwise the following command will not work:
+```
+make kconf
+```
+followed by:
+```
+make kmenuconf
+```
+and finally:
+```
+make kbuild
+```
+Latter command will configure and cross-compile the linux kernel that will run in Qemu.  
+Now to create a suitable network for the emulator create the following script as:
+```
+vim script
+```
+and copy and paste following lines changing proper parameters:
+(WARNING: change user value with yours in my case was mc and nic with the name of your ethernet interface in my case was enp2s0)
 
+```
+user=mc
+tap=tap0
+bridge=br0
+nic=enp2s0
+
+echo "---> Creating taps..."
+ip tuntap add dev $tap mode tap user $user
+ip link set dev $tap up
+
+echo "---> Creating bridge..."
+brctl addbr $bridge
+brctl setfd $bridge 0
+brctl addif $bridge $nic
+brctl addif $bridge $tap
+
+echo "---> Bringing interfaces and bridge up..."
+ifconfig $tap 0.0.0.0 promisc up
+ifconfig $nic 0.0.0.0 promisc up
+ifconfig $bridge 192.168.0.1 netmask 255.255.255.0 up
+
+echo "---> Restart DHCP server"
+service isc-dhcp-server restart
+```
+Now to run the script :
+```
+chmod a+x script
+sudo ./script
+```
+Once you have done all these steps, to run Qemu simply type on the terminal:
+```
+make run
+```
+If anything went wrong you should see:
+```
+script /tmp/run -c '\
+	stty intr ^] && \
+	/home/mc/project/qemu/build/aarch64-softmmu/qemu-system-aarch64 \
+	-M virt \
+	-m 1024M \
+	-nographic \
+	-cpu cortex-a57 \
+	-kernel /home/mc/project/linux/arch/arm64/boot/Image \
+	-initrd /home/mc/project/busybox.cpio.gz \
+	-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
+	-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
+	-append "earlyprintk console=ttyAMA0 loglevel=8 ip=192.168.0.25" \
+	-serial stdio \
+	-monitor telnet:192.168.0.1:2222,server,nowait,nodelay \
+	'
+Script iniziato, il file è /tmp/run
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 4.11.0-rc3-00402-g0dc82fa
+....
+....
+[   11.528651] uart-pl011 9000000.pl011: no DMA platform data
+[   11.740591] Freeing unused kernel memory: 1088K
+
+Please press Enter to activate this console.
+/ #
+```
+To turn off Qemu simply write on the Qemu terminal:
+
+```
+poweroff
+```
 -----
 # Phase 3 BP implementations <a name="Phase_3"></a>
 
@@ -179,7 +280,7 @@ Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th da
 It is really simple:
 1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation.  
 	Currently the `shmCell` is defined as following:
-	
+
 	```c
 	typedef struct shm_cell_type{
 		uint64_t pc;//program cnt
@@ -187,7 +288,7 @@ It is really simple:
 		uint64_t t_nt;//taken - not taken
 	}shmCell;
 	```
-	
+
 2. If needed, modify the semaphores' names (read [Named semaphores](#SHM_semaphores) section) and the SHM partitions' length changing the define `NDATA` value.
 3. Modify the server code to do the job you want; put your own code in the indicated point:
 
@@ -204,7 +305,7 @@ It is really simple:
 				}
 	//.....code above here.....................*/
 	```
-	
+
 	The variable `shm_sector` is a pointer to the first cell of the SHM's partition were the server is working.  
 	Between those comments you can simply call a function to your own Branch predictor (or whatever).  
 	In this case we initialised our BP at the beginning, here we use and update the predictor and at the end of the previous `while` we extract the useful information to be printed in a file.
@@ -305,14 +406,14 @@ To Run Dhrystone these are the steps:
 1. Copy the Dhrystone executable in your /tftpboot/ folder.
 1. Run the `tftp_script` if not already done.
 1. Run QEMU with:
-	
+
 	```bash
 	$ make run
 	or
 	$ make exec
 	```
 1. Once Busybox is running interact with it typing those commands:
-	
+
 	```bash
 	tftp -gr cc_dry2 192.168.0.1
 	chmod a+rwx cc_dry2
