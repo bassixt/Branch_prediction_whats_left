@@ -158,9 +158,6 @@ make qclone
 That will clone the latest version stable-2.8 of QEMU on the qemu folder. Successively it is needed to run the following commands:
 ```
 make qconfigure
-```
-and  
-```
 make qbuild
 ```
 These two previous command should be run every time qemu source files are modified as when we want to gather information to be used for our tests on branch predictors.  
@@ -171,13 +168,7 @@ make initrd
 After having correctly installed busybox, Linux kernel must be downloaded, as explained at the beginning, and located in a subfolder called /linux otherwise the following command will not work:
 ```
 make kconf
-```
-followed by:
-```
 make kmenuconf
-```
-and finally:
-```
 make kbuild
 ```
 Latter command will configure and cross-compile the linux kernel that will run in Qemu.  
@@ -203,15 +194,9 @@ If thing went wrong you should see:
 script /tmp/run -c '\
 	stty intr ^] && \
 	/home/mc/project/qemu/build/aarch64-softmmu/qemu-system-aarch64 \
-	-M virt \
-	-m 1024M \
-	-nographic \
-	-cpu cortex-a57 \
-	-kernel /home/mc/project/linux/arch/arm64/boot/Image \
-	-initrd /home/mc/project/busybox.cpio.gz \
-	-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
-	-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
-	-append "earlyprintk console=ttyAMA0 loglevel=8 ip=192.168.0.25" \
+
+	...
+
 	-serial stdio \
 	-monitor telnet:192.168.0.1:2222,server,nowait,nodelay \
 	'
@@ -227,7 +212,7 @@ Script started, file is /tmp/run
 Please press Enter to activate this console.
 / #
 ```
-To turn off Qemu simply write on the Qemu terminal:
+To turn off QEMU simply write on the Qemu terminal:
 
 ```
 poweroff
@@ -400,17 +385,14 @@ To Run Dhrystone these are the steps:
 	./cc_dry2
 	```
 	N.B.  
-	You have to do this step evry time you poweroff the emulated system. Otherwise you should find a way to embed this executable in Busybox.
+	You have to do this step every time you poweroff the emulated system. Otherwise you should find a way to embed this executable in Busybox.
 1. You will be later asked to type the number of runs: 10000000 was the minimum for us.
 
 At the end you will see the results.
 
 ## About Coremark <a name="about_Coremark"></a>
-CoreMark is a synthetic benchmark that measures the performance of central processing units (CPU) used in embedded systems.
-	It is intended to become an industry standard, replacing the older Dhrystone benchmark. The code is written in C and contains implementations of the following algorithms: list processing
-	(find and sort), matrix manipulation (common matrix operations), state machine (determine if an input stream contains valid numbers), and CRC (cyclic redundancy check).
-	IT was designed to avoid the issues that have been spotted with Dhrystone such as:
-
+CoreMark is a synthetic benchmark that measures the performance of central processing units (CPU) used in embedded systems. It is intended to become an industry standard, replacing the older Dhrystone benchmark. The code is written in C and contains implementations of the following algorithms: list processing (find and sort), matrix manipulation (common matrix operations), state machine (determine if an input stream contains valid numbers), and CRC (cyclic redundancy check).  
+It was designed to avoid the issues that have been spotted with Dhrystone such as:
 -	Compiler optimizations
 
 	Dhrystone is susceptible to compilers being able to optimize work away. When this
@@ -418,7 +400,6 @@ CoreMark is a synthetic benchmark that measures the performance of central proce
 	With CoreMark, every operation in the benchmark derives values that are not available at
 	compile time. This ensures that while compilers can still make optimizations, they cannot
 	pre-compute results to optimize the work away completely.  
-
 
 -	Library calls
 
