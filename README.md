@@ -191,12 +191,15 @@ N.B.
 	chmod a+x network_QEMU_script
 	sudo ./network_QEMU_script
 	```
+
 Once you have done all these steps, to run Qemu simply type on the terminal:
+
 ```
 make run
 ```
-If anything went wrong you should see:
-```
+If thing went wrong you should see:
+
+```bash
 script /tmp/run -c '\
 	stty intr ^] && \
 	/home/mc/project/qemu/build/aarch64-softmmu/qemu-system-aarch64 \
@@ -212,11 +215,12 @@ script /tmp/run -c '\
 	-serial stdio \
 	-monitor telnet:192.168.0.1:2222,server,nowait,nodelay \
 	'
-Script iniziato, il file è /tmp/run
+Script started, file is /tmp/run
 [    0.000000] Booting Linux on physical CPU 0x0
 [    0.000000] Linux version 4.11.0-rc3-00402-g0dc82fa
-....
-....
+
+...
+
 [   11.528651] uart-pl011 9000000.pl011: no DMA platform data
 [   11.740591] Freeing unused kernel memory: 1088K
 
