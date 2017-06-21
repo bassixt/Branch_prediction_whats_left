@@ -35,8 +35,8 @@
 		* [How to run Dhrystone](#How_to_run_Dhrystone)
 	1. [About Coremark](#about_Coremark)
 		* [How to run Coremark](#run_Coremark)
-* [Results](#Results)
-* [Conclusions](#Conclusions)
+* [Results and Conclusions](#Results and Conclusions)
+
 
 ---------
 # Introduction <a name="intro"></a>
@@ -211,7 +211,7 @@ poweroff
 ## Bimodal implementation <a name="bimodal_impl"></a>
 The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances will be considerably improved.  
 The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
-The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
+The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry.
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
 This simple bimodal of unlimited size is however able to reach good performances.
 <img src="images/bimodal_mod.png" height="500">
@@ -352,7 +352,7 @@ Now you can restart the service with the following commands:
 sudo /etc/init.d/xinetd stop
 sudo /etc/init.d/xinetd start
 ```
-		
+
 ## About Dhrystone <a name="About_Dhrystone"></a>
 Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterised these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
 
@@ -415,12 +415,12 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 1. Modify the file `core_portme.h` and `core_portme.mak` in the right subdirectory:
 	* Since we have Linux in QEMU, we have to modify the Linux subdirectory.
 		In particular in the core_portme.h we have to set the name of the compiler we want use:
-	
+
 		```
 			 #define COMPILER_VERSION "Please put compiler version here (e.g. gcc 4.1)"
 		```
 		In our case Linaro toolchain:
-	
+
 		```
 			 #define COMPILER_VERSION "/home/francesco/Scrivania/aarch64-unknown-linux-gnueabi/aarch64-unknown-linux-gnueabi/bin/aarch64-linux-gnu-gcc"
 		```
@@ -432,17 +432,17 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 		```
 	* In core_portme.mak we have first at all specify the name of the compiler as done for the core_portme.h
 		Use this flag to define compiler to use
-	
+
 		```
 		    CC = gcc
 		```  
 		In our case:
-	
+
 		```
 		    CC=/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc
 		```
 	* Another thing to do is to statically link the library belong to libc
-	
+
 		```
 		    LFLAGS_END += -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib
 		```
@@ -473,17 +473,17 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 	- start qemu
 	- copy the coremark.exe in the tftpboot
 	- send the coremark.exe to qemu : in the qemu console type
-		
+
 		```
 		tftp -gr coremark.exe 192.168.0.1
 		```
 	- make it executable:
-		
+
 		```
 		chmod a+rwx coremark.exe
 		```
 	- run the benchmark:
-		
+
 		```
 		./coremark.exe  0x0 0x0 0x66 0 7 1 2000 > ./run1.log
 		./coremark.exe  0x3415 0x3415 0x66 0 7 1 2000  > ./run2.log
@@ -491,11 +491,25 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 		```
 
 ------
-# Results <a name="Results"></a>
-<img src="images/esempio.png" height="400">
+# Results and Conclusions <a name="Results and Conclusions"></a>
+We decide to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we consider different number of instructions and we evaluate the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plot the size of the prediction matrix as a function of the number of instructions.
+The final result are plotted using Matlab and are shown below.
 
-# Conclusions <a name="Conclusions"></a>
-Commenti sui risultati
+
+<img src="images/accurancy.png" height="400">
+
+<img src="images/misprediction_rate.png" height="400">
+
+<img src="images/budjet_data.png" height="400">
+
+Considering the accurancy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance are getting better as the number of instructions increases till an asymptotic value. Instead for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accurancy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
+In the other hands when the number of instruction become more than 10 milion, the performances start to decrease because of the shut down sequence that pollutes the input data of our implementation.  
+Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate, but, also in this case, we can notice a slightly difference depending on the type of input data. Indeed for the instructions taken from the CBP-5, for a small number of it, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
+Instead for the result related to each benchmark the performance of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
+Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not the case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
+The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the instruction become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
+
+
 
 
 
