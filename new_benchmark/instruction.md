@@ -1,9 +1,35 @@
-INSTRUCTION TO RUN COREMARK BENCHMARK IN A LINUX KERNEL RUNNING ON QEMU.
+# COREMARK AND INSTRUCTIONS TO RUN THIS BENCHMARCK IN A LINUX KERNEL RUNNING ON QEMU
+CoreMark is a synthetic benchmark that measures the performance of central processing units (CPU) used in embedded systems.
+It is intended to become an industry standard, replacing the older Dhrystone benchmark. The code is written in C and contains implementations of the following algorithms: list processing
+(find and sort), matrix manipulation (common matrix operations), state machine (determine if an input stream contains valid numbers), and CRC (cyclic redundancy check).
+IT was designed to avoid the issues that have been spotted with Dhrystone such as:
 
-1. DOWNLOAD COREMARK.
-   Coremark can be download from the official site http://www.eembc.org/coremark/download.php filling the registration form or from other git repository (e.g. git clone https://github.com/tonyho/CoreMark.git)
+- Compiler optimizations
 
-2. MODIFY THE FILE core_portme.h AND core_portme.mak IN THE RIGHT SUBDIRECTORY
+   Dhrystone is susceptible to compilers being able to optimize work away. When this
+happens, Dhrystone becomes an unreliable processor benchmark.
+With CoreMark, every operation in the benchmark derives values that are not available at
+compile time. This ensures that while compilers can still make optimizations, they cannot
+pre-compute results to optimize the work away completely.  
+
+
+- Library calls
+
+  Dhrystone contains library calls within the timed portion of the benchmark, which can
+account for a significant portion of the benchmark time. This makes it difficult to compare
+results where different libraries have been used.
+CoreMark is designed so that it does not make any library calls during the timed portion
+of the benchmark.  
+
+- Version control
+
+ Dhrystone has no official source, so several different versions are in use. If the Dhrystone
+version is undisclosed, it is difficult to compare benchmark results.
+CoreMark is available from the CoreMark web site http://www.coremark.org/
+## DOWNLOAD COREMARK
+   Coremark can be downloaded from the official site http://www.eembc.org/coremark/download.php filling the registration form or from other git repository (e.g. git clone https://github.com/tonyho/CoreMark.git)
+
+## MODIFY THE FILE core_portme.h AND core_portme.mak IN THE RIGHT SUBDIRECTORY
    Because we have Linux in qemu, we have to modify the Linux subdirectory.
 
   - In particular in the core_portme.h we have to the name of the compiler we want use:
@@ -32,7 +58,7 @@ INSTRUCTION TO RUN COREMARK BENCHMARK IN A LINUX KERNEL RUNNING ON QEMU.
 ```
     LFLAGS_END += -static -L/home/francesco/Scrivania/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/lib
 ```
-3. COMPILE COREMARK
+## COMPILE COREMARK
 
     In your pc in a terminal go to the directory containing Coremark type
     ```
@@ -41,7 +67,7 @@ INSTRUCTION TO RUN COREMARK BENCHMARK IN A LINUX KERNEL RUNNING ON QEMU.
     ```
    the file coremark.exe will be created
 
-4. RUN COREMARK
+ ## RUN COREMARK
 
    To run coremark you can simply type in the terminal
   ```
@@ -59,7 +85,7 @@ INSTRUCTION TO RUN COREMARK BENCHMARK IN A LINUX KERNEL RUNNING ON QEMU.
 
   In our case to import the coremark in the qemu enviroment we have to follow these steps
 
-  - start qemu
+   - start qemu
 
    - copy the coremark.exe in the tftpboot
 

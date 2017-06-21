@@ -17,7 +17,7 @@ uint64_t get_prediction(uint64_t PC, struct predictor * tage){
 	else{
     		basePrediction =  0; 
 	}
-	// calcolo tag  in base all'algoritmo spiegato nell articolo https://www.jilp.org/vol7/v7paper10.pdf
+	// calculation tag  based on the algorithm in the paper https://www.jilp.org/vol7/v7paper10.pdf
      	// Hash to get tag includes info about bank, pc and global history compressed
      	// formula given in PPM paper 
      	// pc[9:0] xor CSR1 xor (CSR2 << 1)
@@ -36,7 +36,8 @@ uint64_t get_prediction(uint64_t PC, struct predictor * tage){
 	// How to get index for each bank ??
 	// bank 1
 	// Hash of PC, PC >> index length important , GHR geometric, path info
-	// funzioni che ti permettono di calcolare l'indirizzo della entry nei vary blocchi
+        // functions that allow to finde the address of the entry of each block
+	
 	uint64_t index_mask = ((1<<TAGPREDLOG) - 1);
 
 	tage->indexTagPred[0] = PC ^ (PC >> TAGPREDLOG) ^ tage->indexComp[0].compHist ^ tage->phr ^ (tage->phr >> TAGPREDLOG);
@@ -57,7 +58,8 @@ uint64_t get_prediction(uint64_t PC, struct predictor * tage){
 
 	// See if any tag matches
 	// T0 with longest history so if hit that awesome
-	//in primebank metto l indice del bank che ha matchiato con il tag con l'history piuù lunga, mentre in altbank quello con la seconda history più lunga
+        // in primebank put the index of the bank with longest history that has a match with the tag, whereas in altbank the one with the second longer history
+	
 	for(int iterator = 0; iterator < NUMTAGTABLES; iterator++){     
        		if(tage->tagPred[iterator][tage->indexTagPred[iterator]].tag == tage->tag[iterator]){
                 	tage->primeBank = iterator;
@@ -70,32 +72,32 @@ uint64_t get_prediction(uint64_t PC, struct predictor * tage){
                     	break;
                 }  
         }    
-            
-	//controllo e scelgo quale predizione scegliere tra quelle contenute nelle tabelle      
-       	if(tage->primeBank < NUMTAGTABLES){  //ho trovato almeno un hit
-        	if(tage->altBank == NUMTAGTABLES){  //ho trovato solo un hit 
-       			tage->altPred = basePrediction; //quindi l'altpred è uguale a quella dell bimodal branch predictor
+        //control and choose which prediction consider among all the ones belonged to the tables   
+	
+       	if(tage->primeBank < NUMTAGTABLES){  // at least one hit
+        	if(tage->altBank == NUMTAGTABLES){  //only one hit 
+       			tage->altPred = basePrediction; //so altpred = prediction of the base predictor
        		}
-       		else{        // più di un hit
-       			if(tage->tagPred[tage->altBank][tage->indexTagPred[tage->altBank]].pred >= TAGPRED_CTR_MAX/2) //controlla la predizione dell altbank 
-                		tage->altPred = 1; //prima c era scritto taken ma non era definito quindi metto 1
+       		else{        // more then one hit
+       			if(tage->tagPred[tage->altBank][tage->indexTagPred[tage->altBank]].pred >= TAGPRED_CTR_MAX/2) //check the altpred prediction
+                		tage->altPred = 1; //TAKEN=1
             		else 
                 		tage->altPred = 0;// NOT_TAKEN=0
        		}
         
-        	if((tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].pred  != 3) ||(tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].pred != 4 ) || (tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].u != 0) || (tage->altBetterCount < 8)){ //'???????? credo che sia: la prima e la seconda condizione controllo che non sia or weakly taken o weakly not taken ma avere valori più 'certi', poi controlla che l'useful bit non sia zero e l'ultimo boh. in definitiva credo che questo serva per capire se il match è avvenuto con una new entry. se è cosi ( in questo caso else *) come viene spiegato in questo paper https://www.jilp.org/vol8/v8paper1.pdf al punto 3.2.4, è più efficente prendere la predizione del altbank e non quella del bank con la history più lunga
+        	if((tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].pred  != 3) ||(tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].pred != 4 ) || (tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].u != 0) || (tage->altBetterCount < 8)){ // check if are not weakly prediction, check if the useful bit is not 0 and check if the prediction is related to a new entry. More info https://www.jilp.org/vol8/v8paper1.pdf  paragraph 3.2.4
         		if(tage->tagPred[tage->primeBank][tage->indexTagPred[tage->primeBank]].pred >= TAGPRED_CTR_MAX/2)
                 		tage->primePred = 1;
             		else 
                 		tage->primePred = 0;
-            			return tage->primePred;    //ritorno la predizione con la history piu lunga
+            			return tage->primePred;    //return prediction with the longest history
         	}
-        	else{ //*
+        	else{ 
         		return tage->altPred;
         	}
     	}
     	else{
-        	tage->altPred = basePrediction;  //nessun match
+        	tage->altPred = basePrediction;  //no match
         	return tage->altPred;
     	}
 }
