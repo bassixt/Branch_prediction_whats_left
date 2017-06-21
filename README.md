@@ -499,7 +499,11 @@ In our case to import the coremark in the qemu enviroment we have to follow thes
 	     tftp -gr coremark.exe 192.168.0.1
 
 
-- make it executable : chmod a+rwx coremark.exe
+- make it executable :
+
+
+     chmod a+rwx coremark.exe
+
 
 - run the benchmark:
 
