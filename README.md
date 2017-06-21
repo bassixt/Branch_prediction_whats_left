@@ -83,8 +83,7 @@ The FSM is represented in the following figure:
 ## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
-
-![TAGE](images/ltage_block_diagram.png)
+<img src="images/ltage_block_diagram.png" height="400">
 
 T0 is a base predictor (can be a bimodal predictor) in charge of providing a simple prediction, instead the other components consist in a signed counter _ctr_ which sign provides the prediction , a _tag_ and useful counter _u_.
 
@@ -217,7 +216,7 @@ The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinit
 The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
 This simple bimodal of unlimited size is however able to reach good performances.
-<center> <img src="images/bimodal_mod.png" align=middle height="600"> </center>
+<img src="images/bimodal_mod.png" align=middle height="600">
 
 ## L-TAGE implementation <a name="tage_impl"></a>
 
