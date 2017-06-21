@@ -71,11 +71,6 @@ The FSM is represented in the following figure:
 
 ![bimodal](images/bimodal.png)
 
-The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
-The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
-This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
-This simple bimodal of unlimited size is however able to reach good performances.
-
 ## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
@@ -252,7 +247,10 @@ poweroff
 ```
 -----
 # BP implementations <a name="Phase_3"></a>
-
+The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
+The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
+This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
+This simple bimodal of unlimited size is however able to reach good performances.
 
 ------
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
@@ -405,7 +403,7 @@ CoreMark is a synthetic benchmark that measures the performance of central proce
 	(find and sort), matrix manipulation (common matrix operations), state machine (determine if an input stream contains valid numbers), and CRC (cyclic redundancy check).
 	IT was designed to avoid the issues that have been spotted with Dhrystone such as:
 
-- Compiler optimizations
+-	Compiler optimizations
 
 	Dhrystone is susceptible to compilers being able to optimize work away. When this
 	happens, Dhrystone becomes an unreliable processor benchmark.
@@ -414,7 +412,7 @@ CoreMark is a synthetic benchmark that measures the performance of central proce
 	pre-compute results to optimize the work away completely.  
 
 
-- Library calls
+-	Library calls
 
 	Dhrystone contains library calls within the timed portion of the benchmark, which can
 	account for a significant portion of the benchmark time. This makes it difficult to compare
@@ -422,9 +420,9 @@ CoreMark is a synthetic benchmark that measures the performance of central proce
 	CoreMark is designed so that it does not make any library calls during the timed portion
 	of the benchmark.  
 
-- Version control
+-	Version control
 
-	 Dhrystone has no official source, so several different versions are in use. If the Dhrystone
+	Dhrystone has no official source, so several different versions are in use. If the Dhrystone
 	version is undisclosed, it is difficult to compare benchmark results.
 	CoreMark is available from the CoreMark web site http://www.coremark.org/
 
