@@ -217,6 +217,8 @@ This simple bimodal of unlimited size is however able to reach good performances
 <img src="images/bimodal_mod.png" height="500">
 
 ## L-TAGE implementation <a name="tage_impl"></a>
+For this BP our implementation followed exactly what is written in the section [Tage Branch Predictor](#Tage) and moreover we took as reference the Seznec L-TAGE proposed for the CBP that is also discussed in this paper: [L-TAGE](http://www.irisa.fr/caps/people/seznec/L-TAGE.pdf).  
+You can find every explanation of the code we implemented directly in the comments of the C files.
 
 ------
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
@@ -352,7 +354,7 @@ sudo /etc/init.d/xinetd start
 ```
 		
 ## About Dhrystone <a name="About_Dhrystone"></a>
-Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterized these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
+Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterised these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
 
 ## How to run Dhrystone <a name="How_to_run_Dhrystone"></a>
 Dhrystone is a public software which source files can be downloaded from internet and then compiled.  
@@ -388,8 +390,8 @@ It was designed to avoid the issues that have been spotted with Dhrystone such a
 	Dhrystone is susceptible to compilers being able to optimize work away. When this
 	happens, Dhrystone becomes an unreliable processor benchmark.
 	With CoreMark, every operation in the benchmark derives values that are not available at
-	compile time. This ensures that while compilers can still make optimizations, they cannot
-	pre-compute results to optimize the work away completely.  
+	compile time. This ensures that while compilers can still make optimisations, they cannot
+	pre-compute results to optimise the work away completely.  
 
 -	Library calls
 
@@ -490,7 +492,8 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 
 ------
 # Results <a name="Results"></a>
-![es](images/esempio.png)
+<img src="images/esempio.png" height="400">
+
 # Conclusions <a name="Conclusions"></a>
 Commenti sui risultati
 
