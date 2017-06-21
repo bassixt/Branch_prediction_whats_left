@@ -181,42 +181,16 @@ and finally:
 make kbuild
 ```
 Latter command will configure and cross-compile the linux kernel that will run in Qemu.  
-Now to create a suitable network for the emulator create the following script as:
-```
-vim script
-```
-and copy and paste following lines changing proper parameters:
-(WARNING: change user value with yours in my case was mc and nic with the name of your ethernet interface in my case was enp2s0)
+Now to create a suitable network with the emulated system you can use this script: [other_files/network_QEMU_script].  
+N.B.
+* this `network_QEMU_script` file must be in the root directory in which there are all the other directories with QEMU, Busybox, Makefile, ...  
+* change user value with yours and nic with the name of your Ethernet interface  
+* Run it every time you reboot your PC using the command:
 
-```
-user=mc
-tap=tap0
-bridge=br0
-nic=enp2s0
-
-echo "---> Creating taps..."
-ip tuntap add dev $tap mode tap user $user
-ip link set dev $tap up
-
-echo "---> Creating bridge..."
-brctl addbr $bridge
-brctl setfd $bridge 0
-brctl addif $bridge $nic
-brctl addif $bridge $tap
-
-echo "---> Bringing interfaces and bridge up..."
-ifconfig $tap 0.0.0.0 promisc up
-ifconfig $nic 0.0.0.0 promisc up
-ifconfig $bridge 192.168.0.1 netmask 255.255.255.0 up
-
-echo "---> Restart DHCP server"
-service isc-dhcp-server restart
-```
-Now to run the script :
-```
-chmod a+x script
-sudo ./script
-```
+	```bash
+	chmod a+x network_QEMU_script
+	sudo ./network_QEMU_script
+	```
 Once you have done all these steps, to run Qemu simply type on the terminal:
 ```
 make run
@@ -397,16 +371,6 @@ Now you can restart the service with the following commands:
 sudo /etc/init.d/xinetd stop
 sudo /etc/init.d/xinetd start
 ```
-
-Now to create a suitable network with the emulated system you can use this script: [other_files/tftp_script].  
-N.B.
-* this `tftp_script` file must be in the root directory in which there are all the other directories with QEMU, Busybox, Makefile, ...  
-* change user value with yours and nic with the name of your Ethernet interface  
-* Run it every time you reboot your PC using the command:
-
-	```bash
-	sudo ./tftp_script
-	```
 		
 ## About Dhrystone <a name="About_Dhrystone"></a>
 Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterized these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
