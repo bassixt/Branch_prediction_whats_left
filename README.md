@@ -217,7 +217,7 @@ The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinit
 The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
 This simple bimodal of unlimited size is however able to reach good performances.
-![Bimodal](images/bimodal_mod.png =100x20)
+![](images/bimodal_mod.png =100x20)
 ## L-TAGE implementation <a name="tage_impl"></a>
 
 ------
