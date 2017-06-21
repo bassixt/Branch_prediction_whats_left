@@ -10,12 +10,15 @@
 
 ---
 # Table of contents:
+* [Introduction](#intro)
 * [Project description](#Project_description)
 * [Preliminary studies](#Phase_1)
 	* [Bimodal Branch Predictor](#Bimodal)
 	* [Tage Branch Predictor](#Tage)
 * [Qemu settings and modifications](#Phase_2)
 * [BP implementations](#Phase_3)
+	* [Bimodal implementation](#bimodal_impl)
+	* [L-TAGE implementation](#tage_impl)
 * [Client-server (QEMU-BP) exchanging data by shared memory](#SHM)
 	* [Why shared memory technique](#SHM_why)
 	* [Named semaphores](#SHM_semaphores)
@@ -35,6 +38,11 @@
 
 
 ---------
+# Introduction <a name="intro"></a>
+We are three Electronic Engineers studying at Eurecom University for our Double Master Degree in conjunction with Tèlècom ParisTech and Polytechnic of Turin.  
+This file is intended to be our report for a Semester Project held at Eurecom and also is intended to be a guide for next students that would work on the same project exploiting our work and using it as a starting point.
+
+-----
 # Project description <a name="Project_description"></a>
 The goal of the project is to analyze already existing Branch Predictors (BP) and
 evaluate performances of some implementations to exploit new possible improvements.  
@@ -247,10 +255,14 @@ poweroff
 ```
 -----
 # BP implementations <a name="Phase_3"></a>
+## Bimodal implementation <a name="bimodal_impl"></a>
+The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances will be considerably improved.  
 The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
 The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
 This simple bimodal of unlimited size is however able to reach good performances.
+
+## L-TAGE implementation <a name="tage_impl"></a>
 
 ------
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
