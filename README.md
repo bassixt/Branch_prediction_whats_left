@@ -350,7 +350,6 @@ To solve the semaphores' name problem and so to finalise the server computations
 https://www.softprayog.in/programming/interprocess-communication-using-posix-shared-memory-in-linux  
 http://www.csc.villanova.edu/~mdamian/threads/posixsem.html  
 
-
 ------
 # Data gathering <a name="Phase_4_data_gathering"></a>
 In order to gather data different Benchmark applications were run over the emulated Busybox system.  
@@ -573,7 +572,8 @@ Commenti sui risultati
         * If wrong decision => replace the entry
         * If wrong decision => replace address  
 
-------        
+------
+scrivere cosa c'è nelle sottocartelle es. other files ci sono documenti utili.
 #################################################
 ########### old sections ########################
 ------
