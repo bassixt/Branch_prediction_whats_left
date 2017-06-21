@@ -408,7 +408,7 @@ N.B.
 	sudo ./tftp_script
 	```
 
-# COREMARK AND INSTRUCTIONS TO RUN THIS BENCHMARCK IN A LINUX KERNEL RUNNING ON QEMU
+## About Coremark 
 
 CoreMark is a synthetic benchmark that measures the performance of central processing units (CPU) used in embedded systems.
 	It is intended to become an industry standard, replacing the older Dhrystone benchmark. The code is written in C and contains implementations of the following algorithms: list processing
@@ -438,27 +438,30 @@ CoreMark is a synthetic benchmark that measures the performance of central proce
 	version is undisclosed, it is difficult to compare benchmark results.
 	CoreMark is available from the CoreMark web site http://www.coremark.org/
 
-## DOWNLOAD COREMARK
-Coremark can be downloaded from the official site http://www.eembc.org/coremark/download.php filling the registration form or from other git repository (e.g. git clone https://github.com/tonyho/CoreMark.git)
+## How to run Coremark
+Instructions to run this benchmark in a linux kernel running on QEMU:
 
-## MODIFY THE FILE core_portme.h AND core_portme.mak IN THE RIGHT SUBDIRECTORY
+1. Coremark can be downloaded from the official site http://www.eembc.org/coremark/download.php filling the registration form or from other git repository (e.g. git clone [https://github.com/tonyho/CoreMark.git](https://github.com/tonyho/CoreMark.git))
 
-Because we have Linux in qemu, we have to modify the Linux subdirectory.
+1. Modify the file `core_portme.h` and `core_portme.mak` in the right subdirectory.
+	Since we have Linux in QEMU, we have to modify the Linux subdirectory.
+	- In particular in the core_portme.h we have to set the name of the compiler we want use:
+	
+		```
+			 #define COMPILER_VERSION "Please put compiler version here (e.g. gcc 4.1)"
+		```
+	In our case Linaro toolchain:
+	
+		```
+			 #define COMPILER_VERSION "/home/francesco/Scrivania/aarch64-unknown-linux-gnueabi/aarch64-unknown-linux-gnueabi/bin/aarch64-linux-gnu-gcc"
+		```
+1. Another important thing is that  ee_ptr_int needs to be the data type used to hold pointers, otherwise coremark may fail.  
+	In our case, Linaro support uint64_t as data type to hold pointers:
 
-- In particular in the core_portme.h we have to the name of the compiler we want use:
-	```
-	    #define COMPILER_VERSION "Please put compiler version here (e.g. gcc 4.1)"
-	```
-In our case Linaro toolchain:
-	```
-	    #define COMPILER_VERSION "/home/francesco/Scrivania/aarch64-unknown-linux-gnueabi/aarch64-unknown-linux-gnueabi/bin/aarch64-linux-gnu-gcc"
-	```
- Another important thing is that  ee_ptr_int needs to be the data type used to hold pointers, otherwise coremark may fail.  
- In our case, Linaro support uint64_t as data type to hold pointers:
 	```
 	   typedef uint64_t ee_ptr_int;
 	```
-- In core_portme.mak we have first at all specify the name of the compiler as done for the core_portme.h
+1.	In core_portme.mak we have first at all specify the name of the compiler as done for the core_portme.h
 	Use this flag to define compiler to use
 	```
 	    CC = gcc
