@@ -11,11 +11,11 @@
 ---
 # Table of contents:
 * [Project description](#Project_description)
-* [Phase 1 Preliminary studies](#Phase_1)
+* [Preliminary studies](#Phase_1)
 	* [Bimodal Branch Predictor](#Bimodal)
 	* [Tage Branch Predictor](#Tage)
-* [Phase 2 Qemu settings and modifications](#Phase_2)
-* [Phase 3 BP implementations](#Phase_3)
+* [Qemu settings and modifications](#Phase_2)
+* [BP implementations](#Phase_3)
 * [Client-server (QEMU-BP) exchanging data by shared memory](#SHM)
 	* [Why shared memory technique](#SHM_why)
 	* [Named semaphores](#SHM_semaphores)
@@ -26,7 +26,7 @@
 		* [Last instructions](#SHM_bug_instr)
 		* [Semaphores](#SHM_bug_sem)
 	* [Useful links](#SHM_link)
-* [Phase 4 data gathering](#Phase_4_data_gathering)
+* [Data gathering](#Phase_4_data_gathering)
 	* [How to set the connection up](#How_to_set_the_connection_up)
 	* [About Dhrystone](#About_Dhrystone)
 	* [How to run Dhrystone](#How_to_run_Dhrystone)
@@ -56,23 +56,25 @@ Before starting coding and implementing, the first thing we have done was to inv
 In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
 
 ## Bimodal Branch Predictor <a name="Bimodal"></a>
-This implementation is based on Dynamic prediction, that is it utilises hardware-based mechanisms that use the run time behaviour of branches to make more accurate prediction w.r.t static ones.
-In others words, the prediction can change during the execution of the program.  
+This implementation is based on Dynamic prediction, that is it exploits run time behaviours of branches to make more accurate predictions w.r.t. static ones.
+In others words, the prediction can change during depending on the execution of the program.  
 
-It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter and to the outcomes of the prediction:
-
+It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter on which the prediction outcome will be based on:
 - 00 Strongly not taken
 - 01 Weakly not taken
 - 10 Weakly taken
 - 11 Strongly taken
 
-When a branch is evaluated, the state in the FSM is update. Not taken branches will decrease the counter till the zero value (Strongly not taken) and the taken ones will increment the counter towards the value 3 (Strongly taken).
+When a branch is evaluated, the state in the FSM is updated. Not taken branches will decrease the counter till zero (Strongly not taken) and the taken ones will increment the counter towards 3 (Strongly taken).  
 
-The FSM is represented in figure:
-
-
+The FSM is represented in the following figure:
 
 ![bimodal](images/bimodal.png)
+
+The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
+The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry. 
+This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
+This simple bimodal of unlimited size is however able to reach good performances.
 
 ## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
@@ -249,7 +251,7 @@ To turn off Qemu simply write on the Qemu terminal:
 poweroff
 ```
 -----
-# Phase 3 BP implementations <a name="Phase_3"></a>
+# BP implementations <a name="Phase_3"></a>
 
 
 ------
@@ -339,7 +341,7 @@ http://www.csc.villanova.edu/~mdamian/threads/posixsem.html
 
 
 ------
-# Phase 4 data gathering <a name="Phase_4_data_gathering"></a>
+# Data gathering <a name="Phase_4_data_gathering"></a>
 In order to gather data different Benchmark applications were run over the emulated Busybox system.  
 To run programs over the emulated system, a connection between the host OS and the emulated one is needed to exchange the executable files because, obviously, they are not already embedded in Busybox.  
 
