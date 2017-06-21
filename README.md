@@ -493,7 +493,7 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
 We decide to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we consider different number of instructions and we evaluate the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plot the size of the prediction matrix as a function of the number of instructions.
-The final result are plotted using Matlab and are shown below.
+The final result are plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
 <img src="images/accurancy.png" height="400">
