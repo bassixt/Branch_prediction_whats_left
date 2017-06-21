@@ -83,7 +83,7 @@ The FSM is represented in the following figure:
 ## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
-<img src="images/ltage_block_diagram.png" height="400">
+<img src="images/ltage_block_diagram.png" align=middle height="400">
 
 T0 is a base predictor (can be a bimodal predictor) in charge of providing a simple prediction, instead the other components consist in a signed counter _ctr_ which sign provides the prediction , a _tag_ and useful counter _u_.
 
