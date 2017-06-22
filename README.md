@@ -36,7 +36,7 @@
 	1. [About Coremark](#about_Coremark)
 		* [How to run Coremark](#run_Coremark)
 * [Results and Conclusions](#Results and Conclusions)
-
+* [Acknowledgement](#Acknowledgement)
 
 ---------
 # Introduction <a name="intro"></a>
@@ -509,10 +509,12 @@ Instead for the result related to each benchmark the performance of the two impl
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not the case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
 The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the instruction become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
 
+------
+# Acknowledgement <a name="Acknowledgement"></a>
+We would like to express our sincere gratitude to Professor Renaud Pacalet for allowing us to undertake this work and carefully providing lots of help while developing it.  
+Thanks to EURECOM University for the provided material.
 
-
-
-
+**!!!!!!!!!!!!!!!!!!!!!!**
 
 [last_src_files/]: last_src_files/
 [other_files/client-server_socket/]: other_files/client-server_socket/
