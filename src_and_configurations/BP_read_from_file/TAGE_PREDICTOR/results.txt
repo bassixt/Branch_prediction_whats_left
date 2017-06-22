@@ -1,0 +1,3 @@
+Results with Tage Predictor and TOT#INSTR: 100000000.000000
+Accuracy : 92.856919
+MPKBr_1K : 71.430810

@@ -36,16 +36,13 @@
 		* [How to run Dhrystone](#How_to_run_Dhrystone)
 	1. [About Coremark](#about_Coremark)
 		* [How to run Coremark](#run_Coremark)
+	1. [CBP-5 Traces](#CBP-5)
 * [Data processing](#Data processing)
 * [Results and Conclusions](#Results and Conclusions)
 * [Acknowledgement](#Acknowledgement)
 
----------
-# Introduction <a name="intro"></a>
-We are three Electronic Engineers studying at Eurecom University for our Double Master Degree in conjunction with Tèlècom ParisTech and Polytechnic of Turin.  
-This file is intended to be our report for a Semester Project held at Eurecom and also is intended to be a guide for next students that would work on the same project exploiting our work and using it as a starting point.
-
 -----
+
 # Project description <a name="Project_description"></a>
 The goal of the project is to analyze already existing Branch Predictors (BP) and
 evaluate performances of some implementations to exploit new possible improvements.  
@@ -62,9 +59,12 @@ on performances.
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
 ---------------
+
 # Preliminary studies <a name="Phase_1"></a>
 Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
 In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
+
+-----
 
 ## Bimodal Branch Predictor <a name="Bimodal"></a>
 This implementation is based on Dynamic prediction, that is it exploits run time behaviours of branches to make more accurate predictions w.r.t. static ones.
@@ -81,6 +81,8 @@ When a branch is evaluated, the state in the FSM is updated. Not taken branches 
 The FSM is represented in the following figure:
 
 ![bimodal](images/bimodal.png)
+
+-----
 
 ## Tage Branch Predictor <a name="Tage"></a>
 Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
@@ -253,6 +255,8 @@ The *Hash function* will decide the row where the BP will check if the current B
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
 This simple bimodal of unlimited size is however able to reach good performances.
 <img src="images/bimodal_mod.png" height="500">
+
+-----
 
 ## L-TAGE implementation <a name="tage_impl"></a>
 For this BP our implementation followed exactly what is written in the section [Tage Branch Predictor](#Tage) and moreover we took as reference the Seznec L-TAGE proposed for the CBP that is also discussed in this paper: [L-TAGE](http://www.irisa.fr/caps/people/seznec/L-TAGE.pdf).  
@@ -526,11 +530,78 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 		```
 		./coremark.exe  0x0 0x0 0x66 0 7 1 2000 > ./run1.log
 		./coremark.exe  0x3415 0x3415 0x66 0 7 1 2000  > ./run2.log
-		./coremark.exe  8 8 8 0 7 1 1200 > ./run3.log
-		```
+		./coremark.exe  8 8 8 0 7 1 1200 > ./run3.log  
+		```  
+
+# CBP-5 TRACES <a name=" CBP-5 TRACES"></a>
+Another way that we have used to retrieve branch information is using the CBP-5 infrastructure and trace files.  
+Since the format of files are different we have modified some sources of the Championship Branch Prediction in order to have the same scheme used by our branch predictors.  
+These files can be located in the somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval.
+The instructions to use the framework can be found on their website: [CBP-5](https://www.jilp.org/cbp2016/).
+The main thing that must be done is to download their traces (about 10Gb) and extract them in the somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval/traces folder.  
+To run the framework in order to output the file to be used for our branch predictors firslty is necessary to enter in the scripts folder.
+```
+ somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval/scripts
+```
+It is possible to run all traces or some of them. In order to select only a subpart of them it is possible to modify the bench_list.pl file specifying the name of the trace to be run:
+```
+$SUITES{'dati'}    =
+'LONG_MOBILE-10';
+```
+Once specified the name of the preferred trace, to run the environment type:
+```
+./runall.pl -s ../sim/predictor -w dati -f 1 -d ../results/MYRESULTS
+```  
+The resulting trace is created in the script folder and it is named tracex.txt
+
 
 ------
 # Data processing <a name=" Data processing"></a>
+### <a name="How to run branch predictors"></a>How to run branch predictors  
+
+Once gathered files thanks to Qemu, generated text file can be used to feed our branch predictors and measure performances.  
+Go into the branch_predictors folder
+```
+cd yourpath/Branch_prediction_whats_left/src_and_configurations/BP_read_from_fileBranch_Predictors
+```
+Depending on the BP you want to run chose either:
+```
+ cd BIMODAL_PREDICTOR
+```
+or
+```
+cd TAGE_PREDICTOR
+```
+Depending on the chosen predictor you need to change few parameters:
+```
+//#define INPUT_FILE "/path/to/test.txt"
+#define INPUT_FILE "/path/to/tracex.txt"
+```
+firstly uncomment the right test file you want to run:  
+test --> QEMU results  
+tracex --> CBP-5 results  
+This changes must be done to the file:  
+  * branch.c in the bimodal  
+  * common_var.h in the L_TAGE  
+
+Then make the file by writing  
+```
+make
+```
+and then depending on the branch predictor you want
+```
+./name_file_compiled #of_instruction
+```
+where as example you can put:
+```
+./predictor 1000000
+```
+To run the Tage predictor over 1M istructions.   
+Results will be provided on the screen and on a file named results.txt as :
+```
+./predictor 1000000
+```
+
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
 We decide to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we consider different number of instructions and we evaluate the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plot the size of the prediction matrix as a function of the number of instructions.
@@ -549,313 +620,3 @@ Looking at the performances, the figure show that in general the L-Tage implemen
 Instead for the result related to each benchmark the performance of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not the case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
 The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the instruction become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
-
-------
-# Acknowledgement <a name="Acknowledgement"></a>
-We would like to express our sincere gratitude to Professor Renaud Pacalet for allowing us to undertake this work and carefully providing lots of help while developing it.  
-Thanks to EURECOM University for the provided material.
-
-**!!!!!!!!!!!!!!!!!!!!!!**
-
-[last_src_files/]: last_src_files/
-[other_files/client-server_socket/]: other_files/client-server_socket/
-[other_files/client-server_SHM/]: other_files/client-server_SHM/
-
-------
-
-### IMPORTANT : current qemu version => stable-2.7
-* Modified file can be found on src_qemu/
-* First branch predictor can be located on src_qemu/Reader_prog
-    * Some assumptions :
-        * Bimodal
-        * No tag only mod(n) for addressing
-        * If wrong decision => replace the entry
-        * If wrong decision => replace address  
-
-------
-scrivere cosa c'è nelle sottocartelle es. other files ci sono documenti utili.
-#################################################
-########### old sections ########################
-------
-
-# THIS IS THE PLACE WHERE TO SHARE INFOS AND TO TAKE IN MIND PROGRESSES
-
-## SEMESTER PROJECT BRANCH PREDICTION WHAT'S LEFT
-
-### First week:
-
- * About TAGE and its successors:
-
-    * http://www.irisa.fr/caps/people/seznec/JILP-COTTAGE.pdf
-    * https://www.irisa.fr/caps/people/seznec/L-TAGE.pdf
-
- * A study about why TAGE works so well:
-    * https://comparch.net/2013/06/30/why-tage-is-the-best/
-
- * All André Seznec's publications:
-    * https://www.irisa.fr/caps/people/seznec/
-
- * Additional paper:
-    * https://sites.ualberta.ca/~delliott/ece510/seminars/2006f/project/Analysis_Of_Branch_Predictors_Ming&Guang/Report/Analysis%20of%20Branch%20Predictors.pdf
-
-### Second week:
-  * Start using Qemu:
-    * Download and install Qemu
-    * Download, install and configure crosstool-NG for x86_64
-    * Build and run minimal Linux / Busybox systems in Qemu
-      * https://gitlab.eurecom.fr/snippets/23
-  * Set all variables and procedures for future use
-
-### Third week:
-  * Start using Qemu for bare metal HW
-  * Download latest version of Qemu from:
-    * http://git.qemu-project.org/?p=qemu.git;a=summary
-  * Download, configure and use Crosstool-NG for aarch64-unknown-linux-gnueabi
-    * /packages/LabSoC/toolchains
-  *Try to run an Hello world bare metal application:
-    * Downloaded from:
-      * https://github.com/freedomtan/aarch64-bare-metal-qemu
-      * Makefile modification to use our toolchain
-  * Try to run SPECint2006
-  * Try to run Dhrystone
-    * Downloaded from:
-     * https://fossies.org/linux/privat/old/dhrystone-2.1.tar.gz/
-     * Modification to Makefile
-     * Find libraries for aarch64
-        * Downloaded from: http://www.musl-libc.org/download.html
-     * Modification to Makefile for printf
-      * Trial : simple hello world try to print
-
-### Fourth week:
-  * seful material
-    * https://github.com/cloudius-systems/osv/wiki/AArch64
-  * Bare-metal dhrystone
-    * Makefile modifications
-    * Static linking of libc (tried newlib, musl)
-    * Linker script
-  * Linaro toolchain, QEMU out-of-tree build, Busy-box, Linux kernel
-    * Makefile for the entire "framework"
-    * Makefile to run Qemu with network to upload files:
-        * [Network for Qemu](#NetworkforQemu)
-
-### Fifth week:
-  * dnsmasq
-  * busybox -> dropbear
-  * instrument qemu to get the information that we need
-     * helper function to output useful information
-        * Jump
-            * program counter
-            * target address
-        * Branch
-            * taken/not taken  
-            * program counter
-            * target address of the branch if taken
-            * percentage of taken/not taken
-  * Link utili:
-       * https://sourcery.mentor.com/GNUToolchain/release2635     (for bare-metal in case of)
-       * https://fulcronz27.wordpress.com/2014/06/09/qemu-call-a-custom-function-from-tcg/   (how to create helper functions)
-       * http://git.qemu-project.org/?p=qemu.git;a=tree
-       * http://git.qemu-project.org/?p=qemu.git;a=blob;f=target-arm/translate-a64.c;h=9f964dfd5de5860e23ba66ba3560b44bf9b67ab1;hb=2ef6175aa76adea2ab8ce1540904a05d6f8e8eed
-
-### Sixth week:
-  * Unconditional branch helper function
-	* Solved compilation warnings
-	* Solved translation issues
-        * Improved performances with system call
-        * Improved performances with buffered fwrite
-
-### Seventh week:
-  * Further material:
-    * https://github.com/BLin409/Branch-Prediction-Simulator/blob/master/predictors.cpp
-    * https://github.com/sjdesai16/tage
-
-### Eighth week:
-  * Branch prediction improvements:
-    * Tagging the branch predictor using an hash-table
-        * http://www.partow.net/programming/hashfunctions/http://www.partow.net/programming/hashfunctions/
-  * Understand the the code in order to find out wether the branch is taken or not
-    * http://stackoverflow.com/questions/26748224/how-qemu-knows-the-branch-direction-of-a-tb-which-had-been-executed
-        * COMMENTS: Even if we are using wrong prediction (always not taken branches, that's false), changing from mod(n) to hash function we have noticed that a reduction of performances passing
-from mod -> 99.150002 hash -> 98.790474.
-Even if it could seems worse, it's an improvement since this mean that we are replacing less time the same location in the branch predictor (and so since we are using bimodal BP, we reach the right prediction "always taken" later) because the index brings
-to different location. This lead to decrement in a slower way the counter of each taken leading to an higher missprediction rate.
-
-
-### Ninth week:
-  * Found a way to print all the branches (Hope so) code can be found under Files/src_qemu
-     * QEMU is a dynamic recompiler. The code runs once, and it generates recompiled code that potentially runs multiple times. The generated code contains a jump at the point of the gen_goto_tb.
-  * Start to implement LTage or other BP.
-     * Usefull websites:
-       * http://home.deib.polimi.it/silvano/FilePDF/ARC-MULTIMEDIA/Lesson_2_Branch_Prediction.pdf
-       * https://github.com/ssc3/Perceptron-BranchPredictor
-       * https://github.com/sjdesai16/tage
-  * Some usefull link for statistics on branch prediction and branch predictor
-     * http://bwrcs.eecs.berkeley.edu/Classes/CS252/Projects/Reports/terry_chen.pdf
-     * https://www.slideshare.net/rinnocente/computer-architecture-branch-prediction
-
-### Tenth week
-  * Our implementation in C of L-Tage
-  * Testing of L-tage
-  * Debugging of L-tage
-
-### Eleventh week
-  * Gathering statistics using Dhrystone (whit qemu) instructions
-  * Modified the Championship Branch Prediction (CBP-5) infrastructure to create new files for our c implementations
-    *  Gathering statistics using extracted LONG_MOBILE-1 traces of CBP-5
-  * Try to compile and use another benchmark for Qemu
-  * Try to implement a TCP-IP link between qemu and branch predictors simulators
-
-
-
-### <a name="NetworkforQemu"></a>Network for Qemu
-To exchange datas with the emulated system we use tftp.To create a tftp server:
-Packet required:
-```
-sudo apt-get install xinetd tftpd tftp
-sudo apt-get install isc-dhcp-server
-sudo apt-get install bridge-utils
-```
-Create this file under /etc/xinetd.d/ called tftp (as example with the command)
-```
-sudo vim /etc/xinetd.d/tftp
-```
-cutting and pasting the following lines inside
-```
-service tftp
-{
-protocol        = udp
-port            = 69
-socket_type     = dgram
-wait            = yes
-user            = nobody
-server          = /usr/sbin/in.tftpd
-server_args     = /tftpboot
-disable         = no
-}
-```
-Create the following folder and execute the following commands
-```
-sudo mkdir /tftpboot
-sudo chmod -R 777 /tftpboot
-sudo chown -R nobody /tftpboot
-```
-Now you can restart the service with the following commands:
-```
-sudo /etc/init.d/xinetd stop
-sudo /etc/init.d/xinetd start
-```
-Now to create a suitable network for the emulator create and run the following script:
-(WARNING: change user value with yours in my case was mc and nic with the name of your ethernet interface in my case was enp2s0)
-```
-user=mc
-tap=tap0
-bridge=br0
-nic=enp2s0
-
-echo "---> Creating taps..."
-ip tuntap add dev $tap mode tap user $user
-ip link set dev $tap up
-
-echo "---> Creating bridge..."
-brctl addbr $bridge
-brctl setfd $bridge 0
-brctl addif $bridge $nic
-brctl addif $bridge $tap
-
-echo "---> Bringing interfaces and bridge up..."
-ifconfig $tap 0.0.0.0 promisc up
-ifconfig $nic 0.0.0.0 promisc up
-ifconfig $bridge 192.168.0.1 netmask 255.255.255.0 up
-
-echo "---> Restart DHCP server"
-service isc-dhcp-server restart
-```
-Now if everything went good run the qemu instance:
-(WARNING: this file must be in the root directory in which there are all the other directories with qemu busybox and so on.)
-```
-ramfs_img		=	$(PWD)/busybox.cpio.gz
-kernel_img		=	$(PWD)/linux/arch/arm64/boot/Image
-qemu_root = $(PWD)/qemu
-qemu_src = $(qemu_root)/src
-qemu_build = $(qemu_root)/build
-qemu_dtc =  $(qemu_src)/dtc
-mon_ip		= 192.168.0.25
-tel_ip		= 192.168.0.1
-mon_port	= 2222
-init_mem	= 1024M
-
-run:
-	script /tmp/run -c '\
-		stty intr ^] && \
-		$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
-		-M virt \
-		-m $(init_mem) \
-		-nographic \
-		-cpu cortex-a57 \
-		-kernel $(kernel_img) \
-		-initrd $(ramfs_img) \
-		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
-		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
-		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
-		-serial stdio \
-		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
-		'
-
-# XXX: QEMU monitor - open from a separate terminal
-monitor:
-	telnet $(tel_ip) $(mon_port)
-
-# XXX: QEMU help
-help:
-	$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
-		-M virt \
-		-help
-```
-Now to exchange data with the qemu machine:
-To download a file (in QEMU)
-```
-tftp -g -r <filename> 192.168.0.1
-```
-To upload a file (from QEMU to Host)
-```
-tftp -p -r <filename> 192.168.0.1
-```
-### <a name="How to run branch predictors"></a>How to run branch predictors
-
-Go into the branch_predictors folder
-```
-cd Branch_Predictors
-```
-Depending on the BP you want to run chose either:
-```
- cd BIMODAL_PREDICTOR
-```
-or
-```
-cd TAGE_PREDICTOR
-```
-Depending on the chosen predictor you need to change few parameters:
-```
-//#define INPUT_FILE "/path/to/test.txt"
-#define INPUT_FILE "/path/to/tracex.txt"
-```
-firstly uncomment the right test file you want to run:
-test --> QEMU results
-tracex --> CBP-5 results
-This changes must be done to the file:
-  * branch.c in the bimodal
-  * common_var.h in the L_TAGE
-
-Then make the file by writing
-```
-make
-```
-and then depending on the branch predictor you want
-```
-./name_file_compiled #of_instruction
-```
-where as example you can put:
-```
-./predictor 1000000
-```
-To run the Tage predictor over 1M istructions.

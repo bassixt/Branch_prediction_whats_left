@@ -126,10 +126,12 @@ int main(int argc, char **argv){
 	fclose(fp);
 	double MPKBr =((1.0-tage_pred/iCount)*1000.0);
   	double accurateTage = (tage_pred * 100.0 / iCount);
-    	fprintf(scr,"%f\n",accurateTage);
 	printf("Results with Tage Predictor and TOT#INSTR: %f\n", iCount);
     	printf("Accuracy : %f\n", accurateTage );
     	printf("MPKBr_1K : %f\n", MPKBr);
+        fprintf(scr,"Results with Tage Predictor and TOT#INSTR: %f\n", iCount);
+    	fprintf(scr,"Accuracy : %f\n", accurateTage );
+    	fprintf(scr,"MPKBr_1K : %f\n", MPKBr);
     	fclose(scr);
 
 	

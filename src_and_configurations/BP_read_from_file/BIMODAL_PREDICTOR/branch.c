@@ -173,46 +173,14 @@ int main (int argc, char **argv)
 	// table to store prediction outcome
 	//00 = strongly not taken;  10 weakly taken;
 	//01 = weakly not taken;    11 strongly taken;
-
-
-	//uint64_t *table1024 = malloc(1024*sizeof(uint64_t));
-
-	//Various length Branch Target Buffers
-
-	//uint64_t *btb1024 = malloc(1024*sizeof(uint64_t));
-  link table1024[1024]={0};
-  /*
-  for(iCount=0; iCount<1024;iCount++)
-    printf("%p\n",table1024[iCount]);
-  iCount;
-  */ 
-
-   /* for (int i = 0; i < 1024; i++) 
-        {
-            table1024[i] = INITIAL_VALUE;
-            btb1024[i] = INITIAL_ADDRESS;
-        }*/
-  
-
- while(acquire(fp,buffer_read) != -1 && iCount < atoi(argv[1])){
-    
-        //buffer_read0->PC; buffer_read1->Target_Address; buffer_read2->Decision; 
-        bimod_tmp1024 = bimodal_implementation(table1024, buffer_read[0], buffer_read[2], buffer_read[1]);
-       
-       	//printf("Bimodal temp 8 %d\n", bimod_tmp8[0]);
-        //statistics counters for T/NT
-        
-        bimodal2bit1024 += bimod_tmp1024;
-        //statistics counters for addresses
-        
-       
-
-
-
-        iCount++; //Instruction Count
-      //fprintf(scr,"PC%" PRIu64 "ADDR%" PRIu64 "T/NT%" PRIu64 "\n", buffer_read[0],buffer_read[1],buffer_read[2]);
+        link table1024[1024]={0};
+  	while(acquire(fp,buffer_read) != -1 && iCount < atoi(argv[1])){ 
+        	bimod_tmp1024 = bimodal_implementation(table1024, buffer_read[0], buffer_read[2], buffer_read[1]);        
+        	bimodal2bit1024 += bimod_tmp1024;
+                //statistics counters for addresses
+                iCount++; //Instruction Count
     }
-   	fclose(fp);
+    fclose(fp);
   
     
     float MPKBr_1K_1024bit =((1.0-(float)bimodal2bit1024/iCount)*1000.0);
@@ -220,6 +188,9 @@ int main (int argc, char **argv)
     printf("Results with Bimodal Predictor and TOT#INSTR: %d\n", iCount);
     printf("Accuracy : %f\n", accurate2bit1024 );
     printf("MPKBr_1K : %f\n", MPKBr_1K_1024bit);
+    fprintf(scr,"Results with Bimodal Predictor and TOT#INSTR: %d\n", iCount);
+    fprintf(scr,"Accuracy : %f\n", accurate2bit1024 );
+    fprintf(scr,"MPKBr_1K : %f\n", MPKBr_1K_1024bit);
     fclose(scr);
     //size of table
     int result_size_table;
@@ -227,14 +198,7 @@ int main (int argc, char **argv)
     for(uint64_t i=0; i<1024; i++){
         result_size_table = size_counter(table1024, i);
         tot_res_siz += result_size_table;
-
-	//printf("table #:%" PRIu64 " size: %d \n",i,result_size_table);
     }
     printf("table length %d\n",tot_res_siz);          
-
-
-    //free(table1024);
-    
-    //free(btb1024);
-  	return 0;
+    return 0;
 }
