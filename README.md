@@ -128,22 +128,29 @@ cd Branch_prediction_whats_left/
 ```
 This folder have the following structure:
 
-../Branch_prediction_whats_left  
-├── aarch64baremetal  
-├── Branch_Predictors  
-├── CoreMark  
-├── Dhrystone  
-├── dhrystone-2.1  
-├── exec  
-├── FC  
+../Branch_prediction_whats_left    
 ├── images  
-├── Makefile  
-├── new_benchmark  
+│   ├──...  
+├── other_files  
+│   ├── aarch64baremetal  
+│   ├── AArch64-Reference-Manual.pdf  
+│   ├── AndreSeznec_CBP4_Unlimited  
+│   ├── AndreSeznec.ppt  
+│   ├── CbpOrgChairPresentation.pptx  
+│   ├── client-server_SHM  
+│   └── client-server_socket  
 ├── README.md  
-├── Results  
-├── script  
-├── src_qemu  
-└── src_qemu_puliti  
+└── src_and_configurations  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── BP_read_from_file  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── busybox_tftp_config  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Coremark  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Dhrystone  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── linaro_packages  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Makefile  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── network_QEMU_script  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── src_for_shm_tage  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── src_qemu_tofile   
+
 First of all, if not already done, (if already done a little modification in
 the makefile is needed in order to find the source files) it is required to download the linux kernel
 from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  

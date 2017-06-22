@@ -1,3 +1,5 @@
+# To use this makefile, you need to modify CC in order to use your cross-compiler
+# The following one is intended only as example so, will not work without modifications.
 CC=		/home/mc/project/gcc-linaro-4.9.4-2017.01-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc		
 
 GCC=		/home/mc/project/gcc-linaro-4.9.4-2017.01-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc

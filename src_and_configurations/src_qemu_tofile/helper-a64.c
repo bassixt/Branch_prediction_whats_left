@@ -33,76 +33,36 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #define BUFFER_SIZE 126
+#define FILENAME "test.txt"
 
 //OUR BEGINNING IMPLEMENTATION
 void HELPER(printer)(uint64_t pc, uint64_t addr, uint64_t T_NT)
 {	
-   	//FILE *fp;
-   	//fp = fopen("test.txt", "a");
-	//fprintf(fp, "pc:%" PRIu64 " addr:%" PRIu64 "\n",pc,addr);
-    //fclose(fp);
-
-    //IMPLEMENTATION WITH SYSTEM CALL
-	/*char buf[BUFFER_SIZE];
-    int filedesc = open("/home/mc/project/prova.txt", O_CREAT | O_WRONLY | O_APPEND,0666);
-    if(filedesc < 0)
-    {
-    	printf("error opening the file %d\n",filedesc);
-        return 1;
-    }
- 	sprintf(buf, "pc:%" PRIu64 " addr:%" PRIu64 "\n",pc,addr);
-	write(filedesc,buf,60);
-	close(filedesc);*/
-
-	//BUFFERED WRITE
-	// THE IDEA IS TO MAKE FEW FILE WRITE USING A BUFFER
-
-	//char buf[BUFFER_SIZE];
-	static uint64_t buff[BUFFER_SIZE]={0};													//Big buffer 
+	static uint64_t buff[BUFFER_SIZE]={0};													 
 	static int added_length = 0;	
-	static int cicle = 0;													//Length of buffer 
- 	//char intermediate[60];														//Intermediate buffer
-	FILE *fp;																	
-   	
-   	//sprintf(intermediate, "pc:%" PRIu64 " addr:%" PRIu64 "\n",pc,addr);
-   	/*if(strlen(intermediate)+added_length<=BUFFER_SIZE)							//control if adding the intermediate value you will have an overflow
-	 	{
-			added_length += sprintf(buf+added_length, "%s", intermediate);			//"concatenate" the intermediate value
-	 	}
-	else 																			//if you have reached the length of the buffer you need to write on the file
-	 	{
-			fwrite(buf , BUFFER_SIZE , sizeof(char) , fp );							//write on file
-	 		added_length=0;															//reset the counter for the buffer
-	 		added_length += sprintf(buf+added_length, "%s", intermediate);			//add the last row that you did't put before
- 		}*/
-   	if(cicle>=0) //for testing purpose at the beginning was cicle < 1000 now 0 >= infinite
-	   	{
-		   	if(added_length < BUFFER_SIZE-3)
-		   	{
+	static int cicle = 0;       
+	FILE *fp;                                                                          						
+        if(cicle<100000000){ //for testing purpose at the beginning was cicle < 1000 now 0 >= infinite  cicle>=0
+	   	
+		   	if(added_length < BUFFER_SIZE-3){
 		   		buff[added_length] = pc;
 		   		buff[added_length+1] = addr;
 		   		buff[added_length+2] = T_NT;
 		   		added_length = added_length + 3;
 		   	}
-		   	else
-		   	{
+		   	else{		   	
 		   		buff[added_length] = pc;
 		   		buff[added_length+1] = addr;
 		   		buff[added_length+2] = T_NT;
-		   		if((fp = fopen("test.txt", "a")) == NULL)
-		   		{
+		   		if((fp = fopen(FILENAME, "a")) == NULL){
 		   			printf("ERROR OPENING FILE\n");
-		   			//return -1;
 		   		}
 		   		fwrite(buff , sizeof(uint64_t) , BUFFER_SIZE  , fp );	
 		   		fclose(fp);						//write on file
 			 	added_length=0;
-
-			 	cicle = cicle + 1;
+				cicle = cicle + 1;
 		   	}		   	
-		}
-   
-    //return 0;
+	}
 }
 
 /* C2.4.7 Multiply and divide */

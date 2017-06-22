@@ -1152,7 +1152,7 @@ static inline AArch64DecodeFn *lookup_disas_fn(const AArch64DecodeTable *table,
  */
 static void disas_uncond_b_imm(DisasContext *s, uint32_t insn)
 {
-	//	TCGv_i64 tcg_retr = tcg_temp_new_i64();        //to be passed to our function
+    //	TCGv_i64 tcg_retr = tcg_temp_new_i64();        //to be passed to our function
     //TCGv_i64 tcg_pc, tcg_addr;
     //tcg_pc = tcg_const_i64(s->pc);
 
@@ -1171,7 +1171,7 @@ static void disas_uncond_b_imm(DisasContext *s, uint32_t insn)
 
     /* C5.6.20 B Branch / C5.6.26 BL Branch with link */
     //gen_helper_printer(tcg_const_i64(s->pc),tcg_const_i64(addr),tcg_const_i64(1));
-	TCGv_i64 tcg_pc1, tcg_addr1, tcg_t_nt1;
+    TCGv_i64 tcg_pc1, tcg_addr1, tcg_t_nt1;
     tcg_pc1 = tcg_const_i64(s->pc);
     tcg_addr1 = tcg_const_i64(addr);
     tcg_t_nt1 = tcg_const_i64(1);
@@ -1179,7 +1179,7 @@ static void disas_uncond_b_imm(DisasContext *s, uint32_t insn)
     tcg_temp_free_i64(tcg_pc1);
     tcg_temp_free_i64(tcg_addr1);
     tcg_temp_free_i64(tcg_t_nt1);
-	gen_goto_tb(s, 0, addr);
+    gen_goto_tb(s, 0, addr);
 }
 
 /* C3.2.1 Compare & branch (immediate)
@@ -1297,35 +1297,35 @@ static void disas_cond_b_imm(DisasContext *s, uint32_t insn)
         /* genuinely conditional branches */
         TCGLabel *label_match = gen_new_label();
         arm_gen_test_cc(cond, label_match);
-	    TCGv_i64 tcg_pc, tcg_addr, tcg_t_nt;
-	    tcg_pc = tcg_const_i64(s->pc);
-	    tcg_addr = tcg_const_i64(addr);
-	    tcg_t_nt = tcg_const_i64(0);
-	    gen_helper_printer(tcg_pc,tcg_addr,tcg_t_nt);
-	    tcg_temp_free_i64(tcg_pc);
-	    tcg_temp_free_i64(tcg_addr);
-	    tcg_temp_free_i64(tcg_t_nt);
+	TCGv_i64 tcg_pc, tcg_addr, tcg_t_nt;
+	tcg_pc = tcg_const_i64(s->pc);
+	tcg_addr = tcg_const_i64(addr);
+	tcg_t_nt = tcg_const_i64(0);
+	gen_helper_printer(tcg_pc,tcg_addr,tcg_t_nt);
+	tcg_temp_free_i64(tcg_pc);
+	tcg_temp_free_i64(tcg_addr);
+	tcg_temp_free_i64(tcg_t_nt);
         gen_goto_tb(s, 0, s->pc);
         gen_set_label(label_match);
-	    TCGv_i64 tcg_pc1, tcg_addr1, tcg_t_nt1;
-	    tcg_pc1 = tcg_const_i64(s->pc);
-	    tcg_addr1 = tcg_const_i64(addr);
-	    tcg_t_nt1 = tcg_const_i64(1);
-	    gen_helper_printer(tcg_pc1,tcg_addr1,tcg_t_nt1);
-	    tcg_temp_free_i64(tcg_pc1);
-	    tcg_temp_free_i64(tcg_addr1);
-	    tcg_temp_free_i64(tcg_t_nt1);
+	TCGv_i64 tcg_pc1, tcg_addr1, tcg_t_nt1;
+	tcg_pc1 = tcg_const_i64(s->pc);
+	tcg_addr1 = tcg_const_i64(addr);
+	tcg_t_nt1 = tcg_const_i64(1);
+	gen_helper_printer(tcg_pc1,tcg_addr1,tcg_t_nt1);
+	tcg_temp_free_i64(tcg_pc1);
+	tcg_temp_free_i64(tcg_addr1);
+	tcg_temp_free_i64(tcg_t_nt1);
         gen_goto_tb(s, 1, addr);
     } else {
         /* 0xe and 0xf are both "always" conditions */
         TCGv_i64 tcg_pc1, tcg_addr1, tcg_t_nt1;
-	    tcg_pc1 = tcg_const_i64(s->pc);
-	    tcg_addr1 = tcg_const_i64(addr);
-	    tcg_t_nt1 = tcg_const_i64(1);
-	    gen_helper_printer(tcg_pc1,tcg_addr1,tcg_t_nt1);
-	    tcg_temp_free_i64(tcg_pc1);
-	    tcg_temp_free_i64(tcg_addr1);
-	    tcg_temp_free_i64(tcg_t_nt1);
+	tcg_pc1 = tcg_const_i64(s->pc);
+	tcg_addr1 = tcg_const_i64(addr);
+	tcg_t_nt1 = tcg_const_i64(1);
+	gen_helper_printer(tcg_pc1,tcg_addr1,tcg_t_nt1);
+	tcg_temp_free_i64(tcg_pc1);
+	tcg_temp_free_i64(tcg_addr1);
+	tcg_temp_free_i64(tcg_t_nt1);
         gen_goto_tb(s, 0, addr);
     }
 }
