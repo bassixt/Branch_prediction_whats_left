@@ -16,7 +16,8 @@
 	* [Bimodal Branch Predictor](#Bimodal)
 	* [Tage Branch Predictor](#Tage)
 * [Qemu settings and modifications](#Phase_2)
-* [BP implementations](#Phase_3)
+* [Qemu helper function](#Phase_3)
+* [BP implementations](#Phase_4)
 	* [Bimodal implementation](#bimodal_impl)
 	* [L-TAGE implementation](#tage_impl)
 * [Client-server (QEMU-BP) exchanging data by shared memory](#SHM)
@@ -35,6 +36,7 @@
 		* [How to run Dhrystone](#How_to_run_Dhrystone)
 	1. [About Coremark](#about_Coremark)
 		* [How to run Coremark](#run_Coremark)
+* [Data processing](#Data processing)
 * [Results and Conclusions](#Results and Conclusions)
 * [Acknowledgement](#Acknowledgement)
 
@@ -117,7 +119,7 @@ The root working directory at the end should have that structure:
 	├── Makefile  
 	└── tftp_script  
 
-To reproduce all of this first step to follow is to clone this repository:    
+To reproduce all of this, first step to follow is to clone this repository:    
 open a new terminal and run the following command  
 ```
 git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
@@ -151,11 +153,21 @@ This folder have the following structure:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── src_for_shm_tage  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── src_qemu_tofile   
 
-First of all, if not already done, (if already done a little modification in
-the makefile is needed in order to find the source files) it is required to download the linux kernel
-from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  
-In order to perform what explained at the beginning of this phase,
-it is needed to run the makefile following  this order:
+Src_and_configurations folder contains Qemu source file that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found as well as some useful script files on this folder.  
+To reproduce my_working_directory:  
+```
+mkdir my_working_directory
+```
+Then copy inside this new directory the main Makefile that will help you to build the entire "infrastructure". (modify properly /some/path/ with the target path on your case)  
+```
+cp /some/path/Branch_prediction_whats_left/src_and_configurations/makefile /some/path/my_working_directory
+```
+Enter in my_working_directory:
+```
+cd /some/path/my_working_directory
+```
+Now, download linux kernel in a directory in my_working_directory called /linux from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  
+To continue building the infrastructure:
 ```
 make qclone
 ```
@@ -214,7 +226,26 @@ To turn off QEMU simply write on the Qemu terminal:
 poweroff
 ```
 -----
-# BP implementations <a name="Phase_3"></a>
+# Qemu helper function <a name="Phase_3"></a>
+An helper function of TCG has the function of wrapping up a user function to be called in the same way it is done for Qemu library functions. This is done to ensure that user functions are compliant with coding rules imposed by the TCG of QEMU.  
+In our case we have used helper functions to instrument Qemu to extract, for a given branch instruction, its program counter, the target address associated to that branch and the final decision taken (taken / not taken)  
+To create an helper function three files must be changed: helper-a64.h, helper-a64.c and translation-a64 located in /qemu/src/target-arm:
+* Macro in helper-a64.h: DEF_HELPER_3(printer, dh_retvar_decl0_void, i64, i64, i64).  
+* Definition of the helper function in helper-a64.c:
+void HELPER(printer)(uint64_t pc, uint64_t addr, uint64_t T_NT).
+* Call it in the translation-a64 file: gen_helper_printer(tcg_pc1,tcg_addr1,tcg_t_nt1).  
+
+To use it in the translation, TCGv_i64 type must be used as well as
+the tcg_const_i64 function to save values that vary from instruction to instruction at the time.   
+The position where to put these instruction is foundamental: them must be created, translated and destroyed before the gen_goto_tb instruction. The reason is that QEMU is a dynamic recompiler and generates recompiled code that potentially runs multiple times. The generated code contains a jump at the point of the gen_goto_tb so when the generated code from the compilation is running, you never execute the code below.    
+(Source:  [A Novel Technique for Making QEMU an
+Instruction Set Simulator for Co-simulation with
+SystemC](http://www.iaeng.org/publication/IMECS2011/IMECS2011_pp249-254.pdf))    
+We have used such helper function in every block that translates a branch instruction.    
+The implemented helper function can be used just copying the three source files from the /src_qemu_tofile directory to the original source files of Qemu and recompile it as previously explained.  
+
+-----
+# BP implementations <a name="Phase_4"></a>
 ## Bimodal implementation <a name="bimodal_impl"></a>
 The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances will be considerably improved.  
 The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
@@ -314,7 +345,7 @@ http://www.csc.villanova.edu/~mdamian/threads/posixsem.html
 
 ------
 # Data gathering <a name="Phase_4_data_gathering"></a>
-In order to gather data different Benchmark applications were run over the emulated Busybox system.  
+In order to gather data different Benchmark applications were run on Qemu.    
 To run programs over the emulated system, a connection between the host OS and the emulated one is needed to exchange the executable files because, obviously, they are not already embedded in Busybox.  
 
 ## How to set the connection up <a name="How_to_set_the_connection_up"></a>
@@ -359,6 +390,7 @@ Now you can restart the service with the following commands:
 sudo /etc/init.d/xinetd stop
 sudo /etc/init.d/xinetd start
 ```
+Using this connection between host system and guest system it is possible to transfer cross-compiled benchmark on Qemu and run it.
 
 ## About Dhrystone <a name="About_Dhrystone"></a>
 Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinhold P. Weicker intended to be representative of system (integer) programming. The Dhrystone grew to become representative of general processor (CPU) performance. With Dhrystone, Weicker gathered meta-data from a broad range of software, including programs written in FORTRAN, PL/1, SAL, ALGOL 68, and Pascal. He then characterised these programs in terms of various common constructs: procedure calls, pointer indirections, assignments, etc. From this he wrote the Dhrystone benchmark to correspond to a representative mix. It is written in C language. [Wikipedia](https://en.wikipedia.org/wiki/Dhrystone).
@@ -497,6 +529,8 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 		./coremark.exe  8 8 8 0 7 1 1200 > ./run3.log
 		```
 
+------
+# Data processing <a name=" Data processing"></a>
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
 We decide to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we consider different number of instructions and we evaluate the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plot the size of the prediction matrix as a function of the number of instructions.

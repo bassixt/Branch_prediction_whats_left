@@ -42,7 +42,7 @@ void HELPER(printer)(uint64_t pc, uint64_t addr, uint64_t T_NT)
 	static int added_length = 0;	
 	static int cicle = 0;       
 	FILE *fp;                                                                          						
-        if(cicle<100000000){ //for testing purpose at the beginning was cicle < 1000 now 0 >= infinite  cicle>=0
+        if(cicle>=0){ //insert here a value greater than 0 to limit the number of printed informations.
 	   	
 		   	if(added_length < BUFFER_SIZE-3){
 		   		buff[added_length] = pc;
