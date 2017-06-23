@@ -603,7 +603,7 @@ Results will be provided on the screen and on a file named results.txt as :
 
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
-We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
+We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accuracy, that is the hit rate normalized over kiloinstruction and the misprediction rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
 The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
@@ -613,21 +613,21 @@ The final result have been plotted using Matlab [<img src="images/matlab.png" al
 
 <img src="images/budjet_data.png" height="400">
 
-Considering the accurancy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till an asymptotic value. Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accurancy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
-In the other hands when the number of instructions is more than 10 milion, the performances start to decrease because of the shut down sequence that pollutes the input data of our implementation.  
+Considering the accuracy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till a little variation around 10 milions instructions (see caption Further remarks). Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accuracy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
+In the other hands when the number of instructions is more than 10 milion, the performances start to significantly decrease because of the shut down sequence that pollutes the input data of our implementation.  
 Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate. Also in this case, we can notice a slight difference depending on the type of input data. Indeed, for the instructions taken from the CBP-5, for a small number of them, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
 Instead, for the result related to each benchmark, the performances of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not our case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
-The best results are obtained with the L-Tage implementation using the benchmarks till 10 millions instructions with about (dato numerico) of accurancy and (dato numerico) of missrate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
+The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about 97.49% of accuracy and 25.06 of misprediction rate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about 92.57% of accuracy and 74.29 of misprediction rate.
 
 # Further remarks <a name="Further remarks"></a>
-During data processing we noticed a strange behavior in results over 10^7 instructions. Accuracy should increase, as the number of instruction increase, but over 10mln of instruction showed a slight worsening.    
-To understand the reason of this behaviour we have taken LONG-MOBILE-10 trace and duplicated the first million instructions hundred times. The results can be seen below:
+During data processing we noticed a strange behavior in  the results over 10^7 instructions. Accuracy should increase as the number of instruction increase, but over 10mln of instruction, it showed a slight worsening.    
+To understand the reason of this behavior we have taken LONG-MOBILE-10 trace and duplicated the first million instructions hundred times. The results can be seen below:
 
 <img src="images/accuracy_repeated_pattern.png" height="400">
 
 <img src="images/misp_repeated_pattern.png" height="400">
 
-In this case, the behavior of the accuracy increases till an asymptotic value as the number of instructions increase.  
-We think that the reason of the non monotonic behaviour showed in the section above after 10mln of instructions is due to an increased stress of the benchmark that lead to a new context and set of operations with completely different addresses.  
+In this case, the accuracy increases till an asymptotic value as the number of instructions increase.  
+We think that the reason of the non monotonic behavior after 10mln of instructions showed in the section above  is due to an increased stress of the benchmark that lead to a new context and set of operations with completely different addresses.  
 Our opinion can be supported looking at the data budget plot, that shows an exponential shape.  
