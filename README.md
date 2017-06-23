@@ -609,7 +609,7 @@ The final result have been plotted using Matlab [<img src="images/matlab.png" al
 
 <img src="images/accuracy.png" height="400">
 
-<img src="images/misprediction_rate.png" height="370">
+<img src="images/misprediction_rate.png" height="360">
 
 <img src="images/budjet_data.png" height="400">
 
