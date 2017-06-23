@@ -8,9 +8,5 @@ sudo apt-get install libtool
 sudo apt-get install libsdl-console
 sudo apt-get install libsdl-console-dev
 sudo apt-get install libncurses5-dev
-
---------------------------------------------------
-You will probably need to make your busybox binary
-setuid root to ensure all configured applets will
-work properly.
---------------------------------------------------
+sudo apt-get install global
+sudo apt-get install -no-install -recomends -y build-dep qemu

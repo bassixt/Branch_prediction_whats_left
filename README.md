@@ -117,8 +117,10 @@ The root working directory at the end should have this structure:
 	├── Makefile  
 	└── network_QEMU_script  
 
-To reproduce this, the first step to follow is to clone this repository:    
-open a new terminal and run the following command:  
+To reproduce this, the first step to follow is to clone this repository.  
+`N.B.`  
+These steps will work and are tested under Ubuntu 16.04. Many problems were encountered with previous versions (e.g. Ubuntu 14.04).  
+Open a new terminal and run the following command:  
 ```
 git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
 ```
@@ -158,13 +160,24 @@ mkdir my_working_directory
 ```
 Then copy inside this new directory the main Makefile that will help you to build the entire "infrastructure". (modify properly /some/path/ with the target path on your case)  
 ```
-cp /some/path/Branch_prediction_whats_left/src_and_configurations/makefile /some/path/my_working_directory
+cd /some/path/Branch_prediction_whats_left/src_and_configurations/
+cp Makefile network_QEMU_script /some/path/my_working_directory
 ```
 Enter my_working_directory:
 ```
 cd /some/path/my_working_directory
 ```
 Now, download linux kernel in a directory in my_working_directory called /linux from their websites. (HINT: clicking on TUX, the Linux penguin in the description above, you will be redirected on the official website)  
+Then the linaro download is needed and it ca be retrieved at the following link: [releases.linaro.org/...](http://releases.linaro.org/components/toolchain/binaries/6.3-2017.02/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz).  
+Once downloaded save it in /opt/ and then type:
+```
+tar -xJf gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu.tar.xz
+```
+The Makefile can be modified according to the previous directory and the cross-compiler path.
+```
+xcc= /opt/gcc-linaro-6.3.1-2017.02-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+```
+In order to complete the installation successfully some packages are needed, thus the list of those required packages is in the file [src_and_configurations/linaro_packages](src_and_configurations/linaro_packages/).  
 To continue building the infrastructure:
 ```
 make qclone
