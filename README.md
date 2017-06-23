@@ -38,6 +38,7 @@
 	1. [CBP-5 Traces](#CBP-5)
 * [Data processing](#Data processing)
 * [Results and Conclusions](#Results and Conclusions)
+* [Further remarks](#Further remarks)
 
 -----
 
@@ -618,3 +619,10 @@ Looking at the performances, the figure show that in general the L-Tage implemen
 Instead, for the result related to each benchmark, the performances of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not our case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
 The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
+
+# Further remarks <a name="Further remarks"></a>
+During data processing we noticed a strange behaviour also in the
+
+<img src="images/accuracy_repeated_pattern.png" height="400">
+
+<img src="images/misp_repeated_pattern.png" height="400">
