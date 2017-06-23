@@ -618,11 +618,16 @@ In the other hands when the number of instructions is more than 10 milion, the p
 Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate. Also in this case, we can notice a slight difference depending on the type of input data. Indeed, for the instructions taken from the CBP-5, for a small number of them, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
 Instead, for the result related to each benchmark, the performances of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not our case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
-The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
+The best results are obtained with the L-Tage implementation using the benchmarks till 10 millions instructions with about (dato numerico) of accurancy and (dato numerico) of missrate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
 
 # Further remarks <a name="Further remarks"></a>
-During data processing we noticed a strange behaviour also in the
+During data processing we noticed a strange behavior in results over 10^7 instructions. Accuracy should increase, as the number of instruction increase, but over 10mln of instruction showed a slight worsening.    
+To understand the reason of this behaviour we have taken LONG-MOBILE-10 trace and duplicated the first million instructions hundred times. The results can be seen below:
 
 <img src="images/accuracy_repeated_pattern.png" height="400">
 
 <img src="images/misp_repeated_pattern.png" height="400">
+
+In this case, the behavior of the accuracy increases till an asymptotic value as the number of instructions increase.  
+We think that the reason of the non monotonic behaviour showed in the section above after 10mln of instructions is due to an increased stress of the benchmark that lead to a new context and set of operations with completely different addresses.  
+Our opinion can be supported looking at the data budget plot, that shows an exponential shape.  
