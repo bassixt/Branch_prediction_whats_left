@@ -607,11 +607,11 @@ We decided to test our implementations of branch predictor with both the two typ
 The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
-<img src="images/accuracy.png" height="450">
+<img src="images/accuracy.png" height="400">
 
-<img src="images/misprediction_rate.png" height="400">
+<img src="images/misprediction_rate.png" height="350">
 
-<img src="images/budjet_data.png" height="450">
+<img src="images/budjet_data.png" height="400">
 
 Considering the accuracy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till a little variation around 10 milions instructions (see caption Further remarks). Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accuracy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
 In the other hands when the number of instructions is more than 10 milion, the performances start to significantly decrease because of the shut down sequence that pollutes the input data of our implementation.  
