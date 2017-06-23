@@ -167,7 +167,7 @@ init_mem    = 1024M
 
 run:
 	script /tmp/run -c '\
-#		stty intr ^] && \
+		stty intr ^] && \
 		$(qemu_build)/aarch64-softmmu/qemu-system-aarch64 \
 		-M virt \
 		-m $(init_mem) \
@@ -175,11 +175,11 @@ run:
 		-cpu cortex-a57 \
 		-kernel $(kernel_img) \
 		-initrd $(ramfs_img) \
-#		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
-#		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
-#		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
-#		-serial stdio \
-#		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
+		-netdev tap,id=net0,ifname=tap0,script=no,downscript=no \
+		-device virtio-net-device,netdev=net0,mac="52:54:00:12:34:50" \
+		-append "earlyprintk console=ttyAMA0 loglevel=8 ip=$(mon_ip)" \
+		-serial stdio \
+		-monitor telnet:$(tel_ip):$(mon_port),server,nowait,nodelay \
 		'
 
 
@@ -200,13 +200,11 @@ help:
 # 	tftp -r hptest3G -g 172.17.0.1 && chmod 755 hptest3G
 ###############################################################################
 
-# use exec to build and run 
 exec:
 #	make qconfigure
 	make qbuild
 	make run
-
-# the idea was to simplify a files backup creation
+	
 backup:
 	mkdir -p $(PWD)/backups/$(bkDir)/
 	cp -L $(PWD)/backups/*-a64* $(PWD)/backups/$(bkDir)/
