@@ -10,7 +10,6 @@
 
 ---
 # Table of contents:
-* [Introduction](#intro)
 * [Project description](#Project_description)
 * [Preliminary studies](#Phase_1)
 	* [Bimodal Branch Predictor](#Bimodal)
@@ -39,8 +38,6 @@
 	1. [CBP-5 Traces](#CBP-5)
 * [Data processing](#Data processing)
 * [Results and Conclusions](#Results and Conclusions)
-* [Acknowledgement](#Acknowledgement)
-
 -----
 
 # Project description <a name="Project_description"></a>
