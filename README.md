@@ -51,7 +51,7 @@ After having properly instructed QEMU, in which a Linux kernel has been installe
 Program Counter, target address and actual decision on branches have been extracted.  
 After this first part of configuration, two models have been considered and implemented  
 using C language.  
-The fist one is a modification of the simple bimodal predictor while the second is a version  
+The first one is a modification of the simple bimodal predictor while the second is a version  
 of a state of art implementation of TAGE predictor.  
 Using these two models of BP, instructions extracted from QEMU, have been used to retrieve statistics
 on performances.  
@@ -66,7 +66,7 @@ In particular, we focused on the bimodal branch predictor and on the TAGE predic
 -----
 
 ## Bimodal Branch Predictor <a name="Bimodal"></a>
-This implementation is based on Dynamic prediction, that consist in exploiting run time behaviours of branches in oder to make more accurate predictions w.r.t. the static ones.
+This implementation is based on Dynamic prediction, that consists in exploiting run time behaviours of branches in oder to make more accurate predictions w.r.t. the static ones.
 In others words, the prediction can change depending on the execution of the program.  
 
 It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter on which the prediction outcome will be based on:
@@ -84,7 +84,7 @@ The FSM is represented in the following figure:
 -----
 
 ## Tage Branch Predictor <a name="Tage"></a>
-Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allows to exploit correlation between recent branch outcomes and old ones.
+This implementation in also based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allows to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
 <img src="images/ltage_block_diagram.png" height="400">
 
@@ -120,7 +120,7 @@ The root working directory at the end should have this structure:
 	├── Makefile  
 	└── tftp_script  
 
-To reproduce this, first step to follow is to clone this repository:    
+To reproduce this, the first step to follow is to clone this repository:    
 open a new terminal and run the following command  
 ```
 git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
@@ -154,7 +154,7 @@ This folder have the following structure:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── src_for_shm_tage  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── src_qemu_tofile   
 
-Src_and_configurations folder contains Qemu source files that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found together with some useful script files on this folder.  
+Src_and_configurations folder contains Qemu source files that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found together with some useful script files in this folder.  
 To reproduce my_working_directory:  
 ```
 mkdir my_working_directory
@@ -205,7 +205,7 @@ Once you have done all these steps, to run Qemu simply type on the terminal:
 ```
 make run
 ```
-If thing went wrong you should see:
+If anything went wrong you should see:
 
 ```bash
 script /tmp/run -c '\
@@ -268,7 +268,7 @@ Basically, we set our Helper function to write in the SHM the actual program cou
 All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [last_src_files/].
 
 ## Why shared memory technique <a name="SHM_why"></a>
-Running a benchmark application produces a lot of jumps and branches in the instructions, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in a slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analyse on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
+Running a benchmark application produces a lot of jumps and branches, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in a slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analyse on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
 To exchange lots of data between applications on the fly, the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/].  
 Also a TCP socket could have been exploited with the advantage to let different machines work concurrently or from different places. However, by applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/].
 
@@ -286,7 +286,7 @@ In fact only the `struct shm_cell_type`, that is renamed `shmCell`, need to be m
 Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th data sent by the client, so both data exchange and order are preserved.  
 
 ## How to use it <a name="SHM_how"></a>
-It is really simple:
+
 1. Modify both the client's (helper-a64.c) and server's `shmStr` structure as you wish. In it there are the data exchanged for each write/read operation.  
 	Currently the `shmCell` is defined as following:
 
@@ -490,6 +490,7 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 		```
 
 1. Compile Coremark
+
 	In your pc in a terminal go to the directory containing Coremark type
 
 	```bash
@@ -499,6 +500,7 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 	the file coremark.exe will be created
 
 1. Run Coremark
+
 	To run coremark you can simply type in the terminal
 	```bash
 	make PORT_DIR=linux
@@ -510,7 +512,7 @@ Instructions to run this benchmark in a linux kernel running on QEMU:
 	./coremark.exe  0x3415 0x3415 0x66 0 7 1 2000  > ./run2.log
 	./coremark.exe  8 8 8 0 7 1 1200 > ./run3.log
 	```
-	For more info about results and iteration please read the readme.txt  
+	For more info about results and iterations please read the readme.txt  
 	In our case to import the coremark in the qemu enviroment we have to follow these steps:
 	- start qemu
 	- copy the coremark.exe in the tftpboot
@@ -579,7 +581,7 @@ Depending on the chosen predictor you need to change few parameters:
 firstly uncomment the right test file you want to run:  
 test --> QEMU results  
 tracex --> CBP-5 results  
-This changes must be done to the file:  
+These changes must be done to the file:  
   * branch.c in the bimodal  
   * common_var.h in the L_TAGE  
 
@@ -603,7 +605,7 @@ Results will be provided on the screen and on a file named results.txt as :
 
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
-We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accuracy, that is the hit rate normalized over kiloinstruction and the misprediction rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
+We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the results taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accuracy, that is the hit rate normalized over kiloinstructions and the misprediction rate normalized again over the same amount of instructions. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
 The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
@@ -613,16 +615,16 @@ The final result have been plotted using Matlab [<img src="images/matlab.png" al
 
 <img src="images/budjet_data.png" height="400">
 
-Considering the accuracy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till a little variation around 10 milions instructions (see caption Further remarks). Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accuracy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
-In the other hands when the number of instructions is more than 10 milion, the performances start to significantly decrease because of the shut down sequence that pollutes the input data of our implementation.  
+Considering the accuracy and the miss rate, it can be noticed that the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till a little variation around 10 milions instructions (see caption Further remarks). Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accuracy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
+In the other hands when the number of instructions is more than 10 milion, the performances start to significantly decrease because of the shut down sequence that pollutes the input data of our implementations.  
 Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate. Also in this case, we can notice a slight difference depending on the type of input data. Indeed, for the instructions taken from the CBP-5, for a small number of them, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
 Instead, for the result related to each benchmark, the performances of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
 Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not our case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
 The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about 97.49% of accuracy and 25.06 of misprediction rate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about 92.57% of accuracy and 74.29 of misprediction rate.
 
 # Further remarks <a name="Further remarks"></a>
-During data processing we noticed a strange behavior in  the results over 10^7 instructions. Accuracy should increase as the number of instruction increase, but over 10mln of instruction, it showed a slight worsening.    
-To understand the reason of this behavior we have taken LONG-MOBILE-10 trace and duplicated the first million instructions hundred times. The results can be seen below:
+During data processing we noticed a strange behavior in  the results over 10^7 instructions. Accuracy should increase as the number of instruction increase, but over 10mln of instruction, it shows a slight worsening.    
+To understand the reason of this behavior, we have taken LONG-MOBILE-10 trace and duplicated the first million instructions hundred times. The results can be seen below:
 
 <img src="images/accuracy_repeated_pattern.png" height="400">
 
@@ -630,4 +632,4 @@ To understand the reason of this behavior we have taken LONG-MOBILE-10 trace and
 
 In this case, the accuracy increases till an asymptotic value as the number of instructions increase.  
 We think that the reason of the non monotonic behavior after 10mln of instructions showed in the section above  is due to an increased stress of the benchmark that lead to a new context and set of operations with completely different addresses.  
-Our opinion can be supported looking at the data budget plot, that shows an exponential shape.  
+Our opinion can be supported looking at the data budget plot, that shows an exponential growth.  
