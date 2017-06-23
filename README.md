@@ -43,7 +43,7 @@
 
 # Project description <a name="Project_description"></a>
 The goal of the project is to analyze already existing Branch Predictors (BP) and
-evaluate performances of some implementations to exploit new possible improvements.  
+evaluate performances of some implementations in order to exploit new possible improvements.  
 In particular, using an high level CPU model like QEMU to emulate an AARCH64
 architecture, different benchmark such as Dhrystone and Coremark have been run.  
 After having properly instructed QEMU, in which a Linux kernel has been installed,
@@ -59,14 +59,14 @@ To get more exhaustive results, data from Championship Branch Prediction (CBP-5)
 ---------------
 
 # Preliminary studies <a name="Phase_1"></a>
-Before starting coding and implementing, the first thing we have done was to investigate and study branch predictors from the simplest one to the state of art.  
-In particular, we focused on the bimodal branch predictor and on the TAGE predictor understanding the strategy it is based on and its improvements.
+Before starting coding and implementing, the first thing we have done was investigating and studying branch predictors from the simplest one to the state of art.  
+In particular, we focused on the bimodal branch predictor and on the TAGE predictor, understanding the strategy it is based on and its improvements.
 
 -----
 
 ## Bimodal Branch Predictor <a name="Bimodal"></a>
-This implementation is based on Dynamic prediction, that is it exploits run time behaviours of branches to make more accurate predictions w.r.t. static ones.
-In others words, the prediction can change during depending on the execution of the program.  
+This implementation is based on Dynamic prediction, that consist in exploiting run time behaviours of branches in oder to make more accurate predictions w.r.t. the static ones.
+In others words, the prediction can change depending on the execution of the program.  
 
 It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter on which the prediction outcome will be based on:
 - 00 Strongly not taken
@@ -74,7 +74,7 @@ It is based on a 2 bit counter and a finite state machine with four states corre
 - 10 Weakly taken
 - 11 Strongly taken
 
-When a branch is evaluated, the state in the FSM is updated. Not taken branches will decrease the counter till zero (Strongly not taken) and the taken ones will increment the counter towards 3 (Strongly taken).  
+When a branch is evaluated, the state in the FSM is updated. Not taken branches will decrease the counter towards zero (Strongly not taken) and the taken ones will increment the counter towards 3 (Strongly taken).  
 
 The FSM is represented in the following figure:
 
@@ -83,20 +83,20 @@ The FSM is represented in the following figure:
 -----
 
 ## Tage Branch Predictor <a name="Tage"></a>
-Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allow to exploit correlation between recent branch outcomes and old ones.
+Also this implementation ins based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allows to exploit correlation between recent branch outcomes and old ones.
 The figure below shows one realisation of this predictor.
 <img src="images/ltage_block_diagram.png" height="400">
 
-T0 is a base predictor (can be a bimodal predictor) in charge of providing a simple prediction, instead the other components consist in a signed counter _ctr_ which sign provides the prediction , a _tag_ and useful counter _u_.
+T0 is a base predictor (can be a bimodal predictor) in charge of providing a simple prediction, instead the other components consist of a signed counter _ctr_ whose sign provides the prediction , a _tag_ and useful counter _u_.
 
-In general case, the overall prediction is provided by the hitting tagged predictor component that uses the longest history and its _ctr_ is update, or in the case of no matching occurs, the T0 prediction is used.
-The _provider component_ is the matching component with longest history whereas the _altpred_ is the prediction that would have occurred if there had been a miss on the provider component.
+In the general case, the overall prediction is provided by the hitting tagged predictor component that uses the longest history and its _ctr_ is update; in case no matching occurs, the T0 prediction is used.
+The _provider component_ is the matching component with longest history, whereas the _altpred_ is the prediction that would have occurred if there had been a miss on the provider component.
 
-The useful counter _u_ of the provider component is update when the alternate prediction _altpred_ is different from the final prediction _pred_.
+The useful counter _u_ of the provider component is updated when the alternate prediction _altpred_ is different from the final prediction _pred_.
 
-On misprediction one entry is allocated. If the provider component Ti is not the one with the longest history we allocate an entry on the predictor component Tk with *i < k <= M* , being M the index of the component with logest history length.
+On misprediction one entry is allocated. If the provider component Ti is not the one with the longest history, we allocate an entry on the predictor component Tk with *i < k <= M* , being M the index of the component with logest history length.
 
-An allocated entry is initialized with the prediction counter _ctr_ set to weak correct and the useful counter _u_ is se to 0, that is strongly not useful.
+An allocated entry is initialized with the prediction counter _ctr_ set to weak correct and the useful counter _u_ is set to 0, that is not very useful.
 
 
 ------------
@@ -104,11 +104,11 @@ An allocated entry is initialized with the prediction counter _ctr_ set to weak 
   [1]: http://www.qemu.org/
   [2]: images/Qemu-logo.png (hover text)
 
-In this phase, since we need an high-level model of an AARCH64 architecture on which running our benchmark and retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" >](http://www.qemu.org/).  
+In this phase, since we need an high-level model of an AARCH64 architecture where running our benchmark and we need to retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" >](http://www.qemu.org/).  
 Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
-In order to run our benchmark on a specified architecture, we have used also a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](https://www.kernel.org/), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](https://busybox.net/)  that provides several stripped-down unix tools in a single executable file.  
-Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). We needed a cross-compiler since the produced executable code (that will run into qemu) targets an architecture that is different from the one on which the toolchain is running.  
-The root working directory at the end should have that structure:  
+In order to run our benchmark on a specified architecture, we have used a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](https://www.kernel.org/), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](https://busybox.net/)  that provides several stripped-down unix tools in a single executable file.  
+Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). The cross-compiler is needed since the produced executable code (that will run into qemu) targets an architecture that is different from the one where the toolchain is running.  
+The root working directory at the end should have this structure:  
 
 ../my_working_directory/  
 	├── qemu/  
@@ -119,7 +119,7 @@ The root working directory at the end should have that structure:
 	├── Makefile  
 	└── tftp_script  
 
-To reproduce all of this, first step to follow is to clone this repository:    
+To reproduce this, first step to follow is to clone this repository:    
 open a new terminal and run the following command  
 ```
 git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
@@ -153,7 +153,7 @@ This folder have the following structure:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── src_for_shm_tage  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── src_qemu_tofile   
 
-Src_and_configurations folder contains Qemu source file that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found as well as some useful script files on this folder.  
+Src_and_configurations folder contains Qemu source files that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found together with some useful script files on this folder.  
 To reproduce my_working_directory:  
 ```
 mkdir my_working_directory
@@ -171,13 +171,13 @@ To continue building the infrastructure:
 ```
 make qclone
 ```
-That will clone the latest version stable-2.8 of QEMU on the qemu folder. Successively it is needed to run the following commands:
+That will clone the latest version stable-2.8 of QEMU on the qemu folder. Successively it is necessary to run the following commands:
 ```
 make qconfigure
 make qbuild
 ```
-These two previous command should be run every time qemu source files are modified as when we want to gather information to be used for our tests on branch predictors.  
-It is now needed to clone, configure and install busybox running:
+These two previous commands should be run every time qemu source files are modified as when we want to gather information to be used for our tests on branch predictors.  
+It is now necessary to clone, configure and install busybox by running:
 ```
 make initrd
 ```
@@ -187,8 +187,8 @@ make kconf
 make kmenuconf
 make kbuild
 ```
-Latter command will configure and cross-compile the linux kernel that will run in Qemu.  
-Now to create a suitable network with the emulated system you can use this script: [other_files/network_QEMU_script].  
+The last command will configure and cross-compile the linux kernel that will run in Qemu.  
+Now, in oder to create a suitable network with the emulated system you can use this script: [other_files/network_QEMU_script].  
 N.B.
 * this `network_QEMU_script` file must be in the root directory in which there are all the other directories with QEMU, Busybox, Makefile, ...  
 * change user value with yours and nic with the name of your Ethernet interface  
@@ -227,7 +227,7 @@ poweroff
 ```
 -----
 # Qemu helper function <a name="Phase_3"></a>
-An helper function of TCG has the function of wrapping up a user function to be called in the same way it is done for Qemu library functions. This is done to ensure that user functions are compliant with coding rules imposed by the TCG of QEMU.  
+An helper function of TCG has the aim of wrapping up a user function to be called in the same way it is done for Qemu library functions. This is done to ensure that user functions are compliant with coding rules imposed by the TCG of QEMU.  
 In our case we have used helper functions to instrument Qemu to extract, for a given branch instruction, its program counter, the target address associated to that branch and the final decision taken (taken / not taken)  
 To create an helper function three files must be changed: helper-a64.h, helper-a64.c and translation-a64 located in /qemu/src/target-arm:
 * Macro in helper-a64.h: DEF_HELPER_3(printer, dh_retvar_decl0_void, i64, i64, i64).  
@@ -247,7 +247,7 @@ The implemented helper function can be used just copying the three source files 
 -----
 # BP implementations <a name="Phase_4"></a>
 ## Bimodal implementation <a name="bimodal_impl"></a>
-The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances will be considerably improved.  
+The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances are considerably improved.  
 The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
 The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry.
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
@@ -263,25 +263,25 @@ You can find every explanation of the code we implemented directly in the commen
 ------
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
-Basically we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
+Basically, we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full, the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
 All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [last_src_files/].
 
 ## Why shared memory technique <a name="SHM_why"></a>
-Running a benchmark application, produces a lot of jumps and branches in the instructions, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analysing on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
-To exchange lots of data between applications on the fly the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/].  
-Also a TCP socket could have been exploited with the advantage to let different machines working concurrently or from different places, however while applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/].
+Running a benchmark application produces a lot of jumps and branches in the instructions, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in a slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analyse on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
+To exchange lots of data between applications on the fly, the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/].  
+Also a TCP socket could have been exploited with the advantage to let different machines work concurrently or from different places. However, by applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/].
 
 ## Named semaphores <a name="SHM_semaphores"></a>
-Since in this case the pids of both app are not known, to synchronise the two processes, named semaphores were chosen which will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semaphores before the end, the previous name for those semaphores need to be changed in order to run again the apps (it is also indicated in the files). In our case the end of the branch instructions is not detected from the client and so will use those semaphores, thus no one can destroy them, so the name must be changed every time we run those programs.  
+Since in this case the pids of both apps are not known, to synchronise the two processes named semaphores were chosen. Those semaphores will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semaphores before the end, the previous name for those semaphores have to be changed in order to run again the apps (it is also indicated in the files). In our case the end of the branch instructions is not detected from the client and so we will use those semaphores, thus no one can destroy them, so the name must be changed every time we run those programs.  
 
 ## SHM partitioning <a name="SHM_partitioning"></a>
 For optimisation reason the shared memory is subdivided in two pieces such that the client can fill one while the server can read the other previously written by the client.  
 The status flag of the SHM (completely full, half full ...) is stored in the `status` variable of `shMemory` structure and to read it the `statusMutex_sem` semaphore is used for synchronisation between client and server (only one at time should read or modify this variable).  
-When the client has filled the first section of the SHM, he will inform the server `sem_post(clientWrote_sem)` that was waiting on that semaphore `sem_wait(clientWrote_sem)`, so the client starts to store data in the second section while the server begins its computations with the data already stored in the first section. If, for example, the client fills the memory faster than the server reads and uses them, the client will wait that at least one section is free `sem_wait(serverRead_sem)`.  
+When the client has filled the first section of the SHM, he will inform the server `sem_post(clientWrote_sem)` that was waiting on that semaphore `sem_wait(clientWrote_sem)`, so the client starts storing data in the second section while the server begins its computations with the data already stored in the first section. If, for example, the client fills the memory faster than the server reads and uses them, the client will wait that at least one section is free `sem_wait(serverRead_sem)`.  
 
 ## SHM organisation <a name="SHM_organisation"></a>
-As can be seen from *server.c* the shared data are stored in structures such that any modification for future new purposes will be easy to be managed.  
-In fact only the `struct shm_cell_type`, that is renamed `shmCell`, need to be modified depending on the data you want to exchange. Thus each partition of our SHM is composed by a vector of cells which are composed by that structure.  
+As can be seen from *server.c* the shared data are stored in structures such that any modification for future purposes will be easy to manage.  
+In fact only the `struct shm_cell_type`, that is renamed `shmCell`, need to be modified depending on the data you want to exchange. Thus, each partition of our SHM is composed by a vector of cells which are composed by that structure.  
 Moreover, reading the 15th data in the vector `shm_s0` means reading the 15th data sent by the client, so both data exchange and order are preserved.  
 
 ## How to use it <a name="SHM_how"></a>
@@ -330,8 +330,8 @@ It is really simple:
 Assuming that we want to analyse all the branches encountered, in this implementation of the SHM a bug is present: the last written data by the client are not read from the server if the memory section is not completely full. It means that if we have SHM sections of 1024 cells and at the end we write only 500 data, the client will not inform the server to read them.  
 Solutions can be:  
 * using a new flag in the `shMemory` but the client should understand when it has finished (not easy in our case)...
-* use SHM sections smaller such that the last lost data are few.
-* use sections with only one cell length (no data are lost, but overhead due to synchronisation).  
+* using SHM sections smaller such that the last lost data are few.
+* using sections with only one cell length (no data are lost, but overhead due to synchronisation).  
 
 ### Semaphores <a name="SHM_bug_sem"></a>
 To solve the semaphores' name problem and so to finalise the server computations detecting the end of the benchmark, different solutions exists:  
@@ -347,7 +347,7 @@ http://www.csc.villanova.edu/~mdamian/threads/posixsem.html
 
 ------
 # Data gathering <a name="Phase_4_data_gathering"></a>
-In order to gather data different Benchmark applications were run on Qemu.    
+In order to gather data, different Benchmark applications were run on Qemu.    
 To run programs over the emulated system, a connection between the host OS and the emulated one is needed to exchange the executable files because, obviously, they are not already embedded in Busybox.  
 
 ## How to set the connection up <a name="How_to_set_the_connection_up"></a>
@@ -602,8 +602,8 @@ Results will be provided on the screen and on a file named results.txt as :
 
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
-We decide to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we consider different number of instructions and we evaluate the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plot the size of the prediction matrix as a function of the number of instructions.
-The final result are plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
+We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the result taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accurancy, that is the hit rate normalized over kiloinstruction and the miss rate normalized again over the same amount of instruction. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
+The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
 <img src="images/accurancy.png" height="400">
@@ -612,9 +612,9 @@ The final result are plotted using Matlab [<img src="images/matlab.png" alt="alt
 
 <img src="images/budjet_data.png" height="400">
 
-Considering the accurancy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance are getting better as the number of instructions increases till an asymptotic value. Instead for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accurancy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
-In the other hands when the number of instruction become more than 10 milion, the performances start to decrease because of the shut down sequence that pollutes the input data of our implementation.  
-Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate, but, also in this case, we can notice a slightly difference depending on the type of input data. Indeed for the instructions taken from the CBP-5, for a small number of it, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
-Instead for the result related to each benchmark the performance of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
-Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not the case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
-The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the instruction become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
+Considering the accurancy and the miss rate, it can be noticed the the shape of the curve depends on the data we consider. In particular, for the data of the CBP-5, the performance get better as the number of instructions increases till an asymptotic value. Instead, for the information taken from the two benchmarks, we can observe a strange behavior both when a small number of instructions (less than 10k) and when a relative huge ones (over 10 milions) are considered. For the first case, indeed, the curve is not monotonic (increasing for the accurancy and decresing for the misprediction). It can be explained considering that at the beginning the instrunctions that we are gathering are not related to the execution of the benchmarks but to the boot sequence of Qemu.
+In the other hands when the number of instructions is more than 10 milion, the performances start to decrease because of the shut down sequence that pollutes the input data of our implementation.  
+Looking at the performances, the figure show that in general the L-Tage implementation is more accurate and has a lower misprediction rate. Also in this case, we can notice a slight difference depending on the type of input data. Indeed, for the instructions taken from the CBP-5, for a small number of them, the difference between bimodal-like and the L-Tage is more remarkable but it becomes less significant as the number of considered input increase.
+Instead, for the result related to each benchmark, the performances of the two implementations are more similar, probably again for the boot sequence that performs jumps and branchs in a more restricted set of target adresses.  
+Another observation that can be done is that the performances of the L-Tage should be much more better w.r.t. the bimodal, but it is not our case because we consider that the bimodal matrix on which is based our implementation can grow indefinitely like shown in the data budjet figure.  
+The best results are obtained with the L-Tage implementation using the benchmarks till 10 milions instrucitons with about (dato numerico) of accurancy and (dato numerico) of missrate. As the number of instructions become bigger the best results are given by the the L-Tage exploiting the CBP-5 data with about (dato numerico) of accurancy and (dato numerico) of misprediction rate.
