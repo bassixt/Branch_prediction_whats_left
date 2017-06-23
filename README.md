@@ -607,7 +607,7 @@ We decided to test our implementations of branch predictor with both the two typ
 The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
-<img src="images/accurancy.png" height="400">
+<img src="images/accuracy.png" height="400">
 
 <img src="images/misprediction_rate.png" height="400">
 
