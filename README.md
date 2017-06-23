@@ -49,25 +49,22 @@ In particular, using an high level CPU model like QEMU to emulate an AARCH64
 architecture, different benchmark such as Dhrystone and Coremark have been run.  
 After having properly instructed QEMU, in which a Linux kernel has been installed,
 Program Counter, target address and actual decision on branches have been extracted.  
-After this first part of configuration, two models have been considered and implemented  
-using C language.  
-The first one is a modification of the simple bimodal predictor while the second is a version  
-of a state of art implementation of TAGE predictor.  
-Using these two models of BP, instructions extracted from QEMU, have been used to retrieve statistics
-on performances.  
+After this first part of configuration, two models have been considered and implemented using C language.  
+The first one is a modification of the simple bimodal predictor while the second is a version of a state-of-the-art implementation of TAGE predictor.  
+Using these two models of BP, instructions extracted from QEMU, have been used to retrieve statistics on performances.  
 To get more exhaustive results, data from Championship Branch Prediction (CBP-5) have been also used.
 
 ---------------
 
 # Preliminary studies <a name="Phase_1"></a>
-Before starting coding and implementing, the first thing we have done was investigating and studying branch predictors from the simplest one to the state of art.  
-In particular, we focused on the bimodal branch predictor and on the TAGE predictor, understanding the strategy it is based on and its improvements.
+Before starting coding and implementing, the first thing we have done was investigating and studying branch predictors from the simplest one to the state-of-the-art.  
+In particular, we focused on the bimodal branch predictor and then on the TAGE predictor, understanding the strategy it is based on and its improvements.
 
 -----
 
 ## Bimodal Branch Predictor <a name="Bimodal"></a>
 This implementation is based on Dynamic prediction, that consists in exploiting run time behaviours of branches in oder to make more accurate predictions w.r.t. the static ones.
-In others words, the prediction can change depending on the execution of the program.  
+In others words, the prediction can change depending on the execution of the programs.  
 
 It is based on a 2 bit counter and a finite state machine with four states corresponding to the output of the counter on which the prediction outcome will be based on:
 - 00 Strongly not taken
@@ -84,7 +81,7 @@ The FSM is represented in the following figure:
 -----
 
 ## Tage Branch Predictor <a name="Tage"></a>
-This implementation in also based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by function of the global  branch history and the branch address. It also uses geometric history length because this allows to exploit correlation between recent branch outcomes and old ones.
+This implementation is also based on Dynamic prediction. The TAgged GEometric length predictor relies on several predictor tables indexed by a function of the global branch history and the branch address. Also it uses geometric history length because this allows to exploit correlation between recent branch outcomes and old ones without loosing in warm-up time.
 The figure below shows one realisation of this predictor.
 <img src="images/ltage_block_diagram.png" height="400">
 
@@ -106,7 +103,7 @@ An allocated entry is initialized with the prediction counter _ctr_ set to weak 
   [2]: images/Qemu-logo.png (hover text)
 
 In this phase, since we need an high-level model of an AARCH64 architecture where running our benchmark and we need to retrieve branch addresses for statistics, we have used [<img src="images/Qemu-logo.png" alt="alt text" width="50" >](http://www.qemu.org/).  
-Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization. (It is open-source)  
+Qemu stands for Quick Emulator and it is an hosted hypervisor that performs hardware virtualization (it is open-source).  
 In order to run our benchmark on a specified architecture, we have used a linux kernel[<img src="images/Tux.png" alt="alt text" width="25">](https://www.kernel.org/), and busybox [<img src="images/Rousis-Diplomatiki-Ergasia-BusyBox-Logo.png" alt="alt text" width="30">](https://busybox.net/)  that provides several stripped-down unix tools in a single executable file.  
 Since the final architecture is an ARM one, we have cross-compiled the linux kernel and busybox with Linaro Linux Targeted Binary Toolchain [<img src="images/RGB-Linaro_Standard.png" alt="alt text" width="40">](https://www.linaro.org/). The cross-compiler is needed since the produced executable code (that will run into qemu) targets an architecture that is different from the one where the toolchain is running.  
 The root working directory at the end should have this structure:  
@@ -118,14 +115,14 @@ The root working directory at the end should have this structure:
 	├── server_and_predictors/  
 	├── busybox.cpio.gz  
 	├── Makefile  
-	└── tftp_script  
+	└── network_QEMU_script  
 
 To reproduce this, the first step to follow is to clone this repository:    
-open a new terminal and run the following command  
+open a new terminal and run the following command:  
 ```
 git clone git@gitlab.eurecom.fr:coletta/Branch_prediction_whats_left.git
 ```
-After having cloned the whole repository enter in the folder:
+After having cloned the whole repository enter the folder:
 ```
 cd Branch_prediction_whats_left/
 ```
@@ -154,7 +151,7 @@ This folder have the following structure:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── src_for_shm_tage  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── src_qemu_tofile   
 
-Src_and_configurations folder contains Qemu source files that can replace original Qemu source files to output statistics on a file or the shared memory version. Benchmark's source files can be also found together with some useful script files in this folder.  
+Src_and_configurations folder contains Qemu source files that can replace original Qemu source files to output statistics on a file or to the shared memory version. Benchmark's source files can be also found together with some useful script files in that folder.  
 To reproduce my_working_directory:  
 ```
 mkdir my_working_directory
@@ -163,7 +160,7 @@ Then copy inside this new directory the main Makefile that will help you to buil
 ```
 cp /some/path/Branch_prediction_whats_left/src_and_configurations/makefile /some/path/my_working_directory
 ```
-Enter in my_working_directory:
+Enter my_working_directory:
 ```
 cd /some/path/my_working_directory
 ```
@@ -189,7 +186,7 @@ make kmenuconf
 make kbuild
 ```
 The last command will configure and cross-compile the linux kernel that will run in Qemu.  
-Now, in oder to create a suitable network with the emulated system you can use this script: [other_files/network_QEMU_script].  
+Now, in oder to create a suitable network with the emulated system you can use this script: src_and_configurations/network_QEMU_script.  
 N.B.
 * this `network_QEMU_script` file must be in the root directory in which there are all the other directories with QEMU, Busybox, Makefile, ...  
 * change user value with yours and nic with the name of your Ethernet interface  
@@ -248,7 +245,7 @@ The implemented helper function can be used just copying the three source files 
 -----
 # BP implementations <a name="Phase_4"></a>
 ## Bimodal implementation <a name="bimodal_impl"></a>
-The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each of them such that the performances are considerably improved.  
+The starting point has been the simplest and well known bimodal, but instead of using just one counter for all PC we associated one counter to each entry such that the performances are considerably improved.  
 The bimodal table is a kind of matrix: it has 1024 fixed rows and has an infinite number of columns in the sense that for each entry that was not already present in the table, a new entry will be allocated in the relative row.  
 The *Hash function* will decide the row where the BP will check if the current Branch was already encountered or where possibly allocate a new entry.
 This hash function can be chosen pretty arbitrarily using i least significant bits of the branch address (current PC). The goal is to distribute the mappings as equally and efficiently over the whole table, avoiding overlapping as much as possible.  
@@ -265,12 +262,12 @@ You can find every explanation of the code we implemented directly in the commen
 # Client-server (QEMU-BP) exchanging data by shared memory <a name="SHM"></a>
 In order to gather data from branches encountered in the QEMU AArch64 emulation, a shared memory (SHM) technique was implemented to exchange data between the running software on QEMU (e.g. Dhrystone) and our Branch Predictor on the fly (avoiding to store a huge file).  
 Basically, we set our Helper function to write in the SHM the actual program counter, target address and branch taken/not_taken. When a portion of the SHM is full, the Server process resumes and analyses the data stored calling the relatives functions of the implemented TAGE predictor.
-All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [last_src_files/].
+All the information about this technique and how to use the program can be found in the following sections, while all the last working files that you can use are saved in the directory [src_and_configurations/Src_for_shm_tage](src_and_configurations/Src_for_shm_tage).
 
 ## Why shared memory technique <a name="SHM_why"></a>
-Running a benchmark application produces a lot of jumps and branches, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in a slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analyse on the fly those data and store only the useful results. That is what the files in [last_src_files/] do.  
-To exchange lots of data between applications on the fly, the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/].  
-Also a TCP socket could have been exploited with the advantage to let different machines work concurrently or from different places. However, by applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/].
+Running a benchmark application produces a lot of jumps and branches, so storing current PC, TargetAddress and type of branches information in a file to be analysed later will result in a slow process and will fill the hard disk. For that reason, the best option is to let our branch predictor analyse on the fly those data and store only the useful results. That is what the files in [src_and_configurations/Src_for_shm_tage](src_and_configurations/Src_for_shm_tage) do.  
+To exchange lots of data between applications on the fly, the best optimised way is to use shared memory (SHM), since reduce the number of writings and readings from the volatile memory without accessing the HD. The files regarding only the SHM management can be found in [other_files/client-server_SHM/](other_files/client-server_SHM).  
+Also a TCP socket could have been exploited with the advantage to let different machines work concurrently or from different places. However, by applying this technique, for some implementation, we noticed that after 30 - 60 seconds the running apps where stopped probably by the OS because of the huge data exchange (maybe some firewall configurations were needed) and moreover some data were lost. However if you want to have a look at this trials of implementation, you find 3 different implementations in the directory [other_files/client-server_socket/](other_files/client-server_socket).
 
 ## Named semaphores <a name="SHM_semaphores"></a>
 Since in this case the pids of both apps are not known, to synchronise the two processes named semaphores were chosen. Those semaphores will store the flags in named files in temporary system sub-directories. For that reason, if the server or the client do not destroy the semaphores before the end, the previous name for those semaphores have to be changed in order to run again the apps (it is also indicated in the files). In our case the end of the branch instructions is not detected from the client and so we will use those semaphores, thus no one can destroy them, so the name must be changed every time we run those programs.  
