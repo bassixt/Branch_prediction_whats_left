@@ -397,7 +397,7 @@ Dhrystone is a synthetic computing benchmark program developed in 1984 by Reinho
 
 ## How to run Dhrystone <a name="How_to_run_Dhrystone"></a>
 Dhrystone is a public software which source files can be downloaded from internet and then compiled.  
-Its source files are in [Dhrystone/](src_and_configurations/Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
+Its source files are in [src_and_configurations/Dhrystone/](src_and_configurations/Dhrystone/) directory but there are also the Makefile to build them and the already built executable file `cc_dry2`.  
 To Run Dhrystone these are the steps:
 1. Copy the Dhrystone executable in your /tftpboot/ folder.
 1. Run the `tftp_script` if not already done.
@@ -537,7 +537,7 @@ Since the format of files are different we have modified some sources of the Cha
 These files can be located in the somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval.
 The instructions to use the framework can be found on their website: [CBP-5](https://www.jilp.org/cbp2016/).
 The main thing that must be done is to download their traces (about 10Gb) and extract them in the somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval/traces folder.  
-To run the framework in order to output the file to be used for our branch predictors firslty is necessary to enter in the scripts folder.
+To run the framework in order to output the file to be used for our branch predictors firslty is necessary to enter the scripts folder.
 ```
  somewhere/Branch_prediction_whats_left/other_files/cbp2016.eval/scripts
 ```
@@ -557,7 +557,7 @@ The resulting trace is created in the script folder and it is named tracex.txt
 # Data processing <a name=" Data processing"></a>
 ### <a name="How to run branch predictors"></a>How to run branch predictors  
 
-Once gathered files thanks to Qemu, generated text file can be used to feed our branch predictors and measure performances.  
+Once gathered data thanks to Qemu, generated text file can be used to feed our branch predictors and measure performances.  
 Go into the branch_predictors folder
 ```
 cd yourpath/Branch_prediction_whats_left/src_and_configurations/BP_read_from_fileBranch_Predictors
@@ -602,7 +602,7 @@ Results will be provided on the screen and on a file named results.txt as :
 
 ------
 # Results and Conclusions <a name="Results and Conclusions"></a>
-We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the results taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accuracy, that is the hit rate normalized over kiloinstructions and the misprediction rate normalized again over the same amount of instructions. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
+We decided to test our implementations of branch predictor with both the two types of data we gather from the championship CBP-5 , called LONG-MOBILE-1 and LONG-MOBILE-10, and with the results taken running Dhrystone and Coremark on Qemu. For all these scenarios we considered different number of instructions and we evaluated the accuracy, that is the hit rate `normalized over kiloinstructions` and the misprediction rate normalized again over the same amount of instructions. Moreover, for the bimodal-like implementation we plotted the size of the prediction matrix as a function of the number of instructions.
 The final result have been plotted using Matlab [<img src="images/matlab.png" alt="alt text" width="25">](https://www.mathworks.com/product/ltc/matlab.html)  and are shown below.
 
 
